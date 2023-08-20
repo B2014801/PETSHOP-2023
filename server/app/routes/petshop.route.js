@@ -3,6 +3,6 @@ const pet = require('../controllers/petshop.controller');
 
 const router = express.Router();
 
-router.route('/').get(pet.welcome);
+router.route('/').get(pet.home);
 
 module.exports = router;
