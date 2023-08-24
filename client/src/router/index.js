@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from 'vue-router';
-import { Home, About, Product, Cart, NotFound } from '@/views/';
+import { Home, About, Product, Cart, NotFound, Login, CreateAccount, ProductDetail, Test } from '@/views/';
 const routes = [
     {
         path: '/',
@@ -17,14 +17,36 @@ const routes = [
         component: About,
     },
     {
-        path: '/product',
+        path: '/product/',
         name: 'product',
         component: Product,
+    },
+    {
+        path: '/product/detail/:id',
+        name: 'productdetail',
+        component: () => ProductDetail,
+        props: true,
     },
     {
         path: '/cart',
         name: 'cart',
         component: Cart,
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: Login,
+    },
+    {
+        path: '/create_account',
+        name: 'create_account',
+        component: CreateAccount,
+    },
+    {
+        path: '/test/detail',
+        name: 'test',
+        component: Test,
+        // props: true,
     },
 ];
 const router = createRouter({

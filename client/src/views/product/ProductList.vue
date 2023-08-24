@@ -2,7 +2,10 @@
     <div class="row card-group mx-3 mt-2">
         <div class="col-sm-4 col-md-3 col-lg-3 col-6 mb-3" v-for="(product, index) in products">
             <div class="product-item">
-                <a class="text-dark text-decoration-none">
+                <router-link
+                    :to="{ name: 'productdetail', params: { id: product._id } }"
+                    class="text-dark text-decoration-none"
+                >
                     <div class="card position-relative border-0">
                         <div class="selloff">
                             <h6 class="text-center m-1">5%</h6>
@@ -13,7 +16,7 @@
                             <h5 class="card-title"></h5>
                         </div>
                     </div>
-                </a>
+                </router-link>
             </div>
         </div>
     </div>

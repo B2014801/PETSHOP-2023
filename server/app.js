@@ -19,4 +19,8 @@ app.use((err, req, res, next) => {
     });
 });
 
+app.get('/', (req, res) => {
+    res.json({ message: 'Welcome to petshop application' });
+});
+
 module.exports = app;

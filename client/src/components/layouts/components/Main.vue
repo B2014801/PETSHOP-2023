@@ -1,12 +1,20 @@
 <template>
     <div>
         <!-- place for containter router -->
+        <!-- <button v-tippy="{ content: 'Hi!' }">Tippy!</button>
+        <button v-tippy="'Hello!'">Tippy!</button> -->
         <router-view />
     </div>
 </template>
 
 <script>
-export default {};
+import { directive } from 'vue-tippy';
+
+export default {
+    directives: {
+        tippy: directive,
+    },
+};
 </script>
 
-<style lang="sass" module></style>
+<style lang="scss" module></style>

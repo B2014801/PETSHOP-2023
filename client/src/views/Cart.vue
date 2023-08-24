@@ -48,7 +48,7 @@
                                         name="<?php echo $row['id_sanpham'] ?>"
                                         id="amount_<?php echo $row['id_sanpham'] ?>"
                                         size="2"
-                                        value="<?php echo $row['soluong'] ?>"
+                                        value=""
                                         style="outline: none"
                                     />
                                     <button class="plus-sp nosubmit bg-light border border-light-subtle" id="plus-sp">

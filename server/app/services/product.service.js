@@ -32,6 +32,7 @@ class ProductService {
     // find product by name
     async findByName(name) {
         return await this.find({
+            //so sanh voi name trogn mongodb // khop chu khoa thuong : i
             name: { $regex: new RegExp(name), $options: 'i' },
         });
     }
@@ -51,7 +52,7 @@ class ProductService {
         return result.value;
     }
     //delete product
-    async delete(id) {
+    async deleteProduct(id) {
         const result = await this.Product.findOneAndDelete({
             _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         });
