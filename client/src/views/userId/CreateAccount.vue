@@ -1,68 +1,47 @@
 <template>
-    <div class="container col-md-6 col-10 border border-primary rounded my-3 p-0">
-        <form action="" enctype="application/x-www-form-urlencoded" onsubmit="return ValidateDangKy();" method="POST">
-            <h3 class="bg-success text-white p-2 text-organ text-center">Tạo tài khoản</h3>
-            <div class="m-3">
-                <div class="form-group font-weight-bold">
-                    <label for="">Họ tên* </label>
-                    <div>
-                        <input type="text" id="hoten" name="hoten" class="form-control" placeholder="Họ tên" />
-                    </div>
-                </div>
-                <div class="form-group font-weight-bold">
-                    <label for="">Email* </label>
-                    <div>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            class="form-control"
-                            placeholder="Vui lòng nhập vào email của bạn"
-                        />
-                    </div>
-                </div>
-                <div class="form-group font-weight-bold">
-                    <label for="">Mật khẩu* </label>
-                    <div class="input-group border">
-                        <input
-                            id="password-dangky"
-                            name="matkhau"
-                            type="password"
-                            class="form-control border-0"
-                            placeholder="Nhập mật khẩu của bạn"
-                        />
-                        <i
-                            onclick="ShowPassword(document.querySelector('#password-dangky'))"
-                            class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"
-                        ></i>
-                    </div>
-                </div>
-                <div class="form-group font-weight-bold">
-                    <label for="">Lặp lại mật khẩu* </label>
-                    <div class="input-group border">
-                        <input
-                            id="password-dangky-laplai"
-                            name="matkhau"
-                            type="password"
-                            class="form-control border-0"
-                            placeholder="Nhập mật khẩu của bạn"
-                        />
-                        <i
-                            onclick="ShowPassword(document.querySelector('#password-dangky-laplai'))"
-                            class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"
-                        ></i>
-                    </div>
-                </div>
-                <div>
-                    <button class="btn btn-info" name="dangky" type="submit">Đăng ký</button>
-                </div>
-            </div>
-        </form>
+    <div v-if="isShowSuccessMessage" class="mt-2 text-center">
+        <strong class="success-create-account">Đăng ký thành công tiến hành đăng nhập</strong>
+    </div>
+    <div>
+        <CreateAccountForm @create:account="createUser" />
     </div>
 </template>
 
 <script>
-export default {};
+import CreateAccountForm from '@/components/form/CreateAccountForm.vue';
+import PetshopService from '@/services/petshop.service';
+export default {
+    components: {
+        CreateAccountForm,
+    },
+    data() {
+        return {
+            accounts: [],
+            isShowSuccessMessage: false,
+        };
+    },
+    methods: {
+        async createUser(data) {
+            try {
+                const result = await PetshopService.createUser(data);
+                if (result) {
+                    this.isShowSuccessMessage = !this.isShowSuccessMessage;
+                    alert('thành công');
+                    this.goToLogin();
+                }
+            } catch (error) {
+                this.isShowSuccessMessage = false;
+            }
+        },
+        async goToLogin() {
+            this.$router.push({ name: 'login' });
+        },
+    },
+};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.success-create-account {
+    color: #37e32a;
+}
+</style>

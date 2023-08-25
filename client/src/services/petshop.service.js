@@ -9,6 +9,12 @@ class PetShopService {
     async findProductById(id) {
         return (await this.api.get(`/product/${id}`)).data;
     }
+    async createUser(data) {
+        return (await this.api.post('/auth/register', data)).data;
+    }
+    async login(data) {
+        return (await this.api.post('/auth/login', data)).data;
+    }
     // async get(id) {
     //     return (await this.api.get(`/${id}`)).data;
     // }

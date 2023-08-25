@@ -41,7 +41,7 @@
                 <router-link to="/login" class="text-white text-decoration-none"
                     ><i class="fa-solid fa-user"></i> |
                 </router-link>
-                <router-link to="/create_account" class="text-white text-decoration-none"
+                <router-link to="/register" class="text-white text-decoration-none"
                     ><i class="fa-solid fa-user-plus"></i
                 ></router-link>
             </div>

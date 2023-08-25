@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from 'vue-router';
-import { Home, About, Product, Cart, NotFound, Login, CreateAccount, ProductDetail, Test } from '@/views/';
+import { Home, About, Product, Cart, NotFound, Login, CreateAccount, ProductDetail } from '@/views/';
 const routes = [
     {
         path: '/',
@@ -38,15 +38,9 @@ const routes = [
         component: Login,
     },
     {
-        path: '/create_account',
-        name: 'create_account',
+        path: '/register',
+        name: 'register',
         component: CreateAccount,
-    },
-    {
-        path: '/test/detail',
-        name: 'test',
-        component: Test,
-        // props: true,
     },
 ];
 const router = createRouter({
