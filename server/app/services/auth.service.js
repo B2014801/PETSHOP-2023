@@ -22,10 +22,20 @@ class AuthService {
     }
     async updateRefreshToken(email, refreshToken) {
         try {
-            await db.get(TABLENAME).find({ email: email }).assign({ refreshToken: refreshToken }).write();
-            return true;
-        } catch {
-            return false;
+            const updatedUser = await this.User.findOneAndUpdate(
+                { email: email },
+                { $set: { refreshToken: refreshToken } },
+                { new: true },
+            );
+
+            if (updatedUser) {
+                return true; // Return true if user is found and updated
+            } else {
+                return false; // Return false if user is not found
+            }
+        } catch (error) {
+            console.error('Error updating refresh token:', error);
+            return false; // Return false on error
         }
     }
 }

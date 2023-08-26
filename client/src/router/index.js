@@ -36,6 +36,7 @@ const routes = [
         path: '/login',
         name: 'login',
         component: Login,
+        props: true,
     },
     {
         path: '/register',

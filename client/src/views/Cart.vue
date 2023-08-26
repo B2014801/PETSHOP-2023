@@ -1,5 +1,5 @@
 <template>
-    <div class="row mx-md-5 mx-1 my-2">
+    <div v-if="isShowCart" class="row mx-md-5 mx-1 my-2">
         <div><h1 class="text-center">Giỏ Hàng</h1></div>
 
         <div class="col-12 col-md-8 table-responsive-sm">
@@ -97,7 +97,30 @@
 </template>
 
 <script>
-export default {};
+import PetshopService from '@/services/petshop.service';
+export default {
+    data() {
+        return {
+            isShowCart: false,
+        };
+    },
+    methods: {
+        async getCart() {
+            try {
+                const cart = await PetshopService.getCart();
+                if (cart) {
+                    this.isShowCart = true;
+                }
+            } catch (error) {
+                alert('vui lòng đăng nhập trước');
+                this.$router.push({ name: 'login' });
+            }
+        },
+    },
+    mounted() {
+        this.getCart();
+    },
+};
 </script>
 
 <style lang="scss" scoped>
