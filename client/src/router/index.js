@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from 'vue-router';
-import { Home, About, Product, Cart, NotFound, Login, CreateAccount, ProductDetail } from '@/views/';
+import { Home, About, Product, Cart, NotFound, Login, CreateAccount, ProductDetail, Contact, CheckOut } from '@/views/';
 const routes = [
     {
         path: '/',
@@ -42,6 +42,16 @@ const routes = [
         path: '/register',
         name: 'register',
         component: CreateAccount,
+    },
+    {
+        path: '/contact',
+        name: 'contact',
+        component: Contact,
+    },
+    {
+        path: '/checkout',
+        name: 'checkout',
+        component: CheckOut,
     },
 ];
 const router = createRouter({

@@ -15,7 +15,6 @@
                 </router-link>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <router-link to="/about" class="dropdown-item">Giới thiệu</router-link>
-                    <router-link to="/news" class="dropdown-item">Tin tức</router-link>
                     <router-link to="/contact" class="dropdown-item">Liên hệ</router-link>
                 </div>
             </li>
