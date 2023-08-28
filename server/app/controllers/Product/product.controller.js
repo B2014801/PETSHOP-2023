@@ -78,3 +78,15 @@ exports.findById = async (req, res, next) => {
         return next(new ApiError(500, `Error retrieving Product with id = ${req.params.id}`));
     }
 };
+exports.create = async (req, res, next) => {
+    if (req.body.length === 0) {
+        res.send('Data update can not be empty');
+    }
+    try {
+        const productService = new ProductService(MongoDB.client);
+        const document = await productService.create(req.body);
+        res.send(document);
+    } catch (error) {
+        console.log(error);
+    }
+};

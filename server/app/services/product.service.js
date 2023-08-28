@@ -9,6 +9,12 @@ class ProductService {
         const product = {
             name: payload.name,
             price: payload.price,
+            number: payload.number,
+            discount: payload.discount,
+            discribe: payload.discribe,
+            img: payload.img,
+            brand: payload.brand,
+            state: payload.state,
         };
         // Remove undefined fields
         Object.keys(product).forEach((key) => product[key] === undefined && delete product[key]);
