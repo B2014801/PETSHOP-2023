@@ -28,6 +28,11 @@ router.post('/auth/refresh', authController.refreshToken);
 //category
 router.route('/category').get(category.getAllCategory).post(category.create);
 
-router.route('/category/:id').get(category.findById).post(category.update).delete(category.deleteCategory);
+router
+    .route('/category/:id')
+    .get(category.findById)
+    .post(category.update)
+    .delete(category.deleteCategory)
+    .put(category.update);
 
 module.exports = router;

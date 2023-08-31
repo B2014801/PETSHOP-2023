@@ -2,7 +2,7 @@
     <div v-if="isShowErrorMessage" class="mt-2 text-center">
         <strong class="text-danger">{{ isShowErrorMessage }}</strong>
     </div>
-   
+
     <div>
         <LoginForm @submit:login="handleLogin" />
     </div>
@@ -11,6 +11,8 @@
 <script>
 import LoginForm from '@/components/form/LoginForm.vue';
 import PetshopService from '@/services/petshop.service';
+import { mapActions } from 'pinia';
+import { useAuthStore } from '@/stores/auth.store';
 export default {
     components: {
         LoginForm,
@@ -18,24 +20,29 @@ export default {
     data() {
         return {
             isShowErrorMessage: '',
+            loading: false,
         };
     },
     methods: {
-        async handleLogin(data) {
-            try {
-                const result = await PetshopService.login(data);
-                if (result) {
-                    // const $cookies = inject('$cookies');
-                    // this.$router.push({ name: 'home' });
+        ...mapActions(useAuthStore, ['login']),
 
-                    // this.$cookies.set('accessToken', result.accessToken);
-                    // console.log($cookies);
-                    this.$store.commit('setAccessToken', result.accessToken);
-                    console.log(result.accessToken);
-                }
+        async handleLogin(user) {
+            this.loading = true;
+
+            try {
+                const result = await this.login(user);
+
+                // const redirectPath = this.$route.query.redirect || {
+                //     name: 'project',
+                // };
+
+                this.$router.push({ name: 'home' });
+                console.log(result);
             } catch (error) {
-                // this.isShowErrorMessage = error.response.data;
-                console.log(this.$store);
+                console.log(error);
+
+                this.loading = false;
+                this.message = 'Đã có lỗi xảy ra.';
             }
         },
     },

@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import PetshopService from '@/services/petshop.service';
+import CartService from '@/services/cart.service';
 export default {
     data() {
         return {
@@ -107,13 +107,14 @@ export default {
     methods: {
         async getCart() {
             try {
-                const cart = await PetshopService.getCart();
+                const cart = await CartService.getCarts();
                 if (cart) {
                     this.isShowCart = true;
                 }
             } catch (error) {
-                alert('vui lòng đăng nhập trước');
-                this.$router.push({ name: 'login' });
+                // alert('vui lòng đăng nhập trước');
+                // this.$router.push({ name: 'login' });
+                console.log(error);
             }
         },
     },

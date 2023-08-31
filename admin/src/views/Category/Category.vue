@@ -16,32 +16,38 @@
                 </tr>
             </table>
         </Form>
-        <div class="d-flex category-update">
-            <table v-if="Categorys.length" class="table table-bordered w-50">
-                <tr v-for="(category, index) in Categorys">
-                    <td class="category-list">
-                        <div class="flex-grow-1">
-                            <h6 class="m-0">{{ category.name }}</h6>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            <table class="table table-bordered w-50 h-50 ms-4">
-                <tr>
-                    <td></td>
-                    <td>
-                        <Field type="text" name="name" class="form-control" v-model="CategoryData.name" />
-                        <ErrorMessage name="name" class="text-danger" />
-                    </td>
-                    <td class="category-submit-btn">
-                        <div class="update-icon d-flex">
-                            <i class="fas fa-edit me-2"></i>
-                            <i class="fa-solid fa-trash"></i>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <Form :validation-schema="CategoryUpdateValidate" @submit="update()">
+            <div class="d-flex category-update">
+                <table v-if="Categorys.length" class="table table-bordered w-50">
+                    <tr v-for="(category, index) in Categorys">
+                        <td class="category-list">
+                            <div class="flex-grow-1" @click="handleEdit(category._id)">
+                                <h6 class="m-0">{{ category.name }}</h6>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table class="table table-bordered w-50 h-50 ms-3" v-if="isShowEditForm">
+                    <tr>
+                        <td class="align-self-center">
+                            <h6 class="m-0">{{ nameHashEdit }}</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <Field type="text" name="name_update" class="form-control" v-model="CategorysToEdit.name" />
+                            <ErrorMessage name="name_update" class="text-danger" />
+                        </td>
+                        <td class="category-submit-btn">
+                            <div class="update-icon d-flex">
+                                <button type="submit"><i class="fas fa-edit me-2" @click="update()"></i></button>
+                                <i class="fa-solid fa-trash" @click="deleteCategory"></i>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </Form>
     </div>
 </template>
 
@@ -64,13 +70,30 @@ export default {
                 .min(2, 'Tối thiểu 2 ký tự')
                 .max(20, 'Tên danh mục quá dài'),
         });
+        const CategoryUpdateValidate = yup.object().shape({
+            name_update: yup
+                .string()
+                .required('Nhập tên danh mục')
+                .min(2, 'Tối thiểu 2 ký tự')
+                .max(20, 'Tên danh mục quá dài'),
+        });
         return {
+            // to create
             CategoryValidate,
             CategoryData: {
                 name: '',
             },
             isShowUpdateSuccess: false,
+            //get from server
             Categorys: [],
+            // to edit
+            isShowEditForm: false,
+            CategoryUpdateValidate,
+            CategorysToEdit: {
+                id: '',
+                name: '',
+            },
+            nameHashEdit: '',
         };
     },
     methods: {
@@ -87,6 +110,36 @@ export default {
         async getAll() {
             try {
                 this.Categorys = await CategoryService.getAll();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async handleEdit(id) {
+            try {
+                this.isShowEditForm = true;
+                this.CategorysToEdit = await CategoryService.findById(id);
+                this.nameHashEdit = this.CategorysToEdit.name;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async update() {
+            try {
+                const result = await CategoryService.update(this.CategorysToEdit._id, this.CategorysToEdit);
+                if (result) {
+                    this.getAll();
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async deleteCategory() {
+            const result = await CategoryService.delete(this.CategorysToEdit._id);
+            if (result) {
+                this.isShowEditForm = false;
+                this.getAll();
+            }
+            try {
             } catch (error) {
                 console.log(error);
             }

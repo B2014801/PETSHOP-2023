@@ -13,7 +13,7 @@ exports.isAuth = async (req, res, next) => {
     // kiểm tra accestoken giống với mã secret do admin tạo ra
     const verified = await authMethod.verifyToken(accessTokenFromHeader, accessTokenSecret);
     if (!verified) {
-        return res.status(401).send('Bạn không có quyền truy cập vào tính năng này! sai access token');
+        return res.status(401).send('access token sai hoặc đã hết hạn hết hạn');
     }
     const authService = new AuthService(MongoDB.client);
     const user = await authService.getUser(verified.payload.email);

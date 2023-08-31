@@ -1,4 +1,4 @@
-import createApiClient from './api.service';
+import { createApiClient } from './api.service';
 class PetShopService {
     constructor(baseUrl = '/api/petshop') {
         this.api = createApiClient(baseUrl);
@@ -15,9 +15,9 @@ class PetShopService {
     async login(data) {
         return (await this.api.post('/auth/login', data)).data;
     }
-    async getCart() {
-        return (await this.api.get('/cart')).data;
-    }
+    // async getCart() {
+    //     return (await this.api.get('/cart')).data;
+    // }
     // async get(id) {
     //     return (await this.api.get(`/${id}`)).data;
     // }
