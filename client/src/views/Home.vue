@@ -15,6 +15,7 @@
     <section class="mx-3">
         <div>
             <h3 class="text-center">THÚ CƯNG ĐANG BÁN</h3>
+            <img src="http://localhost:3001/api/petshop/product/img/1693491530309blohle.jpg" alt="" />
             <ProductList :products="products" />
         </div>
     </section>

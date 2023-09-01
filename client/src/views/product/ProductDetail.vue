@@ -5,7 +5,7 @@
                 <div class="col-md-5 col-12">
                     <div class="card text-center border-0">
                         <div class="mt-2" style="text-align: left">
-                            <img class="img-fluid" :src="images.logo" alt="book1" style="width: 500px; height: 400px" />
+                            <img class="img-fluid" :src="product.img" alt="book1" style="width: 500px; height: 400px" />
                         </div>
                         <div class="card-body"></div>
                     </div>
@@ -13,7 +13,7 @@
                 <div class="col-md-7 col-12 pl-0">
                     <div class="row">
                         <!-- <form  action="pages/main/xulygiohang.php?id_sanpham=<?php echo $row['id_sanpham']; ?>" method="POST"> -->
-                        <h2 class="text-uppercase">{{ products.name }}</h2>
+                        <h2 class="text-uppercase">{{ product.name }}</h2>
                     </div>
                     <div class="row">
                         <h4 class="text-uppercase">
@@ -48,10 +48,7 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <label for="" class="mb-0"
-                                >Kho: <span class="text-danger font-weight-bold">Sản phẩm hiện đang hết hàng</span>';
-                                ?></label
-                            >
+                            <label for="" class="mb-0">Kho: <span v-html="getProductNumber"></span> </label>
                         </div>
                         <div class="mt-3">
                             <p>
@@ -98,7 +95,9 @@
                         v-if="isShowCollapse1"
                     >
                         <div class="accordion-body">
-                            <p><b>tensp</b>mota</p>
+                            <p>
+                                <b>{{ product.name }} </b> {{ product.describe }}
+                            </p>
                             <p class="text-center"><b>Quyền lợi có được khi mua tensp tại Pet Shop.</b></p>
                             <ol>
                                 <li>Bảo hành thuần chủng trọn đời.</li>
@@ -245,7 +244,7 @@ import PetshopService from '@/services/petshop.service';
 export default {
     data() {
         return {
-            products: [],
+            product: [],
             images: images,
             isShowCollapse1: false,
             isShowCollapse2: false,
@@ -256,7 +255,7 @@ export default {
     methods: {
         async findById(id) {
             try {
-                this.products = await PetshopService.findProductById(id);
+                this.product = await PetshopService.findProductById(id);
             } catch (error) {
                 console.log(error);
                 this.$router.push({
@@ -280,6 +279,13 @@ export default {
             if (this.isShowCollapse2) {
                 this.isShowCollapse1 = false; // Close the other collapse
             }
+        },
+    },
+    computed: {
+        getProductNumber() {
+            return this.product.number > 0
+                ? this.product.number
+                : '<span class="text-danger font-weight-bold"> Sản phẩm hiện đang hết hàng </span>';
         },
     },
     created() {

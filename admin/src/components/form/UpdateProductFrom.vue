@@ -2,9 +2,9 @@
     <div class="col-sm-12 col-md-6 mx-auto mt-4">
         <h4 class="text-center">{{ Add ? 'Thêm sản phẩm' : 'Cập nhật sản phẩm' }}</h4>
         <strong v-if="isShowUpdateSuccess" class="update-success">{{
-            Add ? 'Thêm thành công' : 'Cập nhật thành công'
+            Add ? `Thêm thành công x  ${CountAddProduct}` : 'Cập nhật thành công'
         }}</strong>
-        <Form :validation-schema="ProductAddValidate" @submit="handleSubmit">
+        <Form :validation-schema="ProductAddValidate" @submit="handleSubmit" enctype="multipart/form-data">
             <table class="table table-bordered">
                 <tr>
                     <td><label class="form-check-label mr-2">Tên sản phẩm</label></td>
@@ -56,19 +56,17 @@
                     <td>
                         <Field
                             class="form-control"
-                            name="product_discribe"
+                            name="product_describe"
                             type="text"
-                            v-model="ProductData.discribe"
-                        /><ErrorMessage name="product_discribe" class="text-danger error-message" />
+                            v-model="ProductData.describe"
+                        /><ErrorMessage name="product_describe" class="text-danger error-message" />
                     </td>
                 </tr>
                 <tr>
                     <td><Label class="form-check-label mr-2">Hình ảnh</Label></td>
                     <td>
-                        <Field name="product_img" type="file" /><ErrorMessage
-                            name="product_img"
-                            class="text-danger error-message"
-                        />
+                        <Field name="img" type="file" v-model="ProductData.img" />
+                        <p class="m-0"><ErrorMessage name="img" class="text-danger error-message" /></p>
                     </td>
                 </tr>
                 <tr>
@@ -116,9 +114,10 @@ export default {
         Add: { type: Boolean, default: false },
         Edit: { type: Boolean, default: false },
         Product: { type: Object },
+        CountAddProduct: { type: Number },
     },
     data() {
-        const ProductAddValidate = yup.object().shape({
+        let ProductAddValidate = yup.object().shape({
             product_name: yup
                 .string()
                 .required('Vui lòng nhập tên')
@@ -133,13 +132,27 @@ export default {
         });
         let ProductData = {};
         if (this.Add) {
+            ProductAddValidate = ProductAddValidate.shape({
+                img: yup
+                    .mixed()
+                    .required('Vui lòng chọn ảnh')
+                    .test('fileType', 'Invalid file format', (value) => {
+                        if (!value) return false;
+                        return ['image/jpeg', 'image/png'].includes(value.type);
+                    })
+                    .test('fileSize', 'File lớn hơn 1MB', (value) => {
+                        if (!value) return false;
+                        return value.size <= 1024 * 1024; // 1MB
+                    }),
+            });
+
             ProductData = {
                 name: '',
                 price: 0,
                 discount: 0,
-                discribe: '',
+                describe: '',
                 number: 0,
-                // img: '',
+                img: null,
                 // brand: '',
                 // state: '',
             };
@@ -152,16 +165,32 @@ export default {
         };
     },
     methods: {
-        // async create() {
-        //     this.$emit('submit:create', this.ProductData);
-        // },
         async handleSubmit() {
+            const formData = new FormData();
+
+            // Utility function to append object properties to FormData
+            function appendIfDefined(key, value) {
+                if (value !== undefined && value !== null) {
+                    formData.append(key, value);
+                }
+            }
+            for (const key in this.ProductData) {
+                if (this.ProductData.hasOwnProperty(key)) {
+                    appendIfDefined(key, this.ProductData[key]);
+                }
+            }
             if (this.Edit) {
-                this.$emit('submit:update', this.ProductData);
+                this.$emit('submit:update', formData);
             }
             if (this.Add) {
-                this.$emit('submit:create', this.ProductData);
+                console.log(1);
+                this.$emit('submit:create', formData);
             }
+        },
+    },
+    computed: {
+        imgFieldName() {
+            return this.Add ? 'img' : ''; // Conditionally set the name attribute
         },
     },
 };

@@ -15,6 +15,9 @@ class PetShopService {
     async login(data) {
         return (await this.api.post('/auth/login', data)).data;
     }
+    async getImg(name) {
+        return (await this.api.get(`/product/img/${name}`)).data;
+    }
     // async getCart() {
     //     return (await this.api.get('/cart')).data;
     // }

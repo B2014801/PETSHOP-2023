@@ -8,9 +8,9 @@
                 >
                     <div class="card position-relative border-0">
                         <div class="selloff">
-                            <h6 class="text-center m-1">5%</h6>
+                            <h6 class="text-center m-1">{{ product.discount }} %</h6>
                         </div>
-                        <img width="310" height="250" :src="images.logo" class="card-img-top" alt="#" />
+                        <img width="310" height="250" :src="product.img" class="card-img-top" alt="#" />
                         <div class="card-body text-center">
                             <p class="mb-1">{{ product.name }}</p>
                             <h5 class="card-title"></h5>
@@ -23,13 +23,21 @@
 </template>
 
 <script>
-import images from '@/assets/imgs';
+// import images from '@/assets/imgs';
+import ProductService from '@/services/petshop.service';
 export default {
     props: { products: { type: Array, default: [] } },
     data() {
         return {
-            images: images,
+            images: '',
         };
+    },
+    methods: {
+        // async getImg(name) {
+        //     const result = ProductService.getImg(name);
+        //     console.log(result);
+        //     return result;
+        // },
     },
 };
 </script>

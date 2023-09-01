@@ -4,14 +4,23 @@ const cart = require('../controllers/cart/cart.controller');
 const authController = require('../controllers/authController/auth.controller');
 const authMiddleware = require('../controllers/authController/auth.middlewares');
 const category = require('../controllers/Category/category.controller');
-
+const uploadMiddleware = require('../middlewares/multer');
 const router = express.Router();
+const path = require('path');
 
 router.route('/').get(product.home);
 
 //product
-router.route('/product').get(product.getAllProduct).post(product.create);
-router.route('/product/:id').put(product.update).delete(product.deleteProduct).get(product.findById);
+router.route('/product').get(product.getAllProduct).post(uploadMiddleware.single('img'), product.create);
+
+// router.use('/api/petshop/product/img/:id', express.static(path.join(__dirname, '../store/img')));
+
+// router.route('/product/img/:id').get(product.getProductImg);
+router
+    .route('/product/:id')
+    .put(uploadMiddleware.single('img'), product.update)
+    .delete(product.deleteProduct)
+    .get(product.findById);
 
 //cart
 router.route('/cart').get(authMiddleware.isAuth, cart.getAll);

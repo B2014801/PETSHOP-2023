@@ -102,6 +102,7 @@ export default {
                 const result = await CategoryService.create(this.CategoryData);
                 if (result) {
                     this.isShowUpdateSuccess = true;
+                    this.getAll();
                 }
             } catch (error) {
                 console.log(error);

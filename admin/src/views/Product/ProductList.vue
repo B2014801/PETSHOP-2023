@@ -8,9 +8,9 @@
                 > -->
                 <div class="card position-relative border-0">
                     <div class="selloff">
-                        <h6 class="text-center m-1">5%</h6>
+                        <h6 class="text-center m-1">{{ product.discount }} %</h6>
                     </div>
-                    <img width="310" height="150" :src="images.logo" class="card-img-top" alt="#" />
+                    <img width="310" height="150" :src="product.img" class="card-img-top" alt="#" />
                     <div class="card-body text-center py-1">
                         <p class="mb-1">{{ product.name }}</p>
                         <h5 class="card-title"></h5>

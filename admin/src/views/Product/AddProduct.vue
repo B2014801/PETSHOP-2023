@@ -1,6 +1,11 @@
 <template>
     <div>
-        <UpdateProductFrom @submit:create="create" :Add="add" :isShowUpdateSuccess="isShowUpdateSuccess" />
+        <UpdateProductFrom
+            @submit:create="create"
+            :Add="add"
+            :isShowUpdateSuccess="isShowUpdateSuccess"
+            :CountAddProduct="CountAddProduct"
+        />
     </div>
 </template>
 
@@ -14,6 +19,7 @@ export default {
         return {
             add: true,
             isShowUpdateSuccess: false,
+            CountAddProduct: 0,
         };
     },
     methods: {
@@ -23,6 +29,7 @@ export default {
                 if (result) {
                     // console.log(result);
                     this.isShowUpdateSuccess = true;
+                    this.CountAddProduct++;
                 }
             } catch (error) {
                 console.log(error);

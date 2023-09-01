@@ -5,14 +5,17 @@ class ProductService {
         this.Product = client.db().collection('products');
     }
     // Định nghĩa các phương thức truy xuất CSDL sử dụng mongodb API
-    extractProductData(payload) {
+    extractProductData(payload, img) {
+        if (img == null) {
+            img = payload.img;
+        }
         const product = {
             name: payload.name,
             price: payload.price,
             number: payload.number,
             discount: payload.discount,
-            discribe: payload.discribe,
-            img: payload.img,
+            describe: payload.describe,
+            img: img,
             brand: payload.brand,
             state: payload.state,
         };
@@ -21,8 +24,8 @@ class ProductService {
         return product;
     }
     // create and save product
-    async create(payload) {
-        const product = this.extractProductData(payload);
+    async create(payload, img) {
+        const product = this.extractProductData(payload, img);
         const result = await this.Product.findOneAndUpdate(
             product,
             { $set: {} },
@@ -33,6 +36,7 @@ class ProductService {
 
     async find(filter) {
         const cursor = await this.Product.find(filter);
+        // console.log(await cursor.toArray());
         return await cursor.toArray();
     }
     // find product by name
@@ -49,11 +53,13 @@ class ProductService {
         });
     }
     //update product
-    async update(id, payload) {
+    async update(id, payload, img) {
         const filter = {
             _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         };
-        const update = this.extractProductData(payload);
+        // if (img) {
+        const update = this.extractProductData(payload, img);
+        // }
         const result = await this.Product.findOneAndUpdate(filter, { $set: update }, { returnDocument: 'after' });
         return result.value;
     }
@@ -72,6 +78,9 @@ class ProductService {
     async deleteAll() {
         const result = await this.Product.deleteMany({});
         return result.deletedCount;
+    }
+    async findImgByName(imgName) {
+        return await this.Product.findOne({ img: imgName });
     }
 }
 
