@@ -1,9 +1,11 @@
 <template>
     <section>
         <carousel :items-to-show="1" :autoplay="2000" :wrapAround="true" :transition="1500">
-            <slide v-for="slide in 3" :key="slide">
-                <img :src="img.logo" alt="" />
-            </slide>
+            <!-- <slide v-for="slide in 3" :key="slide"> -->
+            <slide key="slide1"><img class="w-100" :src="img.home1" alt="" /></slide>
+            <slide key="slide2"><img class="w-100" :src="img.home2" alt="" /></slide>
+            <slide key="slide3"><img class="w-100" :src="img.home3" alt="" /></slide>
+            <!-- </slide> -->
 
             <template #addons>
                 <navigation />

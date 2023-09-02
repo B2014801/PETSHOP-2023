@@ -10,8 +10,8 @@
                         <div class="selloff">
                             <h6 class="text-center m-1">{{ product.discount }} %</h6>
                         </div>
-                        <img width="310" height="250" :src="product.img" class="card-img-top" alt="#" />
-                        <div class="card-body text-center">
+                        <img :style="{ height: responseImg }" :src="product.img" class="card-img-top" alt="#" />
+                        <div class="card-body text-center p-1">
                             <p class="mb-1">{{ product.name }}</p>
                             <h5 class="card-title"></h5>
                         </div>
@@ -25,19 +25,38 @@
 <script>
 // import images from '@/assets/imgs';
 import ProductService from '@/services/petshop.service';
+
 export default {
     props: { products: { type: Array, default: [] } },
     data() {
         return {
             images: '',
+            screenWidth: 0,
+            // isSmallScreen: window.innerWidth <= 768,
         };
     },
     methods: {
-        // async getImg(name) {
-        //     const result = ProductService.getImg(name);
-        //     console.log(result);
-        //     return result;
-        // },
+        onScreenResize() {
+            window.addEventListener('resize', () => {
+                this.updateScreenWidth();
+            });
+        },
+        updateScreenWidth() {
+            this.screenWidth = window.innerWidth;
+        },
+    },
+    computed: {
+        responseImg() {
+            return this.screenWidth <= 768 ? '100px' : '250px';
+        },
+    },
+    mounted() {
+        this.updateScreenWidth();
+        this.onScreenResize();
+    },
+    beforeDestroy() {
+        // Remove the event listener when the component is destroyed
+        window.removeEventListener('resize', this.handleResize);
     },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-lg p-1">
-        <div class="container-fluid position-relative p-0">
+        <div class="container-fluid position-relative p-0 mx-2">
             <button class="navbar-toggler" type="button" @click="toggleCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -38,18 +38,26 @@
                         </div>
                     </div>
                 </div> -->
-                <router-link to="/login" class="text-white text-decoration-none"
-                    ><i class="fa-solid fa-user"></i> |
-                </router-link>
-                <router-link to="/register" class="text-white text-decoration-none"
-                    ><i class="fa-solid fa-user-plus"></i
-                ></router-link>
+                <span v-if="!isUserLogin">
+                    <router-link to="/login" class="text-white text-decoration-none"
+                        ><i class="fa-solid fa-user"></i> |
+                    </router-link>
+                    <router-link to="/register" class="text-white text-decoration-none"
+                        ><i class="fa-solid fa-user-plus"></i
+                    ></router-link>
+                </span>
+                <span v-else>
+                    <router-link to="/user">
+                        <i class="fa-solid fa-user mr-3 ml-2"></i>
+                    </router-link>
+                </span>
             </div>
         </div>
     </nav>
     <CollapseContent :isCollapsed="isCollapsed" />
 </template>
 <script>
+import { useAuthStore } from '@/stores/auth.store';
 import images from '@/assets/imgs';
 import Search from '@/components/search/Search.vue';
 import CollapseContent from './CollapseContent.vue';
@@ -73,6 +81,18 @@ export default {
             this.isCollapsed = !this.isCollapsed;
         },
     },
+    computed: {
+        isUserLogin() {
+            try {
+                const auth = useAuthStore();
+                auth.loadAuthState();
+                return auth.isUserLoggedIn;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+    },
+    mounted() {},
 };
 </script>
 <style>

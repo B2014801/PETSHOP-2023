@@ -1,11 +1,14 @@
 <template>
     <section class="mx-5">
         <section>
+            <h5 v-if="isShowAddToCartSuccess" class="text-left my-2" style="color: #37e32a">
+                <i class="fa-solid fa-check"></i>{{ product.name }} đã được thêm vào giỏ hàng
+            </h5>
             <div class="row my-2">
                 <div class="col-md-5 col-12">
                     <div class="card text-center border-0">
                         <div class="mt-2" style="text-align: left">
-                            <img class="img-fluid" :src="product.img" alt="book1" style="width: 500px; height: 400px" />
+                            <img class="img-fluid" :src="product.img" alt="book1" style="width: 500px; height: 300px" />
                         </div>
                         <div class="card-body"></div>
                     </div>
@@ -21,52 +24,61 @@
                             ><bdi class="text-danger">80 ₫</bdi> : 100 ₫
                         </h4>
                     </div>
-                    <div class="mt-4">
-                        <div class="d-flex">
-                            <label class="d-inline mt-2" for="">Số lượng:</label>
-                            <div class="add-minus d-flex mx-1 minus-and-plus">
-                                <button
-                                    type="text"
-                                    class="minus-sp congtru bg-light border border-light-subtle"
-                                    id="minus-sp"
-                                >
-                                    -
-                                </button>
-                                <input
-                                    class="text-center bg-light border border-light-subtle"
-                                    type="text"
-                                    name="soluong"
-                                    id="amount"
-                                    data-id="<?php echo $row['id_sanpham']?>"
-                                    size="2"
-                                    value="1"
-                                    style="outline: none"
-                                />
-                                <button class="plus-sp congtru bg-light border border-light-subtle" id="plus-sp">
-                                    +
-                                </button>
+                    <Form :validation-schema="AddCartNumberValidate" @submit="handleAddToCart">
+                        <div class="mt-4">
+                            <div class="d-flex">
+                                <label class="d-inline mt-2" for="">Số lượng:</label>
+                                <div class="add-minus d-flex mx-1 minus-and-plus">
+                                    <button
+                                        @click="minusAddCartNumber"
+                                        type="text"
+                                        class="minus-sp congtru bg-light border border-light-subtle"
+                                        id="minus-sp"
+                                    >
+                                        -
+                                    </button>
+                                    <Field
+                                        class="text-center bg-light border border-light-subtle"
+                                        type="text"
+                                        name="order_number"
+                                        id="amount"
+                                        data-id="<?php echo $row['id_sanpham']?>"
+                                        size="2"
+                                        value="1"
+                                        style="outline: none"
+                                        v-model="AddCartNumber"
+                                    />
+                                    <button
+                                        @click="plusAddCartNumber"
+                                        class="plus-sp congtru bg-light border border-light-subtle"
+                                        id="plus-sp"
+                                    >
+                                        +
+                                    </button>
+                                    <ErrorMessage name="order_number" class="text-danger ms-2" />
+                                </div>
                             </div>
+                            <div class="mt-3">
+                                <label for="" class="mb-0">Kho: <span v-html="getProductNumber"></span> </label>
+                            </div>
+                            <div class="mt-3">
+                                <p>
+                                    <b>Lưu ý</b>: Giá sản phẩm có thể thay đổi theo từng thời điểm.
+                                    <span class="text-primary font-weight-bold">Kết Bạn Zalo</span> hoặc
+                                    <span class="text-danger font-weight-bold">Gọi Hotline</span> để xem thêm hình
+                                    ảnh/video chi tiết.
+                                </p>
+                            </div>
+                            <div class="d-flex mt-3">
+                                <!-- <?php if ($row['soluongsp'] > 0){ ?> -->
+                                <button class="btn btn-lg btn-primary text-white ml-0" type="submit" name="themvaogio">
+                                    Thêm vào giỏ
+                                </button>
+                                <!-- <?php }?> -->
+                            </div>
+                            <!-- </form> -->
                         </div>
-                        <div class="mt-3">
-                            <label for="" class="mb-0">Kho: <span v-html="getProductNumber"></span> </label>
-                        </div>
-                        <div class="mt-3">
-                            <p>
-                                <b>Lưu ý</b>: Giá sản phẩm có thể thay đổi theo từng thời điểm.
-                                <span class="text-primary font-weight-bold">Kết Bạn Zalo</span> hoặc
-                                <span class="text-danger font-weight-bold">Gọi Hotline</span> để xem thêm hình ảnh/video
-                                chi tiết.
-                            </p>
-                        </div>
-                        <div class="d-flex mt-3">
-                            <!-- <?php if ($row['soluongsp'] > 0){ ?> -->
-                            <button class="btn btn-lg btn-primary text-white ml-0" type="submit" name="themvaogio">
-                                Thêm vào giỏ
-                            </button>
-                            <!-- <?php }?> -->
-                        </div>
-                        <!-- </form> -->
-                    </div>
+                    </Form>
                 </div>
             </div>
         </section>
@@ -241,17 +253,26 @@
 import images from '@/assets/imgs';
 import ProductList from '@/views/product/ProductList.vue';
 import PetshopService from '@/services/petshop.service';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import * as yup from 'yup';
+import { useAuthStore } from '@/stores/auth.store';
 export default {
     data() {
+        const AddCartNumberValidate = yup.object().shape({
+            order_number: yup.number().typeError('Phải là số'),
+        });
         return {
             product: [],
             images: images,
             isShowCollapse1: false,
             isShowCollapse2: false,
+            AddCartNumber: 1,
+            AddCartNumberValidate,
+            isShowAddToCartSuccess: false,
         };
     },
     props: { id: { type: String } },
-    components: { ProductList },
+    components: { ProductList, Form, Field, ErrorMessage },
     methods: {
         async findById(id) {
             try {
@@ -278,6 +299,33 @@ export default {
             this.isShowCollapse2 = !this.isShowCollapse2;
             if (this.isShowCollapse2) {
                 this.isShowCollapse1 = false; // Close the other collapse
+            }
+        },
+        plusAddCartNumber(e) {
+            e.preventDefault();
+            this.AddCartNumber++;
+        },
+        minusAddCartNumber(e) {
+            e.preventDefault();
+            if (this.AddCartNumber >= 2) this.AddCartNumber--;
+        },
+        async handleAddToCart() {
+            // e.preventDefault();
+            const auth = useAuthStore();
+            auth.loadAuthState();
+            const user = auth.user;
+            const data = {
+                UserId: user.user._id,
+                ProductId: this.id,
+                Amount: this.AddCartNumber,
+            };
+            try {
+                const result = await PetshopService.addToCart(this.id, data);
+                if (result) {
+                    this.isShowAddToCartSuccess = true;
+                }
+            } catch (error) {
+                console.log(error);
             }
         },
     },

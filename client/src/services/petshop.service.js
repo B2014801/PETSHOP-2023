@@ -18,6 +18,13 @@ class PetShopService {
     async getImg(name) {
         return (await this.api.get(`/product/img/${name}`)).data;
     }
+    async findByName(name) {
+        return (await this.api.get(`/product/?name=${name}`)).data;
+    }
+    async addToCart(id, data) {
+        return (await this.api.post(`/product/${id}`, data)).data;
+    }
+
     // async getCart() {
     //     return (await this.api.get('/cart')).data;
     // }

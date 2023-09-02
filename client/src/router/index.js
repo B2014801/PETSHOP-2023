@@ -1,10 +1,28 @@
 import { createWebHistory, createRouter } from 'vue-router';
-import { Home, About, Product, Cart, NotFound, Login, CreateAccount, ProductDetail, Contact, CheckOut } from '@/views/';
+import {
+    Home,
+    About,
+    Product,
+    Cart,
+    NotFound,
+    Login,
+    CreateAccount,
+    ProductDetail,
+    Contact,
+    CheckOut,
+    Search,
+} from '@/views/';
 const routes = [
     {
         path: '/',
         name: 'home',
         component: Home,
+    },
+    {
+        path: '/search',
+        name: 'search',
+        component: Search,
+        props: (route) => ({ keySearch: route.query.keySearch }),
     },
     {
         path: '/:pathMatch(.*)*',

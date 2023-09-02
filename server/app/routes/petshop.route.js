@@ -20,7 +20,8 @@ router
     .route('/product/:id')
     .put(uploadMiddleware.single('img'), product.update)
     .delete(product.deleteProduct)
-    .get(product.findById);
+    .get(product.findById)
+    .post(cart.create);
 
 //cart
 router.route('/cart').get(authMiddleware.isAuth, cart.getAll);
