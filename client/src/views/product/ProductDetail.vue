@@ -2,7 +2,7 @@
     <section class="mx-5">
         <section>
             <h5 v-if="isShowAddToCartSuccess" class="text-left my-2" style="color: #37e32a">
-                <i class="fa-solid fa-check"></i>{{ product.name }} đã được thêm vào giỏ hàng
+                <i class="fa-solid fa-check"></i> {{ product.name }} đã được thêm vào giỏ hàng
             </h5>
             <div class="row my-2">
                 <div class="col-md-5 col-12">
@@ -27,34 +27,11 @@
                     <Form :validation-schema="AddCartNumberValidate" @submit="handleAddToCart">
                         <div class="mt-4">
                             <div class="d-flex">
-                                <label class="d-inline mt-2" for="">Số lượng:</label>
-                                <div class="add-minus d-flex mx-1 minus-and-plus">
-                                    <button
-                                        @click="minusAddCartNumber"
-                                        type="text"
-                                        class="minus-sp congtru bg-light border border-light-subtle"
-                                        id="minus-sp"
-                                    >
-                                        -
-                                    </button>
-                                    <Field
-                                        class="text-center bg-light border border-light-subtle"
-                                        type="text"
-                                        name="order_number"
-                                        id="amount"
-                                        data-id="<?php echo $row['id_sanpham']?>"
-                                        size="2"
-                                        value="1"
-                                        style="outline: none"
-                                        v-model="AddCartNumber"
-                                    />
-                                    <button
-                                        @click="plusAddCartNumber"
-                                        class="plus-sp congtru bg-light border border-light-subtle"
-                                        id="plus-sp"
-                                    >
-                                        +
-                                    </button>
+                                <label class="d-inline" for="">Số lượng:</label>
+                                <div class="Cart-UpdateOrder-Number">
+                                    <button @click="minusAddCartNumber">-</button>
+                                    <Field type="number" name="order_number" v-model="AddCartNumber" />
+                                    <button @click="plusAddCartNumber">+</button>
                                     <ErrorMessage name="order_number" class="text-danger ms-2" />
                                 </div>
                             </div>

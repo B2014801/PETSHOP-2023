@@ -4,10 +4,18 @@ class CartService {
         this.api = createApiClient(baseUrl, true);
     }
 
-    async getCarts() {
-        try {
-            return (await this.api.get('/')).data;
-        } catch (error) {}
+    async getCarts(id) {
+        // try {
+        return (await this.api.get(`/${id}`)).data;
+        // } catch (error) {
+        //     console.log(error);
+        // }
+    }
+    async updateCart(id, data) {
+        return (await this.api.post(`/${id}`, data)).data;
+    }
+    async delete(UserId, ProductId) {
+        return (await this.api.delete(`/deleteOneProduct?UserId=${UserId}&ProductId=${ProductId}`)).data;
     }
 
     // async get(id) {

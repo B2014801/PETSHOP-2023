@@ -123,7 +123,10 @@ export default {
                 .required('Vui lòng nhập tên')
                 .min(2, 'Tên ít nhất 2 ký tự')
                 .max(40, 'Tên quá dài'),
-            product_price: yup.number().typeError('Giá phải là một số').required('Vui lòng nhập giá'),
+            product_price: yup
+                .string()
+                .required()
+                .matches(/^\d{1,3}(\.\d{3})*$/, 'Định dạng 1.000'),
             product_number: yup
                 .number('Vui lòng nhập số')
                 .typeError('Số lượng phải là một số')

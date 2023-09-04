@@ -24,7 +24,12 @@ router
     .post(cart.create);
 
 //cart
-router.route('/cart').get(authMiddleware.isAuth, cart.getAll);
+// router.route('/cart').get(authMiddleware.isAuth, cart.getAll);
+router
+    .route('/cart/:id')
+    .get(authMiddleware.isAuth, cart.getAllOfOneUser)
+    .post(authMiddleware.isAuth, cart.updateAmount);
+router.route('/cart/deleteOneProduct').delete(cart.deleteOneProduct);
 
 // router.get('/profile', authMiddleware, async (req, res) => {
 //     res.send(req.user);
