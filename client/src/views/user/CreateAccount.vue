@@ -1,9 +1,10 @@
 <template>
-    <div v-if="isShowSuccessMessage" class="mt-2 text-center">
+    <!-- <div v-if="isShowFailRegister" class="mt-2 text-center">
         <strong class="success-create-account">Đăng ký thành công tiến hành đăng nhập</strong>
-    </div>
+    </div> -->
+
     <div>
-        <CreateAccountForm @create:account="createUser" />
+        <CreateAccountForm @create:account="createUser" :isShowFailRegister="isShowFailRegister" />
     </div>
 </template>
 
@@ -18,6 +19,7 @@ export default {
         return {
             accounts: [],
             isShowSuccessMessage: false,
+            isShowFailRegister: false,
         };
     },
     methods: {
@@ -28,9 +30,11 @@ export default {
                     this.isShowSuccessMessage = !this.isShowSuccessMessage;
                     alert('thành công');
                     this.goToLogin();
+                } else {
                 }
             } catch (error) {
                 this.isShowSuccessMessage = false;
+                this.isShowFailRegister = true;
             }
         },
         async goToLogin() {

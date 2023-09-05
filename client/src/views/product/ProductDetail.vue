@@ -1,5 +1,5 @@
 <template>
-    <section class="mx-5">
+    <section v-if="isShowProductDetail" class="mx-5">
         <section>
             <h5 v-if="isShowAddToCartSuccess" class="text-left my-2" style="color: #37e32a">
                 <i class="fa-solid fa-check"></i> {{ product.name }} đã được thêm vào giỏ hàng
@@ -19,9 +19,12 @@
                         <h2 class="text-uppercase">{{ product.name }}</h2>
                     </div>
                     <div class="row">
-                        <h4 class="text-uppercase">
-                            <del style="opacity: 0.5; margin-right: 6px">100 ₫ </del
-                            ><bdi class="text-danger">80 ₫</bdi> : 100 ₫
+                        <h4 v-if="isDiscout" class="text-uppercase">
+                            <del style="opacity: 0.5; margin-right: 6px">{{ getProductPrice }} </del
+                            ><bdi class="text-danger">{{ getProductAfterDisCount() }}</bdi>
+                        </h4>
+                        <h4 v-else>
+                            {{ getProductPrice }}
                         </h4>
                     </div>
                     <Form :validation-schema="AddCartNumberValidate" @submit="handleAddToCart">
@@ -87,7 +90,9 @@
                             <p>
                                 <b>{{ product.name }} </b> {{ product.describe }}
                             </p>
-                            <p class="text-center"><b>Quyền lợi có được khi mua tensp tại Pet Shop.</b></p>
+                            <p class="text-center">
+                                <b>Quyền lợi có được khi mua {{ product.name }} tại Pet Shop.</b>
+                            </p>
                             <ol>
                                 <li>Bảo hành thuần chủng trọn đời.</li>
                                 <li>
@@ -235,16 +240,14 @@ import * as yup from 'yup';
 import { useAuthStore } from '@/stores/auth.store';
 export default {
     data() {
-        const AddCartNumberValidate = yup.object().shape({
-            order_number: yup.number().typeError('Phải là số'),
-        });
         return {
-            product: [],
+            product: {},
             images: images,
+            isShowProductDetail: false,
             isShowCollapse1: false,
             isShowCollapse2: false,
             AddCartNumber: 1,
-            AddCartNumberValidate,
+            AddCartNumberValidate: false,
             isShowAddToCartSuccess: false,
         };
     },
@@ -254,6 +257,17 @@ export default {
         async findById(id) {
             try {
                 this.product = await PetshopService.findProductById(id);
+                if (this.product) {
+                    // validate because i want use product.number as max
+                    this.AddCartNumberValidate = await yup.object().shape({
+                        order_number: yup
+                            .number()
+                            .typeError('Phải là số')
+                            .min(1, 'Tối thiểu là 1')
+                            .max(this.product.number, 'Không đủ hàng'),
+                    });
+                    this.isShowProductDetail = true;
+                }
             } catch (error) {
                 console.log(error);
                 this.$router.push({
@@ -286,13 +300,22 @@ export default {
             e.preventDefault();
             if (this.AddCartNumber >= 2) this.AddCartNumber--;
         },
+        async getUser() {
+            const auth = useAuthStore();
+            await auth.loadAuthState();
+            if (auth.user) {
+                return auth.user.user;
+            } else {
+                alert('Bạn phải đăng nhập trước');
+                this.$router.push({ name: 'login' });
+            }
+        },
         async handleAddToCart() {
             // e.preventDefault();
-            const auth = useAuthStore();
-            auth.loadAuthState();
-            const user = auth.user;
+            const user = await this.getUser();
+
             const data = {
-                UserId: user.user._id,
+                UserId: user._id,
                 ProductId: this.id,
                 Amount: this.AddCartNumber,
             };
@@ -305,12 +328,28 @@ export default {
                 console.log(error);
             }
         },
+
+        formatNumberWithDot(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' ₫'; //1000 to 1.000
+        },
+        getProductAfterDisCount() {
+            const PriceInt = this.product.price.replace(/\./g, '');
+            const AfterDiscount = PriceInt - (PriceInt * this.product.discount) / 100;
+            return this.formatNumberWithDot(AfterDiscount);
+        },
     },
     computed: {
+        getProductPrice() {
+            const price = this.product.price + ' ₫';
+            return price;
+        },
         getProductNumber() {
             return this.product.number > 0
                 ? this.product.number
                 : '<span class="text-danger font-weight-bold"> Sản phẩm hiện đang hết hàng </span>';
+        },
+        isDiscout() {
+            return this.product.discount > 0;
         },
     },
     created() {

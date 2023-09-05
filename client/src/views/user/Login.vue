@@ -32,12 +32,7 @@ export default {
             try {
                 const result = await this.login(user);
 
-                // const redirectPath = this.$route.query.redirect || {
-                //     name: 'project',
-                // };
-
                 this.$router.push({ name: 'home' });
-                console.log(result);
             } catch (error) {
                 console.log(error);
 

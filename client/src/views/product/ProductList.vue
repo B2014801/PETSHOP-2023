@@ -8,7 +8,7 @@
                 >
                     <div class="card position-relative border-0">
                         <div v-if="isDiscout(index)" class="selloff">
-                            <h6 class="text-center m-1">{{ product.discount }}%</h6>
+                            <h6 class="text-center m-1">-{{ product.discount }}%</h6>
                         </div>
                         <img :style="{ height: responseImg }" :src="product.img" class="card-img-top" alt="#" />
                         <div class="card-body text-center p-1">

@@ -23,6 +23,21 @@
                         />
                     </div>
                     <ErrorMessage name="email" class="text-danger" />
+                    <span v-if="isShowFailRegister" name="email" class="text-danger">email đã tồn tại</span>
+                </div>
+                <div class="form-group font-weight-bold mt-2">
+                    <label for="phone">Phone <strong class="text-danger">(*)</strong> </label>
+                    <div>
+                        <Field
+                            type="phone"
+                            id="phone"
+                            name="phone"
+                            class="form-control"
+                            placeholder="Vui lòng nhập phone của bạn"
+                            v-model="formData.phone"
+                        />
+                    </div>
+                    <ErrorMessage name="phone" class="text-danger" />
                 </div>
                 <div class="form-group font-weight-bold mt-2">
                     <label for="password">Mật khẩu <strong class="text-danger">(*)</strong> </label>
@@ -72,6 +87,9 @@
 import * as yup from 'yup';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 export default {
+    props: {
+        isShowFailRegister: { type: Boolean, default: false },
+    },
     data() {
         const validateCreate = yup.object().shape({
             username: yup
@@ -96,6 +114,7 @@ export default {
             formData: {
                 // Initialize an empty object to store form data
                 email: '',
+                phone: '',
                 password: '',
             },
         };

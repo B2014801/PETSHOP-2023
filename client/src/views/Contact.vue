@@ -11,29 +11,6 @@
             Chúng Tôi sẽ rất vui lòng nếu nhận được sự phản hồi của các bạn. Nếu có bất kỳ điều gì chưa hài thì hãy gửi
             yêu cầu đến chúng tôi. Chúng tôi sẽ cố gắng phản hồi nhanh nhất có thể
         </p>
-        <!-- <form action="" style="margin: 2px 10px 0;">
-   <div class="form-group">
-       <label class="form-check-label" for=""><b>Nhận xét *</b></label>
-       <textarea class="form-control" name="" id="" cols="30" rows="6"></textarea>
-   </div>
-   <div class="form-inline ">
-       <div class="form-group col-sm-6 pl-md-0 pl-0  ">
-           <label for="form-check-label"><b>Tên</b></label>
-           <input type="text" class="form-control w-100 mt-1" placeholder="Nhập tên của bạn">
-       </div>
-       <div class="form-group col-sm-6 pr-md-0 pr-sm-0 pl-0 ">
-           <label for="form-check-label"><b>Email *</b></label>
-           <input type="text" class="form-control w-100 mt-1" placeholder="Nhập Email của bạn">
-       </div>
-       <div class="my-3">
-           <input type="checkbox">
-           <b>Lưu tên và email của tôi </b>       
-       </div>
-       <div class="col-12 pl-0">
-           <button class="btn btn-primary" type="submit">GỬI ĐI</button>
-       </div>
-   </div>
-   </form> -->
     </div>
     <hr />
     <div>
@@ -69,7 +46,8 @@ export default {};
     position: absolute;
     /* di chuyen ra phia sau text */
     z-index: -1;
-    background-image: linear-gradient(rgba(94, 88, 88, 0.5), rgba(104, 98, 98, 0.5)), url('@/assets/imgs/logo.jpg');
+    background-image: linear-gradient(rgba(94, 88, 88, 0.5), rgba(104, 98, 98, 0.5)),
+        url('@/assets/imgs/contact/contact-bia1.jpg');
     background-size: 100% 100%;
     // background-repeat: no-repeat;
     /* position :0*/

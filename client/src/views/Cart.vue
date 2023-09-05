@@ -80,13 +80,13 @@
                 <tbody>
                     <tr>
                         <td>Tạm tính</td>
-                        <td class="text-right">
+                        <td class="text-end">
                             <span>{{ getTemporaryPrice }}</span>
                         </td>
                     </tr>
                     <tr>
                         <td>Tổng</td>
-                        <td class="text-right">
+                        <td class="text-end">
                             <span name="tongtien">{{ getTemporaryPrice }}</span>
                         </td>
                     </tr>
@@ -126,11 +126,21 @@ export default {
         };
     },
     methods: {
+        async getUser() {
+            const auth = useAuthStore();
+            await auth.loadAuthState();
+            if (auth.user) {
+                return auth.user.user;
+            } else {
+                alert('Bạn phải đăng nhập trước');
+                this.$router.push({ name: 'login' });
+            }
+        },
         async getCart() {
             try {
-                const auth = useAuthStore();
-                await auth.loadAuthState();
-                this.cart = await CartService.getCarts(auth.user.user._id);
+                const user = await this.getUser();
+
+                this.cart = await CartService.getCarts(user._id);
                 if (this.cart.length != 0) {
                     this.isShowCart = true;
                 } else {
@@ -153,11 +163,7 @@ export default {
                 this.cart[index].Amount++;
             }
         },
-        async getUser() {
-            const auth = useAuthStore();
-            await auth.loadAuthState();
-            return auth.user.user;
-        },
+
         async updateCart() {
             const user = await this.getUser();
             const result = await CartService.updateCart(user._id, this.cart);

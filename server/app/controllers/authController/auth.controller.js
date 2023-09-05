@@ -10,6 +10,7 @@ const AuthService = require('../../services/auth.service');
 const MongoDB = require('../../utils/mongodb.util');
 exports.register = async (req, res) => {
     const email = req.body.email.toLowerCase();
+    const phone = req.body.phone;
     const authService = new AuthService(MongoDB.client);
     const user = await authService.getUser(email);
     if (user) res.status(409).send('Tên tài khoản đã tồn tại.');
@@ -18,6 +19,7 @@ exports.register = async (req, res) => {
         const newUser = {
             email: email,
             password: hashPassword,
+            phone: phone,
         };
         const createUser = await authService.createUser(newUser);
         if (!createUser) {

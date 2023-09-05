@@ -11,6 +11,12 @@ import {
     Contact,
     CheckOut,
     Search,
+    UserHome,
+    Confirm,
+    Delivery,
+    AllPurchase,
+    History,
+    ProfileHome,
 } from '@/views/';
 const routes = [
     {
@@ -70,6 +76,33 @@ const routes = [
         path: '/checkout',
         name: 'checkout',
         component: CheckOut,
+    },
+    {
+        path: '/user',
+        name: 'user',
+        component: UserHome,
+        children: [
+            {
+                path: '/user/confirm',
+                component: Confirm,
+            },
+            {
+                path: '/user/all',
+                component: AllPurchase,
+            },
+            {
+                path: '/user/delivery',
+                component: Delivery,
+            },
+            {
+                path: '/user/profile',
+                component: ProfileHome,
+            },
+            {
+                path: '/user/history',
+                component: History,
+            },
+        ],
     },
 ];
 const router = createRouter({
