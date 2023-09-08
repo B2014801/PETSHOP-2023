@@ -235,7 +235,7 @@ export default {
         async getDetail() {
             let Detail = [];
             await this.CheckOutData.map((item, index) =>
-                Detail.push({ _id: item.ProductData._id, amount: item.Amount }),
+                Detail.push({ _id: item.ProductData._id, price: item.ProductData.price, amount: item.Amount }),
             );
             return Detail;
         },

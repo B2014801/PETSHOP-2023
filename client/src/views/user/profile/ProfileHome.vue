@@ -30,16 +30,18 @@
                         <label for="diachi">Địa chỉ nhận hàng</label>
                         <input type="text" class="form-control" :value="row.diachi" name="diachi" id="diachi" />
                     </div>
-                    <div class="form-group form-inline">
+                    <div class="profile-update-btn">
                         <button class="col-5 btn btn-success" name="capnhatthongtin" type="submit">Cập nhật</button>
+                        <button
+                            class="col-5 w-50 btn btn-success ml-auto"
+                            name="doimatkhau"
+                            data-toggle="modal"
+                            data-target="#modal-doimk"
+                        >
+                            Đổi mật khẩu
+                        </button>
                     </div>
-                    <a
-                        class="col-5 w-50 btn btn-success ml-auto"
-                        name="doimatkhau"
-                        data-toggle="modal"
-                        data-target="#modal-doimk"
-                        >Đổi mật khẩu</a
-                    >
+
                     <div id="modal-doimk" class="modal fade" tabindex="-1">
                         <div class="modal-dialog">
                             <div class="modal-content border p-3">
@@ -114,4 +116,10 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.profile-update-btn {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+</style>

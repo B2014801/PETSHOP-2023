@@ -7,16 +7,19 @@
                         <router-link to="/user/profile">TÀI KHOẢN</router-link>
                     </li>
                     <li>
-                        <router-link to="/user/all">TẤT CẢ</router-link>
+                        <router-link :to="{ name: 'state' }">TẤT CẢ</router-link>
                     </li>
                     <li>
-                        <router-link to="/user/confirm">CHỜ XÁC NHẬN</router-link>
+                        <router-link :to="{ name: 'state', query: { state: 0 } }">CHỜ XÁC NHẬN</router-link>
                     </li>
                     <li>
-                        <router-link to="/user/delivery">ĐANG GIAO HÀNG</router-link>
+                        <router-link :to="{ name: 'state', query: { state: 2 } }">ĐANG GIAO HÀNG</router-link>
                     </li>
                     <li>
-                        <router-link to="/user/history">LỊCH SỬ MUA HÀNG</router-link>
+                        <router-link :to="{ name: 'state', query: { state: 3 } }">HOÀN THÀNH</router-link>
+                    </li>
+                    <li>
+                        <router-link :to="{ name: 'state', query: { state: 4 } }">ĐÃ HỦY</router-link>
                     </li>
                 </ul>
             </div>

@@ -1,4 +1,6 @@
 const express = require('express');
+const router = express.Router();
+
 const product = require('../controllers/Product/product.controller');
 const cart = require('../controllers/cart/cart.controller');
 const invoice = require('../controllers/invoice/invoice.controller');
@@ -6,7 +8,6 @@ const authController = require('../controllers/authController/auth.controller');
 const authMiddleware = require('../controllers/authController/auth.middlewares');
 const category = require('../controllers/Category/category.controller');
 const uploadMiddleware = require('../middlewares/multer');
-const router = express.Router();
 const path = require('path');
 
 router.route('/').get(product.home);
@@ -52,6 +53,8 @@ router
     .put(category.update);
 
 // checkout
-router.route('/checkout').post(authMiddleware.isAuth, invoice.create);
+router.route('/invoice').post(authMiddleware.isAuth, invoice.create).get(authMiddleware.isAuth, invoice.getAllInvoice);
+router.route('/invoice/:id').put(authMiddleware.isAuth, invoice.cancelOrder);
+// user
 
 module.exports = router;

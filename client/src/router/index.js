@@ -12,10 +12,8 @@ import {
     CheckOut,
     Search,
     UserHome,
-    Confirm,
-    Delivery,
+    State,
     AllPurchase,
-    History,
     ProfileHome,
 } from '@/views/';
 const routes = [
@@ -83,24 +81,19 @@ const routes = [
         component: UserHome,
         children: [
             {
-                path: '/user/confirm',
-                component: Confirm,
+                path: '/user/purchase',
+                name: 'state',
+                component: State,
+                props: (route) => ({ state: route.query.state }),
             },
             {
                 path: '/user/all',
                 component: AllPurchase,
             },
-            {
-                path: '/user/delivery',
-                component: Delivery,
-            },
+
             {
                 path: '/user/profile',
                 component: ProfileHome,
-            },
-            {
-                path: '/user/history',
-                component: History,
             },
         ],
     },
