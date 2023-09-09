@@ -1,51 +1,51 @@
 <template>
     <div>
-        <UpdateProductFrom
+        <UpdateBrandForm
             @submit:create="create"
             :Add="add"
             :isShowUpdateSuccess="isShowUpdateSuccess"
-            :CountAddProduct="CountAddProduct"
-            :brands="brands"
+            :CountAddBrand="CountAddBrand"
+            :Categorys="Categorys"
         />
     </div>
 </template>
 
 <script>
-import UpdateProductFrom from '@/components/form/UpdateProductFrom.vue';
-import ProductService from '@/services/product.service';
+import UpdateBrandForm from '@/components/form/UpdateBrandForm.vue';
 import BrandService from '@/services/brand.service';
+import CategoryService from '@/services/category.service';
 
 export default {
-    components: { UpdateProductFrom },
+    components: { UpdateBrandForm },
     data() {
         return {
             add: true,
             isShowUpdateSuccess: false,
-            CountAddProduct: 0,
-            brands: [],
+            CountAddBrand: 0,
+            Categorys: [],
         };
     },
     methods: {
         async create(data) {
             try {
-                const result = await ProductService.add(data);
+                const result = await BrandService.add(data);
                 if (result) {
                     // console.log(result);
                     this.isShowUpdateSuccess = true;
-                    this.CountAddProduct++;
+                    this.CountAddBrand++;
                 }
             } catch (error) {
                 console.log(error);
             }
         },
-        async getAllBrand() {
+        async getCategory() {
             try {
-                this.brands = await BrandService.getAllBrand();
+                this.Categorys = await CategoryService.getAll();
             } catch (error) {}
         },
     },
     created() {
-        this.getAllBrand();
+        this.getCategory();
     },
 };
 </script>

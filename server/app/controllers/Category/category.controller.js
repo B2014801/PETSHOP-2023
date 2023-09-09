@@ -1,6 +1,7 @@
 const ApiError = require('../../api-errors');
 const MongoDB = require('../../utils/mongodb.util');
 const CategoryService = require('../../services/category.service');
+const BrandController = require('../brand/brand.controller');
 
 exports.create = async (req, res, next) => {
     if (!req.body?.name) {
@@ -32,12 +33,18 @@ exports.update = async (req, res, next) => {
 };
 exports.deleteCategory = async (req, res, next) => {
     try {
-        const categoryService = new CategoryService(MongoDB.client);
-        const document = await categoryService.deleteCategory(req.params.id);
-        if (document) {
-            res.send('delete success');
-        } else {
-            return next(new ApiError(404, 'Category not found'));
+        const resultDeleteBrandWithCategoryId = await BrandController.deleteBrandWithCategory(
+            req.params.id,
+            'categoryId',
+        );
+        if (resultDeleteBrandWithCategoryId) {
+            const categoryService = new CategoryService(MongoDB.client);
+            const document = await categoryService.deleteCategory(req.params.id);
+            if (document) {
+                res.send('delete success');
+            } else {
+                return next(new ApiError(404, 'Category not found'));
+            }
         }
     } catch (error) {
         console.log(error);

@@ -1,4 +1,5 @@
 import { createWebHistory, createRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.store';
 import {
     Home,
     About,
@@ -98,8 +99,29 @@ const routes = [
         ],
     },
 ];
+
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes,
 });
+
+// router.beforeEach((to, from, next) => {
+//     try {
+//         const authRequired = !to.meta.publicPage;
+//         const auth = useAuthStore();
+
+//         if (authRequired && !auth.isUserLoggedIn) {
+//             const query = to.fullPath === '/' ? {} : { redirect: to.fullPath };
+//             next({
+//                 name: 'login',
+//                 query,
+//             });
+//         } else {
+//             next(); // Proceed with the navigation
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         next(); // Proceed with the navigation in case of an error
+//     }
+// });
 export default router;

@@ -3,7 +3,7 @@
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
                 <router-link
-                    class="nav-link dropdown-toggle"
+                    class="nav-link"
                     href="index.php"
                     id="navbarDropdownMenuLink"
                     role="button"
@@ -13,10 +13,30 @@
                 >
                     Trang chủ
                 </router-link>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <router-link to="/about" class="dropdown-item">Giới thiệu</router-link>
-                    <router-link to="/contact" class="dropdown-item">Liên hệ</router-link>
-                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <router-link
+                    class="nav-link"
+                    id="navbarDropdownMenuLink"
+                    role="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    to="/category"
+                >
+                    Danh mục
+                </router-link>
+            </li>
+            <li class="nav-item dropdown">
+                <router-link
+                    class="nav-link"
+                    id="navbarDropdownMenuLink"
+                    role="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    to="/brand"
+                >
+                    Nhãn hiệu
+                </router-link>
             </li>
             <li class="nav-item dropdown">
                 <router-link
@@ -29,19 +49,6 @@
                     to="/product"
                 >
                     Sản phẩm
-                </router-link>
-            </li>
-            <li class="nav-item dropdown">
-                <router-link
-                    class="nav-link"
-                    href="index.php"
-                    id="navbarDropdownMenuLink"
-                    role="button"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    to="/category"
-                >
-                    Danh mục
                 </router-link>
             </li>
         </ul>

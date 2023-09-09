@@ -1,25 +1,25 @@
 <template>
     <div class="mt-3 mb-4">
         <div class="text-center">
-            <router-link to="/product/add"><button class="btn btn-secondary">Thêm</button></router-link>
+            <router-link to="/brand/add"><button class="btn btn-secondary">Thêm</button></router-link>
         </div>
-        <h4 class="text-center my-3">Sản phẩm</h4>
+        <h4 class="text-center my-3">Nhãn hiệu sản phẩm</h4>
+
         <form action="" method="POST" id="formsapxepsanpham">
             <div class="float-right mb-2"></div>
         </form>
     </div>
-    <ProductList :products="products" @deleteProduct="deleteProduct" brandorproduct="product" />
+    <ProductList :products="brands" @deleteProduct="deleteBrand" brandorproduct="brand" />
 </template>
 
 <script>
 import images from '@/assets/imgs';
-import ProductList from '@/views/product/ProductList.vue';
-import ProductService from '@/services/product.service';
+import ProductList from '@/views/Product/ProductList.vue';
 import BrandService from '@/services/brand.service';
 export default {
     data() {
         return {
-            products: [],
+            brands: { type: Array, default: [] },
             images: images,
         };
     },
@@ -27,24 +27,24 @@ export default {
         ProductList,
     },
     methods: {
-        async getAllProduct() {
+        async getAllBrand() {
             try {
-                this.products = await ProductService.getAllProduct();
+                this.brands = await BrandService.getAllBrand();
             } catch (error) {
                 console.log(error);
             }
         },
-        async deleteProduct(id) {
+        async deleteBrand(id) {
             try {
-                await ProductService.delete(id);
-                this.getAllProduct();
+                await BrandService.delete(id);
+                this.getAllBrand();
             } catch (error) {
                 console.log(error);
             }
         },
     },
     mounted() {
-        this.getAllProduct();
+        this.getAllBrand();
     },
 };
 </script>

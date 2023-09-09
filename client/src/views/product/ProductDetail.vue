@@ -51,7 +51,12 @@
                             </div>
                             <div class="d-flex mt-3">
                                 <!-- <?php if ($row['soluongsp'] > 0){ ?> -->
-                                <button class="btn btn-lg btn-primary text-white ml-0" type="submit" name="themvaogio">
+                                <button
+                                    :disabled="isEnoughProductNumber"
+                                    class="btn btn-lg btn-primary text-white ml-0"
+                                    type="submit"
+                                    name="themvaogio"
+                                >
                                     Thêm vào giỏ
                                 </button>
                                 <!-- <?php }?> -->
@@ -350,6 +355,9 @@ export default {
         },
         isDiscout() {
             return this.product.discount > 0;
+        },
+        isEnoughProductNumber() {
+            return this.product.number < 1;
         },
     },
     created() {

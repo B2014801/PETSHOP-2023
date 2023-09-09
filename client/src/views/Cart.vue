@@ -1,6 +1,15 @@
 <template>
     <div class="row mx-md-5 mx-1 my-2">
         <div><h1 class="text-center">Giỏ Hàng</h1></div>
+        <div class="text-center">
+            <intersecting-circles-spinner
+                v-if="isShowLoading"
+                class="mx-auto"
+                :animation-duration="1200"
+                :size="50"
+                color="#ff1d5e"
+            />
+        </div>
         <h6 v-if="isShowUpdateCartSuccess" class="text-left m-0" style="color: #37e32a">
             <i class="fa-solid fa-check"></i> Giỏ hàng đã được cập nhật
         </h6>
@@ -55,13 +64,22 @@
                     </tr>
                     <tr>
                         <td colspan="6">
-                            <Form @submit="updateCart">
+                            <Form @submit="updateCart" class="form-update-amount">
                                 <button
+                                    :disabled="enableBtnUpdateCarts"
                                     id="submit-btn"
                                     type="submit"
                                     name="cap-nhat-gio-hang"
-                                    class="btn btn-primary my-1"
+                                    :class="{ btn: true, 'btn-primary': true, 'my-1': true }"
                                 >
+                                    <HalfCircleSpinner
+                                        v-if="isShowLoadingUpdateCart"
+                                        class="mx-auto"
+                                        :animation-duration="1200"
+                                        :size="20"
+                                        color="#4f0b14"
+                                        style="position: absolute"
+                                    />
                                     cập nhật giỏ hàng
                                 </button>
                             </Form>
@@ -94,22 +112,30 @@
             </table>
             <div></div>
 
-            <router-link to="/checkout" class="btn btn-danger w-100 mt-2">Thanh toán</router-link>
+            <router-link to="/checkout"
+                ><button :disabled="isShowLoadingUpdateCart" class="btn btn-danger w-100 mt-2">
+                    Thanh toán
+                </button></router-link
+            >
         </div>
         <div v-if="isShowEmptyCart"><h6 class="text-center mt-3">Thêm hàng vào giỏ ngay!!</h6></div>
     </div>
 </template>
 
 <script>
-import CartService from '@/services/cart.service';
-import { useAuthStore } from '@/stores/auth.store';
+import { IntersectingCirclesSpinner, HalfCircleSpinner } from 'epic-spinners';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
+
+import CartService from '@/services/cart.service';
+import { useAuthStore } from '@/stores/auth.store';
 export default {
     components: {
         Form,
         Field,
         ErrorMessage,
+        IntersectingCirclesSpinner,
+        HalfCircleSpinner,
     },
     data() {
         const OrderNumberValidate = yup.object().shape({
@@ -123,6 +149,9 @@ export default {
             isShowUpdateCartSuccess: false,
             isShowDeleteProductOutOfCartSuccess: false,
             isShowEmptyCart: false,
+            isEnableBtnUpdateCart: true,
+            isShowLoading: true,
+            isShowLoadingUpdateCart: false,
         };
     },
     methods: {
@@ -143,6 +172,7 @@ export default {
                 this.cart = await CartService.getCarts(user._id);
                 if (this.cart.length != 0) {
                     this.isShowCart = true;
+                    this.isShowLoading = false;
                 } else {
                     this.isShowEmptyCart = true;
                     this.isShowCart = false;
@@ -156,20 +186,24 @@ export default {
         handleMinusOrderProduct(index) {
             if (this.cart[index].Amount >= 2) {
                 this.cart[index].Amount--;
+                this.isEnableBtnUpdateCart = false;
             }
         },
         handlePlusOrderProduct(index) {
             if (this.cart[index].Amount < 10) {
                 this.cart[index].Amount++;
+                this.isEnableBtnUpdateCart = false;
             }
         },
 
         async updateCart() {
+            this.isShowLoadingUpdateCart = true;
             const user = await this.getUser();
             const result = await CartService.updateCart(user._id, this.cart);
             if (result) {
                 this.isShowUpdateCartSuccess = true;
                 this.isShowDeleteProductOutOfCartSuccess = false;
+                this.isShowLoadingUpdateCart = false;
             }
         },
         formatNumberWithDot(number) {
@@ -203,7 +237,14 @@ export default {
                 }
             }
         },
+        enableBtnUpdateCarts() {
+            return this.isEnableBtnUpdateCart;
+        },
+        // enableBtnCheckOut(){
+        //     return
+        // },
     },
+
     created() {
         this.getCart();
     },
@@ -240,5 +281,20 @@ export default {
 }
 .delete-purchase-icon:hover {
     background-color: pink;
+}
+// .giohang-hienthi {
+//     position: relative;
+// }
+.form-update-amount {
+    button {
+        position: relative;
+
+        div {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 8px;
+        }
+    }
 }
 </style>

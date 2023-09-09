@@ -1,35 +1,35 @@
 <template>
     <div>
-        <UpdateProductFrom
+        <UpdateBrandForm
             v-if="Product != null"
             @submit:update="update"
             :isShowUpdateSuccess="isShowUpdateSuccess"
             :Edit="edit"
-            :Product="Product"
-            :brands="brands"
+            :Brand="Product"
+            :Categorys="Categorys"
         />
     </div>
 </template>
 
 <script>
-import UpdateProductFrom from '@/components/form/UpdateProductFrom.vue';
-import ProductService from '@/services/product.service';
+import UpdateBrandForm from '@/components/form/UpdateBrandForm.vue';
 import BrandService from '@/services/brand.service';
+import CategoryService from '@/services/category.service';
 
 export default {
     components: {
-        UpdateProductFrom,
+        UpdateBrandForm,
     },
     props: {
         id: { type: String },
     },
     data() {
-        return { isShowUpdateSuccess: false, edit: true, Product: null, brands: [] };
+        return { isShowUpdateSuccess: false, edit: true, Product: null, Categorys: [] };
     },
     methods: {
         async update(data) {
             try {
-                const result = await ProductService.update(this.id, data);
+                const result = await BrandService.update(this.id, data);
                 if (result) {
                     this.isShowUpdateSuccess = true;
                 }
@@ -39,21 +39,20 @@ export default {
         },
         async findById() {
             try {
-                this.Product = await ProductService.findProductById(this.id);
-                this.getAllBrand();
+                this.Product = await BrandService.findBrandById(this.id);
+                this.getCategory();
             } catch (error) {
                 console.log(error);
             }
         },
-        async getAllBrand() {
+        async getCategory() {
             try {
-                this.brands = await BrandService.getAllBrand();
+                this.Categorys = await CategoryService.getAll();
             } catch (error) {}
         },
     },
     created() {
         this.findById();
-        // this.getAllBrand();
     },
 };
 </script>

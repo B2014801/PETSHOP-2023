@@ -64,6 +64,13 @@
                     <h6 v-if="isShowCheckOutSuccess" class="text-start mb-2" style="color: #37e32a">
                         <i class="fa-solid fa-check"></i> Đặt hàng thành công
                     </h6>
+                    <intersecting-circles-spinner
+                        v-if="isShowLoading"
+                        class="mx-auto"
+                        :animation-duration="1200"
+                        :size="50"
+                        color="#ff1d5e"
+                    />
                     <h3 class="text-upercase">Đơn hàng của bạn</h3>
                     <table class="CheckOut-Product-table">
                         <tr>
@@ -163,7 +170,7 @@
                         <!-- </form> -->
                     </div>
                     <div>
-                        <button class="btn btn-danger mt-2" type="submit">Đặt hàng</button>
+                        <button :disabled="isShowLoading" class="btn btn-danger mt-2" type="submit">Đặt hàng</button>
                     </div>
                 </div>
             </Form>
@@ -173,16 +180,19 @@
 </template>
 
 <script>
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import { IntersectingCirclesSpinner } from 'epic-spinners';
+
 import CartService from '@/services/cart.service';
 import { useAuthStore } from '@/stores/auth.store';
 import InvoiceService from '@/services/invoice.service';
-import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
 export default {
     components: {
         Form,
         Field,
         ErrorMessage,
+        IntersectingCirclesSpinner,
     },
     data() {
         return {
@@ -193,6 +203,7 @@ export default {
             isShowCheckOutSuccess: false,
             isShowErrorChoosePaymentMethod: false,
             isShowEmptyCheckOut: false,
+            isShowLoading: false,
         };
     },
     methods: {
@@ -242,6 +253,7 @@ export default {
         async handleCheckOut() {
             try {
                 if (this.isChooseOneMethodPayment) {
+                    this.isShowLoading = true;
                     const user = await this.getUser();
                     const Detail = await this.getDetail();
                     let data = await {
@@ -251,6 +263,7 @@ export default {
                     };
                     const result = await InvoiceService.create(data);
                     if (result) {
+                        this.isShowLoading = false;
                         this.isShowCheckOutSuccess = true;
                     }
                 } else {

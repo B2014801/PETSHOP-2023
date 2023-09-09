@@ -1,5 +1,17 @@
 import { createWebHistory, createRouter } from 'vue-router';
-import { Home, NotFound, Login, Register, Product, AddProduct, EditProduct, Category } from '@/views/';
+import {
+    Home,
+    NotFound,
+    Login,
+    Register,
+    Product,
+    AddProduct,
+    EditProduct,
+    Category,
+    Brand,
+    AddBrand,
+    EditBrand,
+} from '@/views/';
 const routes = [
     {
         path: '/',
@@ -43,6 +55,23 @@ const routes = [
         path: '/category',
         name: 'category',
         component: Category,
+        props: true,
+    },
+    {
+        path: '/Brand',
+        name: 'Brand',
+        component: Brand,
+        props: true,
+    },
+    {
+        path: '/brand/add',
+        name: 'brand.add',
+        component: AddBrand,
+    },
+    {
+        path: '/brand/:id',
+        name: 'brand.edit',
+        component: EditBrand,
         props: true,
     },
 ];

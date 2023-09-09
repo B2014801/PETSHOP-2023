@@ -1,6 +1,7 @@
 const ApiError = require('../../api-errors');
 const MongoDB = require('../../utils/mongodb.util');
-const ProductService = require('../../services/product.service');
+const BrandService = require('../../services/brand.service');
+const ProducController = require('../../services/product.service');
 const fs = require('fs');
 const path = require('path');
 
@@ -8,29 +9,16 @@ exports.home = async (req, res, next) => {
     res.send('wheo come home');
 };
 
-exports.createProduct = async (req, res, next) => {
-    if (!req.body?.name) {
-        return next(new ApiError(400, 'Name can not be empty'));
-    }
-    try {
-        const productService = new ProductService(MongoDB.client);
-        const document = await productService.create(req.body);
-        return res.send(document);
-    } catch (error) {
-        return next(new ApiError(500, 'An error occurred while creating the product' + error));
-    }
-};
-
-exports.getAllProduct = async (req, res, next) => {
+exports.getAllBrand = async (req, res, next) => {
     let documents = [];
 
     try {
-        const productService = new ProductService(MongoDB.client);
+        const brandService = new BrandService(MongoDB.client);
         const { name } = req.query;
         if (name) {
-            documents = await productService.findByName(name);
+            documents = await brandService.findByName(name);
         } else {
-            documents = await productService.find({});
+            documents = await brandService.find({});
         }
     } catch (error) {
         return next(new ApiError(500, 'Error when get all product'));
@@ -38,25 +26,25 @@ exports.getAllProduct = async (req, res, next) => {
     return res.send(documents);
 };
 
-exports.deleteProduct = async (req, res, next) => {
+exports.deleteBrand = async (req, res, next) => {
     try {
-        const productService = new ProductService(MongoDB.client);
+        const brandService = new BrandService(MongoDB.client);
 
         // get product and unlink
 
-        const productImg = await productService.findById(req.params.id);
-        const url = productImg.img;
+        const brandImg = await brandService.findById(req.params.id);
+        const url = brandImg.img;
         const parts = url.split('/');
         // Get the last part of the URL, which should be the file name
         const fileName = parts[parts.length - 1];
-        fs.unlinkSync(path.join(__dirname, `../../store/img/product/${fileName}`));
+        fs.unlinkSync(path.join(__dirname, `../../store/img/brand/${fileName}`));
 
-        const document = await productService.deleteProduct(req.params.id);
+        const document = await brandService.deleteBrand(req.params.id);
 
         if (document) {
             res.send('delete success');
         } else {
-            return next(new ApiError(404, 'Product not found'));
+            return next(new ApiError(404, 'brand not found'));
         }
     } catch (error) {
         console.log(error);
@@ -64,8 +52,8 @@ exports.deleteProduct = async (req, res, next) => {
 };
 exports.findById = async (req, res, next) => {
     try {
-        const productService = new ProductService(MongoDB.client);
-        const document = await productService.findById(req.params.id);
+        const brandService = new BrandService(MongoDB.client);
+        const document = await brandService.findById(req.params.id);
         if (!document) {
             return next(new ApiError(404, 'Product not found '));
         }
@@ -79,9 +67,9 @@ exports.create = async (req, res, next) => {
         res.send('Data update can not be empty');
     }
     try {
-        const img = await (process.env.SERVER_LINK_PRODUCT_IMG + req.file.filename);
-        const productService = new ProductService(MongoDB.client);
-        const document = await productService.create(req.body, img);
+        const img = await (process.env.SERVER_LINK_BRAND_IMG + req.file.filename);
+        const brandService = new BrandService(MongoDB.client);
+        const document = await brandService.create(req.body, img);
         res.send(document);
     } catch (error) {
         console.log(error);
@@ -94,18 +82,18 @@ exports.update = async (req, res, next) => {
     }
 
     try {
-        const productService = new ProductService(MongoDB.client);
+        const brandService = new BrandService(MongoDB.client);
         let img = null;
         if (req.file) {
-            const productImg = await productService.findById(req.params.id);
+            const productImg = await brandService.findById(req.params.id);
             const url = productImg.img;
             const parts = url.split('/');
             // Get the last part of the URL, which should be the file name
             const fileName = parts[parts.length - 1];
-            fs.unlinkSync(path.join(__dirname, `../../store/img/product/${fileName}`));
-            img = await (process.env.SERVER_LINK_PRODUCT_IMG + req.file.filename);
+            fs.unlinkSync(path.join(__dirname, `../../store/img/brand/${fileName}`));
+            img = await (process.env.SERVER_LINK_BRAND_IMG + req.file.filename);
         }
-        const document = await productService.update(req.params.id, req.body, img);
+        const document = await brandService.update(req.params.id, req.body, img);
         if (!document) {
             return next(new ApiError(404, 'Product not found'));
         }
@@ -117,8 +105,8 @@ exports.update = async (req, res, next) => {
 
 exports.getProductImg = async (req, res, next) => {
     try {
-        const productService = new ProductService(MongoDB.client);
-        const document = await productService.findImgByName(req.params.id);
+        const brandService = new BrandService(MongoDB.client);
+        const document = await brandService.findImgByName(req.params.id);
         if (!document) {
             return next(new ApiError(404, 'img not found '));
         }
@@ -127,6 +115,27 @@ exports.getProductImg = async (req, res, next) => {
         return res.send(img);
     } catch (error) {
         return next(new ApiError(500, `Error retrieving Product with id = ${error}`));
+    }
+};
+exports.deleteBrandWithCategory = async (id, name) => {
+    try {
+        const brandService = new BrandService(MongoDB.client);
+
+        // get product and unlink
+
+        const brandWithField = await brandService.findByIdWithField(id, name);
+        brandWithField.map(async (item, index) => {
+            const url = item.img;
+            const parts = url.split('/');
+            // Get the last part of the URL, which should be the file name
+            const fileName = parts[parts.length - 1];
+            fs.unlinkSync(path.join(__dirname, `../../store/img/brand/${fileName}`));
+
+            await brandService.deleteBrand(item._id);
+        });
+        return true;
+    } catch (error) {
+        return null;
     }
 };
 // remove img to another func

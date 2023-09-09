@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 
 const product = require('../controllers/Product/product.controller');
 const cart = require('../controllers/cart/cart.controller');
@@ -8,7 +9,8 @@ const authController = require('../controllers/authController/auth.controller');
 const authMiddleware = require('../controllers/authController/auth.middlewares');
 const category = require('../controllers/Category/category.controller');
 const uploadMiddleware = require('../middlewares/multer');
-const path = require('path');
+
+const brand = require('../controllers/brand/brand.controller');
 
 router.route('/').get(product.home);
 
@@ -56,5 +58,14 @@ router
 router.route('/invoice').post(authMiddleware.isAuth, invoice.create).get(authMiddleware.isAuth, invoice.getAllInvoice);
 router.route('/invoice/:id').put(authMiddleware.isAuth, invoice.cancelOrder);
 // user
+
+brand;
+router.route('/brand').get(brand.getAllBrand).post(uploadMiddleware.single('img'), brand.create);
+
+router
+    .route('/brand/:id')
+    .put(uploadMiddleware.single('img'), brand.update)
+    .delete(brand.deleteBrand)
+    .get(brand.findById);
 
 module.exports = router;

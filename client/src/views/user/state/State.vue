@@ -152,6 +152,9 @@ export default {
         isShowBtnCancelOrder(status) {
             return parseInt(status) == 0;
         },
+        hideCanCelOrderSuccess() {
+            this.isShowCanCelOrderSuccess = false;
+        },
     },
     computed: {
         // getTitle() {
@@ -172,7 +175,14 @@ export default {
         },
     },
     watch: {
-        state: 'getAllInvoice',
+        state: {
+            handler() {
+                // Your logic for handling 'state'
+                this.hideCanCelOrderSuccess();
+                this.getAllInvoice();
+            },
+            deep: true,
+        },
     },
     mounted() {
         this.getAllInvoice();

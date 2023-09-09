@@ -4,7 +4,16 @@ const path = require('path');
 // Multer storage configuration
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../store/img')); // Using path.join() for file paths
+        let { desPathUpload, discount } = req.body;
+        if (discount) {
+            desPathUpload = '/product';
+        }
+        if (!discount) {
+            desPathUpload = '/brand';
+        }
+        if (desPathUpload) {
+            cb(null, path.join(__dirname, `../store/img${desPathUpload}`)); // Using path.join() for file paths
+        }
     },
     filename: function (req, file, cb) {
         cb(null, +Date.now() + file.originalname);

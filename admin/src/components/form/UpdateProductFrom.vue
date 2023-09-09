@@ -49,6 +49,7 @@
                             type="number"
                             v-model="ProductData.discount"
                         /><ErrorMessage name="product_discount" class="text-danger error-message" />
+                        <Field type="hidden" name="desPathUpload" v-model="ProductData.desPathUpload" />
                     </td>
                 </tr>
                 <tr>
@@ -72,12 +73,17 @@
                 <tr>
                     <td>Hiệu sản phẩm</td>
                     <td>
-                        <select name="hieusanpham">
-                            <option value=""></option>
+                        <select name="brand" v-model="ProductData.brand">
+                            <option v-for="(brand, index) in brands" :value="brand._id">
+                                {{ brand.name }}
+                            </option>
                         </select>
+                        <span v-if="isShowNotChooseBrand" name="brand" class="text-danger ms-2"
+                            >Vui lòng chọn hiệu sản phẩm</span
+                        >
                     </td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <td>Tình trạng</td>
                     <td>
                         <select name="tinhtrangsp" id="">
@@ -85,7 +91,7 @@
                             <option value="0">ẩn</option>
                         </select>
                     </td>
-                </tr>
+                </tr> -->
 
                 <tr>
                     <td colspan="2" class="text-left">
@@ -113,8 +119,9 @@ export default {
         isShowUpdateSuccess: { type: Boolean, default: false },
         Add: { type: Boolean, default: false },
         Edit: { type: Boolean, default: false },
-        Product: { type: Object },
+        Product: { type: Array },
         CountAddProduct: { type: Number },
+        brands: { type: Array },
     },
     data() {
         let ProductAddValidate = yup.object().shape({
@@ -150,14 +157,14 @@ export default {
             });
 
             ProductData = {
+                desPathUpload: '/product',
                 name: '',
                 price: 0,
                 discount: 0,
                 describe: '',
                 number: 0,
                 img: null,
-                // brand: '',
-                // state: '',
+                brand: null,
             };
         } else {
             ProductData = this.Product;
@@ -165,29 +172,33 @@ export default {
         return {
             ProductAddValidate,
             ProductData,
+            isShowNotChooseBrand: false,
         };
     },
     methods: {
         async handleSubmit() {
-            const formData = new FormData();
+            if (this.ProductData.brand) {
+                const formData = new FormData();
 
-            // Utility function to append object properties to FormData
-            function appendIfDefined(key, value) {
-                if (value !== undefined && value !== null) {
-                    formData.append(key, value);
+                // Utility function to append object properties to FormData
+                function appendIfDefined(key, value) {
+                    if (value !== undefined && value !== null) {
+                        formData.append(key, value);
+                    }
                 }
-            }
-            for (const key in this.ProductData) {
-                if (this.ProductData.hasOwnProperty(key)) {
-                    appendIfDefined(key, this.ProductData[key]);
+                for (const key in this.ProductData) {
+                    if (this.ProductData.hasOwnProperty(key)) {
+                        appendIfDefined(key, this.ProductData[key]);
+                    }
                 }
-            }
-            if (this.Edit) {
-                this.$emit('submit:update', formData);
-            }
-            if (this.Add) {
-                console.log(1);
-                this.$emit('submit:create', formData);
+                if (this.Edit) {
+                    this.$emit('submit:update', formData);
+                }
+                if (this.Add) {
+                    this.$emit('submit:create', formData);
+                }
+            } else {
+                this.isShowNotChooseBrand = true;
             }
         },
     },
