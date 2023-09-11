@@ -3,8 +3,8 @@ class PetShopService {
     constructor(baseUrl = '/api/petshop') {
         this.api = createApiClient(baseUrl);
     }
-    async getAllProduct() {
-        return (await this.api.get('/product')).data;
+    async getAllProduct(id) {
+        return (await this.api.get(`/product?brandId=${id}`)).data;
     }
     async findProductById(id) {
         return (await this.api.get(`/product/${id}`)).data;

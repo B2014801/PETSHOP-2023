@@ -11,4 +11,6 @@ export { default as Brand } from '@/views/Brand/Brand.vue';
 export { default as AddBrand } from '@/views/Brand/AddBrand.vue';
 export { default as EditBrand } from '@/views/Brand/EditBrand.vue';
 
+export { default as Order } from '@/views/Order.vue';
+
 export { default as Category } from '@/views/Category/Category.vue';

@@ -7,6 +7,7 @@ export { default as Contact } from './Contact.vue';
 export { default as Cart } from './Cart.vue';
 export { default as CheckOut } from './CheckOut.vue';
 export { default as NotFound } from './NotFound.vue';
+export { default as Brand } from './Brand.vue';
 
 export { default as Login } from './user/Login.vue';
 export { default as CreateAccount } from './user/CreateAccount.vue';

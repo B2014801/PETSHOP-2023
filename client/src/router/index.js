@@ -16,6 +16,7 @@ import {
     State,
     AllPurchase,
     ProfileHome,
+    Brand,
 } from '@/views/';
 const routes = [
     {
@@ -40,12 +41,13 @@ const routes = [
         component: About,
     },
     {
-        path: '/product/',
+        path: '/shop/:CategoryName/:name/:id',
         name: 'product',
         component: Product,
+        props: true,
     },
     {
-        path: '/product/detail/:id',
+        path: '/product/:ProductName/:id',
         name: 'productdetail',
         component: () => ProductDetail,
         props: true,
@@ -77,6 +79,12 @@ const routes = [
         component: CheckOut,
     },
     {
+        path: '/shop/:CategoryName/:CategoryId',
+        name: 'brand',
+        component: Brand,
+        props: true,
+    },
+    {
         path: '/user',
         name: 'user',
         component: UserHome,
@@ -105,23 +113,13 @@ const router = createRouter({
     routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//     try {
-//         const authRequired = !to.meta.publicPage;
-//         const auth = useAuthStore();
-
-//         if (authRequired && !auth.isUserLoggedIn) {
-//             const query = to.fullPath === '/' ? {} : { redirect: to.fullPath };
-//             next({
-//                 name: 'login',
-//                 query,
-//             });
-//         } else {
-//             next(); // Proceed with the navigation
-//         }
-//     } catch (error) {
-//         console.log(error);
-//         next(); // Proceed with the navigation in case of an error
+// router.beforeEach(async (to, from, next) => {
+//     if (to.meta.shouldFetch) {
+//         // Fetch the data and assign it to to.meta.data
+//         to.meta.data = await fetchSomething();
 //     }
+
+//     // Continue with the navigation
+//     next();
 // });
 export default router;

@@ -15,6 +15,9 @@ import images from '@/assets/imgs';
 import ProductList from '@/views/product/ProductList.vue';
 import PetshopService from '@/services/petshop.service';
 export default {
+    props: {
+        id: { type: String },
+    },
     data() {
         return {
             products: [],
@@ -27,7 +30,7 @@ export default {
     methods: {
         async getAllProduct() {
             try {
-                this.products = await PetshopService.getAllProduct();
+                this.products = await PetshopService.getAllProduct(this.id);
             } catch (error) {
                 console.log(error);
             }

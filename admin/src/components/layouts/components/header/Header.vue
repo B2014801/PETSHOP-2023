@@ -9,7 +9,7 @@
             </router-link>
             <div class="collapse navbar-collapse justify-content-between mr-3">
                 <Category />
-                <Search></Search>
+                <!-- <Search></Search> -->
             </div>
 
             <div class="d-inline text-white">

@@ -55,10 +55,16 @@ router
     .put(category.update);
 
 // checkout
-router.route('/invoice').post(authMiddleware.isAuth, invoice.create).get(authMiddleware.isAuth, invoice.getAllInvoice);
+router
+    .route('/invoice')
+    .post(authMiddleware.isAuth, invoice.create)
+    .get(authMiddleware.isAuth, invoice.getAllInvoiceOfOneUser);
 router.route('/invoice/:id').put(authMiddleware.isAuth, invoice.cancelOrder);
 // user
 
+//
+router.route('/invoice/all').get(invoice.getAllInvoice);
+//
 brand;
 router.route('/brand').get(brand.getAllBrand).post(uploadMiddleware.single('img'), brand.create);
 

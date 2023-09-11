@@ -232,9 +232,9 @@ export default {
                     (total, item) => total + item.Amount * item.ProductData.price.replace(/\./g, ''),
                     0,
                 );
-                if (temporary_price) {
-                    return this.formatNumberWithDot(temporary_price);
-                }
+                // if (temporary_price) {
+                return this.formatNumberWithDot(temporary_price);
+                // }
             }
         },
         enableBtnUpdateCarts() {

@@ -1,35 +1,45 @@
 <template>
-    <div class="mt-3 mb-4">
+    <div class="mt-3 mb-4 mx-2">
         <div class="text-center">
             <router-link to="/brand/add"><button class="btn btn-secondary">Thêm</button></router-link>
         </div>
         <h4 class="text-center my-3">Nhãn hiệu sản phẩm</h4>
 
-        <form action="" method="POST" id="formsapxepsanpham">
-            <div class="float-right mb-2"></div>
-        </form>
+        <Table
+            v-if="brands.length != 0"
+            :Data="getDataTable()"
+            :fields="fields"
+            :fieldsMap="fieldsMap"
+            brandorproduct="brand"
+            @deleteProduct="deleteBrand"
+        />
     </div>
-    <ProductList :products="brands" @deleteProduct="deleteBrand" brandorproduct="brand" />
+    <!-- <ProductList :products="brands" @deleteProduct="deleteBrand" brandorproduct="brand" /> -->
 </template>
 
 <script>
 import images from '@/assets/imgs';
 import ProductList from '@/views/Product/ProductList.vue';
 import BrandService from '@/services/brand.service';
+import Table from '@/components/table/table.vue';
 export default {
     data() {
         return {
             brands: { type: Array, default: [] },
             images: images,
+            fields: ['STT', 'Tên', 'Hình ảnh', 'Sửa'],
+            fieldsMap: ['STT', 'name', 'img', 'edit'],
         };
     },
     components: {
         ProductList,
+        Table,
     },
     methods: {
         async getAllBrand() {
             try {
                 this.brands = await BrandService.getAllBrand();
+                console.log(this.brands);
             } catch (error) {
                 console.log(error);
             }
@@ -42,8 +52,25 @@ export default {
                 console.log(error);
             }
         },
+        getDataTable() {
+            let datas = [];
+            try {
+                this.brands.map(async (item, index) => {
+                    let data = {};
+                    data.STT = index;
+                    data.id = item._id;
+                    data.name = item.name;
+                    data.img = item.img;
+
+                    datas.push(data);
+                });
+                return datas;
+            } catch (error) {
+                console.log(error);
+            }
+        },
     },
-    mounted() {
+    created() {
         this.getAllBrand();
     },
 };

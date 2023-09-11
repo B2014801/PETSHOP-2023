@@ -4,6 +4,7 @@ class InvoiceService {
         // get collection product
         this.Invoice = client.db().collection('invoices');
         this.Product = client.db().collection('products');
+        this.User = client.db().collection('users');
     }
     // Định nghĩa các phương thức truy xuất CSDL sử dụng mongodb API
     extractProductData(payload) {
@@ -40,15 +41,19 @@ class InvoiceService {
         const status = parseInt(state);
         try {
             let filter = {};
-            if (state) {
+            if (state && userid) {
                 filter = {
                     UserId: new ObjectId(userid),
                     StatusId: status,
                 };
-            } else {
+            }
+            if (userid && !state) {
                 filter = {
                     UserId: new ObjectId(userid), // to get all state
                 };
+            }
+            if (!userid && !state) {
+                filter = {};
             }
             // get Invoice with status of one user
             const InvoiceProduct = await this.Invoice.find(filter).toArray();
@@ -60,6 +65,7 @@ class InvoiceService {
                 {
                     //1 order
                     _id:
+                    user:{}
                     status:
                     detail:[
                         {},{}
@@ -68,26 +74,36 @@ class InvoiceService {
             ]
             */
             // to get product and amount
-            const Detail = async (items, status, Invoiceid) => {
+            const Detail = async (items, items_remain) => {
                 let order = {}; //refesh 1 order to add another order
+
                 let OrderDetail = []; // to get all detail of 1 order
-
-                order._id = new ObjectId(Invoiceid);
-                order.status = status;
+                order._id = new ObjectId(items_remain.Invoiceid);
+                order.status = items_remain.status;
                 for (const item of items) {
-                    let result = await this.Product.findOne({ _id: new ObjectId(item._id) });
-                    result.ordernumber = item.amount;
-                    result.oldprice = item.price; //get recent price
-                    OrderDetail.push(result); // Collect the result in the documents array.
+                    let product = await this.Product.findOne({ _id: new ObjectId(item._id) });
+                    if (product) {
+                        product.ordernumber = item.amount;
+                        product.oldprice = item.price ?? ''; //get recent price
+                        OrderDetail.push(product); // Collect the result in the documents array.
+                    }
                 }
-
                 order.detail = OrderDetail;
+
+                let { email, phone } = await this.User.findOne({ _id: items_remain.UserId });
+                let user = {
+                    email: email,
+                    phone: phone,
+                };
+                order.user = user;
+                order.orderdate = items_remain.CreateDate;
+                order.deliverydate = items_remain.DeliveryDate;
                 documents.push(order);
             };
 
             // loop every Detail
             for (const items of InvoiceProduct) {
-                await Detail(items.Detail, items.StatusId, items._id);
+                await Detail(items.Detail, items);
             }
             return documents; // This will print the collected documents after all processing is done.
         } catch (error) {

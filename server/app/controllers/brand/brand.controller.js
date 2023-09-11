@@ -14,14 +14,14 @@ exports.getAllBrand = async (req, res, next) => {
 
     try {
         const brandService = new BrandService(MongoDB.client);
-        const { name } = req.query;
-        if (name) {
-            documents = await brandService.findByName(name);
+        const { categoryId } = req.query;
+        if (categoryId) {
+            documents = await brandService.getAllBrandWithCategoryId(categoryId);
         } else {
             documents = await brandService.find({});
         }
     } catch (error) {
-        return next(new ApiError(500, 'Error when get all product'));
+        return next(new ApiError(500, `Error when get all product ${error}`));
     }
     return res.send(documents);
 };

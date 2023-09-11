@@ -8,7 +8,7 @@
                 <img :src="images.logo" class="" alt="" width="130" height="70" />
             </router-link>
             <div class="collapse navbar-collapse justify-content-between mr-3">
-                <Category />
+                <Category :Categorys="Categorys" />
                 <Search></Search>
             </div>
 
@@ -62,12 +62,15 @@ import images from '@/assets/imgs';
 import Search from '@/components/search/Search.vue';
 import CollapseContent from './CollapseContent.vue';
 import Category from './Category.vue';
+
+import CategoryService from '@/services/category.service';
 // import ButtonCollapse from '@/components/button/ButtonCollapse.vue';
 export default {
     data() {
         return {
             images: images,
             isCollapsed: false,
+            Categorys: [],
         };
     },
     components: {
@@ -79,6 +82,13 @@ export default {
     methods: {
         toggleCollapse() {
             this.isCollapsed = !this.isCollapsed;
+        },
+        async getCategorys() {
+            try {
+                this.Categorys = await CategoryService.getAll();
+            } catch (er) {
+                console.log(er);
+            }
         },
     },
     computed: {
@@ -92,37 +102,10 @@ export default {
             }
         },
     },
+    created() {
+        this.getCategorys();
+    },
     mounted() {},
 };
 </script>
-<style>
-.nav {
-    margin: 0px 10px;
-}
-/* @media all and (min-width: 992px) { */
-.navbar .nav-item:hover .dropdown-menu {
-    display: block;
-}
-/* } */
-.nav-link,
-.dropdown-item,
-.nav-link-collapse {
-    color: #fff !important;
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-.dropdown-menu {
-    background-color: rgb(148, 233, 193);
-    padding: 0;
-}
-.dropdown-item:hover {
-    background-color: rgb(34, 101, 105) !important;
-}
-.dropdown-item {
-    padding: 8px;
-}
-.dropdown-item:focus {
-    background-color: rgb(156, 228, 231) !important;
-}
-</style>
+<style></style>

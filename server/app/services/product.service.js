@@ -45,6 +45,12 @@ class ProductService {
             name: { $regex: new RegExp(name), $options: 'i' },
         });
     }
+    async findByBrandId(id) {
+        return await this.Product.find({
+            //so sanh voi name trogn mongodb // khop chu khoa thuong : i
+            brand: new ObjectId(id),
+        }).toArray();
+    }
     // find product by id
     async findById(id) {
         return await this.Product.findOne({

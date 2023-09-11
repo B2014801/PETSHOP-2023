@@ -106,28 +106,33 @@ export default {
         return {
             ProductAddValidate,
             ProductData,
+            isShowNotChooseBrand: false,
         };
     },
     methods: {
         async handleSubmit() {
-            const formData = new FormData();
+            if (this.ProductData.categoryId) {
+                const formData = new FormData();
 
-            // Utility function to append object properties to FormData
-            function appendIfDefined(key, value) {
-                if (value !== undefined && value !== null) {
-                    formData.append(key, value);
+                // Utility function to append object properties to FormData
+                function appendIfDefined(key, value) {
+                    if (value !== undefined && value !== null) {
+                        formData.append(key, value);
+                    }
                 }
-            }
-            for (const key in this.ProductData) {
-                if (this.ProductData.hasOwnProperty(key)) {
-                    appendIfDefined(key, this.ProductData[key]);
+                for (const key in this.ProductData) {
+                    if (this.ProductData.hasOwnProperty(key)) {
+                        appendIfDefined(key, this.ProductData[key]);
+                    }
                 }
-            }
-            if (this.Edit) {
-                this.$emit('submit:update', formData);
-            }
-            if (this.Add) {
-                this.$emit('submit:create', formData);
+                if (this.Edit) {
+                    this.$emit('submit:update', formData);
+                }
+                if (this.Add) {
+                    this.$emit('submit:create', formData);
+                }
+            } else {
+                this.isShowNotChooseBrand = true;
             }
         },
     },

@@ -16,6 +16,20 @@ exports.create = async (req, res, next) => {
 exports.getAllInvoice = async (req, res, next) => {
     try {
         const invoiceService = new InvoiceService(MongoDB.client);
+        const documents = await invoiceService.getAllInvoice(null, null);
+        if (documents) {
+            res.send(documents);
+        } else {
+            console.log('co loi xay ra');
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+exports.getAllInvoiceOfOneUser = async (req, res, next) => {
+    try {
+        const invoiceService = new InvoiceService(MongoDB.client);
         const { state, userid } = req.query;
         const documents = await invoiceService.getAllInvoice(state, userid);
         if (documents) {

@@ -39,11 +39,11 @@ class BrandService {
         return await cursor.toArray();
     }
     // find product by name
-    async findByName(name) {
-        return await this.find({
-            //so sanh voi name trogn mongodb // khop chu khoa thuong : i
-            name: { $regex: new RegExp(name), $options: 'i' },
+    async getAllBrandWithCategoryId(id) {
+        const Brand = await this.Brand.find({
+            categoryId: new ObjectId(id),
         });
+        return Brand.toArray();
     }
     // find product by id
     async findById(id) {

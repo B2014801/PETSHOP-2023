@@ -3,6 +3,7 @@ class Category {
     constructor(client) {
         // get collection Category
         this.Category = client.db().collection('categorys');
+        this.Brand = client.db().collection('brands');
     }
     // Định nghĩa các phương thức truy xuất CSDL sử dụng mongodb API
     extractCategoryData(payload) {
@@ -27,8 +28,15 @@ class Category {
         }
     }
     async find(filter) {
-        const cursor = await this.Category.find(filter);
-        return await cursor.toArray();
+        const cursor = await this.Category.find(filter).toArray();
+        await Promise.all(
+            cursor.map(async (item, index) => {
+                const brand = await this.Brand.find({ categoryId: item._id }).toArray();
+                cursor[index].brand = brand;
+            }),
+        );
+        return cursor;
+        // return await cursor.toArray();
     }
     // find Category by name
     async findByName(name) {

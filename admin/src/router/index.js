@@ -11,6 +11,7 @@ import {
     Brand,
     AddBrand,
     EditBrand,
+    Order,
 } from '@/views/';
 const routes = [
     {
@@ -73,6 +74,12 @@ const routes = [
         name: 'brand.edit',
         component: EditBrand,
         props: true,
+    },
+    {
+        path: '/order',
+        name: 'order',
+        component: Order,
+        // props: true,
     },
 ];
 const router = createRouter({
