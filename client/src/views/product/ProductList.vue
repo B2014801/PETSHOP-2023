@@ -80,7 +80,7 @@ export default {
                     name: 'product',
                     params: {
                         id: product._id,
-                        name: this.removeDiacriticsAndReplaceSpaces(product.name),
+                        BrandName: this.removeDiacriticsAndReplaceSpaces(product.name),
                         CategoryName: this.CategoryName,
                     },
                 };

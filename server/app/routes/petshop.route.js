@@ -15,24 +15,27 @@ const brand = require('../controllers/brand/brand.controller');
 router.route('/').get(product.home);
 
 //product
-router.route('/product').get(product.getAllProduct).post(uploadMiddleware.single('img'), product.create);
+router
+    .route('/product')
+    .get(product.getAllProduct)
+    .post(authMiddleware.isAuth, uploadMiddleware.single('img'), product.create);
 
 // router.use('/api/petshop/product/img/:id', express.static(path.join(__dirname, '../store/img')));
 
 // router.route('/product/img/:id').get(product.getProductImg);
 router
     .route('/product/:id')
-    .put(uploadMiddleware.single('img'), product.update)
-    .delete(product.deleteProduct)
+    .put(authMiddleware.isAuth, uploadMiddleware.single('img'), product.update)
+    .delete(authMiddleware.isAuth, product.deleteProduct)
     .get(product.findById)
-    .post(cart.create);
+    .post(authMiddleware.isAuth, cart.create);
 
 //cart
 // router.route('/cart').get(authMiddleware.isAuth, cart.getAll);
 router
     .route('/cart/:id')
     .get(authMiddleware.isAuth, cart.getAllOfOneUser)
-    .post(authMiddleware.isAuth, cart.updateAmount);
+    .post(authMiddleware.isAuth, authMiddleware.isAuth, cart.updateAmount);
 router.route('/cart/deleteOneProduct').delete(cart.deleteOneProduct);
 
 // router.get('/profile', authMiddleware, async (req, res) => {
@@ -45,14 +48,14 @@ router.post('/auth/login', authController.login);
 router.post('/auth/refresh', authController.refreshToken);
 
 //category
-router.route('/category').get(category.getAllCategory).post(category.create);
+router.route('/category').get(category.getAllCategory).post(authMiddleware.isAuth, category.create);
 
 router
     .route('/category/:id')
     .get(category.findById)
-    .post(category.update)
-    .delete(category.deleteCategory)
-    .put(category.update);
+    .post(authMiddleware.isAuth, category.update)
+    .delete(authMiddleware.isAuth, category.deleteCategory)
+    .put(authMiddleware.isAuth, category.update);
 
 // checkout
 router
@@ -63,15 +66,15 @@ router.route('/invoice/:id').put(authMiddleware.isAuth, invoice.cancelOrder);
 // user
 
 //
-router.route('/invoice/all').get(invoice.getAllInvoice);
+router.route('/invoice/all').get(authMiddleware.isAuth, invoice.getAllInvoice);
 //
 brand;
-router.route('/brand').get(brand.getAllBrand).post(uploadMiddleware.single('img'), brand.create);
+router.route('/brand').get(brand.getAllBrand).post(authMiddleware.isAuth, uploadMiddleware.single('img'), brand.create);
 
 router
     .route('/brand/:id')
-    .put(uploadMiddleware.single('img'), brand.update)
-    .delete(brand.deleteBrand)
+    .put(authMiddleware.isAuth, uploadMiddleware.single('img'), brand.update)
+    .delete(authMiddleware.isAuth, brand.deleteBrand)
     .get(brand.findById);
 
 module.exports = router;

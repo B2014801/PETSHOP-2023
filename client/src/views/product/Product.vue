@@ -1,12 +1,13 @@
 <template>
-    <div class="mt-3 mb-4">
-        <div class="text-center">
-            <h3 class="text-uppercase">hieusanpham</h3>
+    <!-- <div class="mt-3 mb-4">
+        <div>
+            <h4>
+                <router-link class="text-dark" to="/">trang chủ</router-link> /
+                <router-link class="text-dark" :to="'/' + CategoryName + '/' + id">{{ CategoryName }}</router-link> /
+                {{ BrandName }}
+            </h4>
         </div>
-        <form action="" method="POST" id="formsapxepsanpham">
-            <div class="float-right mb-2"></div>
-        </form>
-    </div>
+    </div> -->
     <ProductList :products="products" />
 </template>
 
@@ -17,6 +18,8 @@ import PetshopService from '@/services/petshop.service';
 export default {
     props: {
         id: { type: String },
+        BrandName: { type: String },
+        CategoryName: { type: String },
     },
     data() {
         return {

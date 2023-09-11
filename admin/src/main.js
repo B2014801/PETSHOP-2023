@@ -12,7 +12,7 @@ import './views/assets/main.scss';
 import './assets/css/global.scss';
 import App from './App.vue';
 import router from './router';
-import store from './stores/main';
+// import store from './stores/main';
 
 createApp(App).use(Vuex);
 // createApp(App).use(VueCookies);
@@ -21,4 +21,5 @@ createApp(App).use(Vuex);
 createApp(App).use(VueTippy, {
     defaultProps: { placement: 'bottom' },
 });
-createApp(App).use(store).use(router).mount('#app');
+const vm = createApp(App).use(createPinia()).use(router).mount('#app');
+export default vm;

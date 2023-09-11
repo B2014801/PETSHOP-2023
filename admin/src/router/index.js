@@ -13,12 +13,14 @@ import {
     EditBrand,
     Order,
 } from '@/views/';
+
+import { useAuthStore } from '@/stores/auth.store';
 const routes = [
-    {
-        path: '/',
-        name: 'home',
-        component: Home,
-    },
+    // {
+    //     path: '/',
+    //     name: 'home',
+    //     component: Home,
+    // },
     {
         path: '/:pathMatch(.*)*',
         name: 'notfound',
@@ -29,12 +31,19 @@ const routes = [
         path: '/login',
         name: 'login',
         component: Login,
+        meta: {
+            publicPage: true,
+            layout: 'notCategoryLayout',
+        },
         props: true,
     },
     {
         path: '/register',
         name: 'register',
         component: Register,
+        meta: {
+            publicPage: true,
+        },
     },
     {
         path: '/product',
@@ -53,7 +62,7 @@ const routes = [
         props: true,
     },
     {
-        path: '/category',
+        path: '/',
         name: 'category',
         component: Category,
         props: true,
@@ -85,5 +94,19 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes,
+});
+
+router.beforeEach(async (to, _from) => {
+    const authRequired = !to.meta.publicPage; // have one equal false to interrupt loop (show comp)
+    const auth = useAuthStore();
+    await auth.loadAuthState();
+
+    if (authRequired && !auth.user) {
+        const query = to.fullPath === '/' ? {} : { redirect: to.fullPath };
+        return {
+            name: 'login',
+            query,
+        };
+    }
 });
 export default router;

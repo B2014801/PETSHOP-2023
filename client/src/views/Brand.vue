@@ -1,5 +1,8 @@
 <template>
-    <h6>Hiệu sản phẩm</h6>
+    <div class="mt-3 mb-4">
+        <!-- <h1 class="text-center">{{ CategoryName }}</h1> -->
+        <!-- <h4><router-link class="text-dark" to="/">trang chủ</router-link> / {{ CategoryName }}</h4> -->
+    </div>
     <div>
         <ProductList :products="Brands" :CategoryName="CategoryName" />
     </div>

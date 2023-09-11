@@ -8,7 +8,7 @@
                 <img :src="images.logo" class="" alt="" width="130" height="70" />
             </router-link>
             <div class="collapse navbar-collapse justify-content-between mr-3">
-                <Category />
+                <Category v-if="showCategory" />
                 <!-- <Search></Search> -->
             </div>
 
@@ -34,16 +34,16 @@
                         </div>
                     </div>
                 </div> -->
-                <router-link to="/login" class="text-white text-decoration-none"
+                <!-- <router-link to="/login" class="text-white text-decoration-none"
                     ><i class="fa-solid fa-user"></i> |
                 </router-link>
                 <router-link to="/register" class="text-white text-decoration-none"
                     ><i class="fa-solid fa-user-plus"></i
-                ></router-link>
+                ></router-link> -->
             </div>
         </div>
     </nav>
-    <CollapseContent :isCollapsed="isCollapsed" />
+    <CollapseContent v-if="showCategory" :isCollapsed="isCollapsed" />
 </template>
 <script>
 import images from '@/assets/imgs';
@@ -52,6 +52,9 @@ import CollapseContent from './CollapseContent.vue';
 import Category from './Category.vue';
 // import ButtonCollapse from '@/components/button/ButtonCollapse.vue';
 export default {
+    props: {
+        showCategory: { type: Boolean },
+    },
     data() {
         return {
             images: images,

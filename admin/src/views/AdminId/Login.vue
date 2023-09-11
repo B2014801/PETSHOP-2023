@@ -10,7 +10,9 @@
 
 <script>
 import LoginForm from '@/components/form/LoginForm.vue';
-import ProductService from '@/services/product.service';
+// import PetshopService from '@/services/petshop.service';
+import { mapActions } from 'pinia';
+import { useAuthStore } from '@/stores/auth.store';
 export default {
     components: {
         LoginForm,
@@ -18,24 +20,27 @@ export default {
     data() {
         return {
             isShowErrorMessage: '',
+            loading: false,
         };
     },
     methods: {
-        async handleLogin(data) {
-            try {
-                const result = await ProductService.login(data);
-                if (result) {
-                    // const $cookies = inject('$cookies');
-                    // this.$router.push({ name: 'home' });
+        ...mapActions(useAuthStore, ['login']),
 
-                    // this.$cookies.set('accessToken', result.accessToken);
-                    // console.log($cookies);
-                    this.$store.commit('setAccessToken', result.accessToken);
-                    console.log(result.accessToken);
+        async handleLogin(user) {
+            this.loading = true;
+
+            try {
+                const result = await this.login(user);
+                if (result.user.role == 'admin') {
+                    this.$router.push({ name: 'category' });
+                } else {
+                    alert('Bạn không có quyền truy cập trang web này');
                 }
             } catch (error) {
-                // this.isShowErrorMessage = error.response.data;
-                console.log(this.$store);
+                console.log(error);
+
+                this.loading = false;
+                this.message = 'Đã có lỗi xảy ra.';
             }
         },
     },

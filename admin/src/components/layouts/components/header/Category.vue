@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul class="navbar-nav">
-            <li class="nav-item dropdown">
+            <!-- <li class="nav-item dropdown">
                 <router-link
                     class="nav-link"
                     href="index.php"
@@ -13,7 +13,7 @@
                 >
                     Trang chủ
                 </router-link>
-            </li>
+            </li> -->
             <li class="nav-item dropdown">
                 <router-link
                     class="nav-link"
@@ -21,7 +21,7 @@
                     role="button"
                     aria-haspopup="true"
                     aria-expanded="false"
-                    to="/category"
+                    to="/"
                 >
                     Danh mục
                 </router-link>

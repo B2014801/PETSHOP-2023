@@ -39,7 +39,6 @@ export default {
         async getAllInvoice() {
             try {
                 this.Invoices = await InvoiceService.getAllInvoice();
-                console.log(this.Invoices);
             } catch (error) {
                 console.log(error);
             }

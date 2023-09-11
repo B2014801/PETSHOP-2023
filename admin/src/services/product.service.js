@@ -1,7 +1,7 @@
-import createApiClient from './api.service';
+import { createApiClient } from './api.service';
 class Product {
     constructor(baseUrl = '/api/petshop') {
-        this.api = createApiClient(baseUrl);
+        this.api = createApiClient(baseUrl, true);
     }
     async getAllProduct() {
         return (await this.api.get('/product')).data;

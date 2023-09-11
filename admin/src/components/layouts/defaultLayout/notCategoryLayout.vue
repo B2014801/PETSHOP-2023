@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Header :showCategory="true"></Header>
+        <Header :showCategory:="false"></Header>
     </div>
     <Main></Main>
     <Footer></Footer>

@@ -12,7 +12,7 @@ exports.register = async (req, res) => {
     const email = req.body.email.toLowerCase();
     const phone = req.body.phone;
     const authService = new AuthService(MongoDB.client);
-    const user = await authService.getUser(email);
+    let user = await authService.getUser(email);
     if (user) res.status(409).send('Tên tài khoản đã tồn tại.');
     else {
         const hashPassword = bcrypt.hashSync(req.body.password, SALT_ROUNDS);
@@ -20,6 +20,7 @@ exports.register = async (req, res) => {
             email: email,
             password: hashPassword,
             phone: phone,
+            role: 'user',
         };
         const createUser = await authService.createUser(newUser);
         if (!createUser) {
@@ -36,7 +37,7 @@ exports.login = async (req, res) => {
     const password = req.body.password || '12345';
 
     const authService = new AuthService(MongoDB.client);
-    const user = await authService.getUser(email);
+    let user = await authService.getUser(email);
     if (!user) {
         return res.status(401).send('Email không tồn tại.');
     }
@@ -68,7 +69,7 @@ exports.login = async (req, res) => {
         // Nếu user này đã có refresh token thì lấy refresh token đó từ database
         refreshToken = user.refreshToken;
     }
-
+    user = { role: user.role };
     return res.json({
         msg: 'Đăng nhập thành công.',
         accessToken,
