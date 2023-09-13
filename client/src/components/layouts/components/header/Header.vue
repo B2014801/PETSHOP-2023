@@ -9,7 +9,13 @@
             </router-link>
             <div class="collapse navbar-collapse justify-content-between mr-3">
                 <Category :Categorys="Categorys" />
-                <Search></Search>
+                <Search
+                    @value="getProductWithName"
+                    :products="products"
+                    :LoadingSearch="LoadingSearch"
+                    :isEmptyProduct="isEmptyProduct"
+                    :isSearch="isSearch"
+                ></Search>
             </div>
 
             <div class="d-inline text-white">
@@ -64,6 +70,7 @@ import CollapseContent from './CollapseContent.vue';
 import Category from './Category.vue';
 
 import CategoryService from '@/services/category.service';
+import PetshopService from '@/services/petshop.service';
 // import ButtonCollapse from '@/components/button/ButtonCollapse.vue';
 export default {
     data() {
@@ -71,6 +78,10 @@ export default {
             images: images,
             isCollapsed: false,
             Categorys: [],
+            products: [],
+            LoadingSearch: false,
+            isEmptyProduct: false,
+            isSearch: null,
         };
     },
     components: {
@@ -89,6 +100,30 @@ export default {
             } catch (er) {
                 console.log(er);
             }
+        },
+        async getProductWithName(name) {
+            try {
+                this.isEmptyProduct = false;
+                if (name != '' && !name.startsWith('?') && name.trim() != '') {
+                    this.LoadingSearch = true;
+                    let documents = null;
+                    setTimeout(async () => {
+                        documents = await PetshopService.findByName(name);
+                        if (documents.length != 0) {
+                            this.products = documents;
+                            this.isEmptyProduct = false;
+                        } else {
+                            this.products = [];
+                            this.isEmptyProduct = true;
+                        }
+                        this.isSearch = true;
+                        this.LoadingSearch = false;
+                    }, 1500);
+                } else {
+                    this.LoadingSearch = false;
+                    this.isEmptyProduct = true;
+                }
+            } catch (error) {}
         },
     },
     computed: {

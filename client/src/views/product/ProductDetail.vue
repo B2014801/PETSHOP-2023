@@ -360,6 +360,9 @@ export default {
             return this.product.number < 1;
         },
     },
+    watch: {
+        id: 'findById',
+    },
     created() {
         this.findById(this.id);
     },

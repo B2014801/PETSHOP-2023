@@ -19,6 +19,8 @@ createApp(App).use(Vuex);
 
 createApp(App).use(VueTippy, {
     defaultProps: { placement: 'bottom' },
+    directive: 'tippy', // => v-tippy
+    component: 'tippy', // => <tippy/>
 });
 const vm = createApp(App).use(createPinia()).use(router).mount('#app');
 

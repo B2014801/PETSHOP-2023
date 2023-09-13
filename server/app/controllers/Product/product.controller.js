@@ -32,7 +32,8 @@ exports.getAllProduct = async (req, res, next) => {
         }
         if (brandId) {
             documents = await productService.findByBrandId(brandId);
-        } else {
+        }
+        if (Object.keys(req.query).length == 0) {
             documents = await productService.find({});
         }
     } catch (error) {

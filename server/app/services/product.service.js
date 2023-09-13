@@ -40,10 +40,11 @@ class ProductService {
     }
     // find product by name
     async findByName(name) {
-        return await this.find({
+        const result = await this.Product.find({
             //so sanh voi name trogn mongodb // khop chu khoa thuong : i
             name: { $regex: new RegExp(name), $options: 'i' },
-        });
+        }).toArray();
+        return result;
     }
     async findByBrandId(id) {
         return await this.Product.find({
