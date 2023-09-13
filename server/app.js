@@ -14,8 +14,10 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 app.use('/api/petshop', petshopRouter);
+
 app.use('/api/petshop/product/img/', express.static(path.join(__dirname, 'app/store/img/product')));
 app.use('/api/petshop/brand/img/', express.static(path.join(__dirname, 'app/store/img/brand')));
+app.use('/api/petshop/user/img/', express.static(path.join(__dirname, 'app/store/img/user')));
 
 // handle 404 response
 app.use((req, res, next) => {

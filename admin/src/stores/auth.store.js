@@ -28,11 +28,15 @@ export const useAuthStore = defineStore('auth', {
                 throw new Error('Whoops, no access token found!');
             }
 
-            this.user = response;
+            if (response.user.role == 'user') {
+                alert('Bạn không có quyền truy cập trang web này');
+            } else {
+                this.user = response;
 
-            localStorage.setItem('user', JSON.stringify(response));
+                localStorage.setItem('user', JSON.stringify(response));
 
-            return response;
+                return response;
+            }
         },
         register(user) {
             this.user = null;

@@ -3,6 +3,7 @@
         <h3 class="bg-success text-white p-2 text-organ text-center">Chào mừng bạn đến với shop thú cưng</h3>
         <Form @submit="submitLogin" :validation-schema="loginValidate">
             <div class="m-3">
+                <strong v-if="errorLoginEmailOrPassword" class="text-danger">Email hoặc mật khẩu không hợp lệ</strong>
                 <div class="form-group font-weight-bold">
                     <label for="email">Email <strong class="text-danger">(*)</strong> </label>
                     <div>
@@ -54,6 +55,9 @@
 import * as yup from 'yup';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 export default {
+    props: {
+        errorLoginEmailOrPassword: { type: Boolean },
+    },
     components: {
         Field,
         Form,

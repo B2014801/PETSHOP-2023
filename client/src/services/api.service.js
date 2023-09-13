@@ -3,7 +3,6 @@ import vm from '@/main';
 
 const commonConfig = {
     headers: {
-        'Content-Type': 'application/json',
         Accept: 'application/json',
     },
 };
@@ -11,8 +10,27 @@ const commonConfig = {
 export const createApiClient = (baseURL, withAuthToken = false) => {
     const api = axios.create({
         baseURL,
-        ...commonConfig,
     });
+
+    //Add an interceptor to transform requests
+    api.interceptors.request.use((config) => {
+        // Check if the request data is FormData (multipart form data)
+        if (config.data instanceof FormData) {
+            // Set the appropriate content type for multipart form data
+            config.headers['Content-Type'] = 'multipart/form-data';
+        } else {
+            // Set the content type for JSON
+            config.headers['Content-Type'] = 'application/json';
+        }
+
+        return config;
+    });
+
+    // Apply common configuration
+    api.defaults.headers = {
+        ...api.defaults.headers,
+        ...commonConfig.headers,
+    };
 
     if (withAuthToken) {
         api.interceptors.request.use(async (config) => {
@@ -27,7 +45,7 @@ export const createApiClient = (baseURL, withAuthToken = false) => {
                     config.headers.x_authorization = `${user.accessToken}`;
                     return config;
                 } else {
-                    alert('bạn phải đăng nhập trước');
+                    // alert('bạn phải đăng nhập trước');
                     vm.$router.push({ name: 'login' });
                 }
             } catch (error) {

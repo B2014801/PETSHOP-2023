@@ -4,7 +4,7 @@
     </div>
 
     <div>
-        <LoginForm @submit:login="handleLogin" />
+        <LoginForm @submit:login="handleLogin" :errorLoginEmailOrPassword="errorLoginEmailOrPassword" />
     </div>
 </template>
 
@@ -21,6 +21,7 @@ export default {
         return {
             isShowErrorMessage: '',
             loading: false,
+            errorLoginEmailOrPassword: false,
         };
     },
     methods: {
@@ -31,13 +32,13 @@ export default {
 
             try {
                 const result = await this.login(user);
-
-                this.$router.push({ name: 'home' });
+                if (result) {
+                    this.$router.push({ name: 'home' });
+                }
             } catch (error) {
-                console.log(error);
-
-                this.loading = false;
-                this.message = 'Đã có lỗi xảy ra.';
+                this.errorLoginEmailOrPassword = true;
+                // this.loading = false;
+                // this.message = 'Đã có lỗi xảy ra.';
             }
         },
     },

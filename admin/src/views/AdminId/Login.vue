@@ -31,10 +31,8 @@ export default {
 
             try {
                 const result = await this.login(user);
-                if (result.user.role == 'admin') {
+                if (result) {
                     this.$router.push({ name: 'category' });
-                } else {
-                    alert('Bạn không có quyền truy cập trang web này');
                 }
             } catch (error) {
                 console.log(error);

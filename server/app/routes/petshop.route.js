@@ -9,8 +9,8 @@ const authController = require('../controllers/authController/auth.controller');
 const authMiddleware = require('../controllers/authController/auth.middlewares');
 const category = require('../controllers/Category/category.controller');
 const uploadMiddleware = require('../middlewares/multer');
-
 const brand = require('../controllers/brand/brand.controller');
+const user = require('../controllers/user/user.controller');
 
 router.route('/').get(product.home);
 
@@ -46,6 +46,10 @@ router.route('/cart/deleteOneProduct').delete(cart.deleteOneProduct);
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
 router.post('/auth/refresh', authController.refreshToken);
+//user
+router.route('/user/:id').get(user.findById).post(user.update);
+router.get('/user', user.findAll);
+router.route('/user/update').put(uploadMiddleware.single('img'), user.update);
 
 //category
 router.route('/category').get(category.getAllCategory).post(authMiddleware.isAuth, category.create);

@@ -2,6 +2,7 @@ import { createApiClient } from './api.service';
 class PetShopService {
     constructor(baseUrl = '/api/petshop') {
         this.api = createApiClient(baseUrl);
+        this.apiWithAuthToken = createApiClient(baseUrl, true);
     }
     async getAllProduct(id) {
         return (await this.api.get(`/product?brandId=${id}`)).data;
@@ -22,7 +23,7 @@ class PetShopService {
         return (await this.api.get(`/product/?name=${name}`)).data;
     }
     async addToCart(id, data) {
-        return (await this.api.post(`/product/${id}`, data)).data;
+        return (await this.apiWithAuthToken.post(`/product/${id}`, data)).data;
     }
 
     // async getCart() {

@@ -4,11 +4,18 @@
             <h3 class="bg-success text-white p-2 text-organ text-center">Tạo tài khoản</h3>
             <div class="m-3">
                 <div class="form-group font-weight-bold">
-                    <label for="username">Họ tên <strong class="text-danger">(*)</strong> </label>
+                    <label for="name">Họ tên <strong class="text-danger">(*)</strong> </label>
                     <div>
-                        <Field type="text" id="username" name="username" class="form-control" placeholder="Họ tên" />
+                        <Field
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="form-control"
+                            placeholder="Họ tên"
+                            v-model="formData.name"
+                        />
                     </div>
-                    <ErrorMessage name="username" class="text-danger" />
+                    <ErrorMessage name="name" class="text-danger" />
                 </div>
                 <div class="form-group font-weight-bold mt-2">
                     <label for="email">Email <strong class="text-danger">(*)</strong> </label>
@@ -92,7 +99,7 @@ export default {
     },
     data() {
         const validateCreate = yup.object().shape({
-            username: yup
+            name: yup
                 .string()
                 .required('Bạn chưa nhập tên')
                 .min(2, 'tên phải có ít nhất 2 ký tự')
@@ -113,6 +120,7 @@ export default {
             validateCreate,
             formData: {
                 // Initialize an empty object to store form data
+                name: '',
                 email: '',
                 phone: '',
                 password: '',
