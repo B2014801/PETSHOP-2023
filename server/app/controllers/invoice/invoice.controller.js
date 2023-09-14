@@ -42,10 +42,10 @@ exports.getAllInvoiceOfOneUser = async (req, res, next) => {
     }
 };
 
-exports.cancelOrder = async (req, res, next) => {
+exports.updateStatus = async (req, res, next) => {
     try {
         const invoiceService = new InvoiceService(MongoDB.client);
-        const result = await invoiceService.updateStatus(req.params.id);
+        const result = await invoiceService.updateStatus(req.body);
         if (result) {
             res.send(result);
         }

@@ -14,7 +14,7 @@
             <tbody>
                 <tr v-for="item in filteredData" :key="item">
                     <td v-for="(field, index) in fieldsMap" :key="field">
-                        <div v-if="isOrder && fields[index] == 'Product'">
+                        <div v-if="isOrder && field == 'Product'">
                             <div v-for="(product, index) in item[field]" class="order-product-containter">
                                 <img :src="product.img" alt="" height="60" width="100" />
 
@@ -38,6 +38,15 @@
                                 </router-link>
                                 <i @click="() => deleteProduct(item.id)" class="fa-solid fa-trash"></i>
                             </div>
+                        </div>
+                        <div v-if="field == 'confirm'">
+                            <button
+                                @click="handleChangeStatePurchase(item._id, item.Status)"
+                                :disabled="item.Status == 4 || item.Status == 2"
+                                class="btn btn-secondary"
+                            >
+                                {{ getTitleConfirm(item.Status) }}
+                            </button>
                         </div>
                         <div v-else>
                             <div v-if="field == 'img'">
@@ -86,7 +95,7 @@ export default {
     data() {
         return {
             // Create a copy of Data for sorting
-            sortedData: [...this.Data],
+            sortedData: this.Data,
             classProps: 'w-50 mx-auto  border m-1 p-2',
             searchQuery: '',
             sortedField: '',
@@ -160,6 +169,25 @@ export default {
         },
         async deleteProduct(id) {
             this.$emit('deleteProduct', id);
+        },
+        getTitleConfirm(status) {
+            let title = '';
+            if (status == 0) {
+                title = 'Duyệt';
+            }
+            if (status == 1 || status == 2) {
+                title = 'Giao';
+            }
+            if (status == 3) {
+                title = 'Hoàn Tất';
+            }
+            if (status == 4) {
+                title = 'Đã huỷ';
+            }
+            return title;
+        },
+        handleChangeStatePurchase(id, status) {
+            this.$emit('handleChangeStatePurchase', id, status);
         },
     },
 };

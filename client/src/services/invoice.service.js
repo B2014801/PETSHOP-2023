@@ -9,8 +9,8 @@ class InvoiceService {
     async getAllInvoice(state, userid) {
         return (await this.api.get(`?state=${state}&userid=${userid}`)).data;
     }
-    async cancelOrder(id) {
-        return (await this.api.put(`/${id}`)).data;
+    async cancelOrder(data) {
+        return (await this.api.put('/', data)).data;
     }
 }
 export default new InvoiceService();

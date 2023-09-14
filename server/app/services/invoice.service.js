@@ -38,22 +38,18 @@ class InvoiceService {
     }
 
     async getAllInvoice(state, userid) {
-        const status = parseInt(state);
+        let status = parseInt(state);
         try {
-            let filter = {};
+            const filter = {};
             if (state && userid) {
-                filter = {
-                    UserId: new ObjectId(userid),
-                    StatusId: status,
-                };
-            }
-            if (userid && !state) {
-                filter = {
-                    UserId: new ObjectId(userid), // to get all state
-                };
-            }
-            if (!userid && !state) {
-                filter = {};
+                filter.UserId = new ObjectId(userid);
+                if (status == 1 || status == 0) {
+                    filter.StatusId = { $in: [0, 1] };
+                } else {
+                    filter.StatusId = status;
+                }
+            } else if (userid && !state) {
+                filter.UserId = new ObjectId(userid);
             }
             // get Invoice with status of one user
             const InvoiceProduct = await this.Invoice.find(filter).toArray();
@@ -78,7 +74,7 @@ class InvoiceService {
                 let order = {}; //refesh 1 order to add another order
 
                 let OrderDetail = []; // to get all detail of 1 order
-                order._id = new ObjectId(items_remain.Invoiceid);
+                order._id = new ObjectId(items_remain._id);
                 order.status = items_remain.status;
                 for (const item of items) {
                     let product = await this.Product.findOne({ _id: new ObjectId(item._id) });
@@ -95,6 +91,7 @@ class InvoiceService {
                     email: email,
                     phone: phone,
                 };
+                order.status = items_remain.StatusId;
                 order.user = user;
                 order.orderdate = items_remain.CreateDate;
                 order.deliverydate = items_remain.DeliveryDate;
@@ -110,11 +107,26 @@ class InvoiceService {
             console.log(error);
         }
     }
-    async updateStatus(id) {
+    async updateStatus(data) {
         try {
-            const result = await this.Invoice.findOneAndUpdate({ _id: new ObjectId(id) }, { $set: { StatusId: 4 } });
-            if (result) {
-                return true;
+            let StatusChangeTo = null;
+            if (data.status == 0) {
+                StatusChangeTo = 1;
+            }
+            if (data.status == 1) {
+                StatusChangeTo = 2;
+            }
+            if (data.status == null) {
+                StatusChangeTo = 4;
+            }
+            if (StatusChangeTo != null) {
+                const result = await this.Invoice.findOneAndUpdate(
+                    { _id: new ObjectId(data.id) },
+                    { $set: { StatusId: StatusChangeTo } },
+                );
+                if (result) {
+                    return true;
+                }
             }
         } catch (error) {
             console.log(error);

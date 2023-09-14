@@ -65,8 +65,8 @@ router
 router
     .route('/invoice')
     .post(authMiddleware.isAuth, invoice.create)
-    .get(authMiddleware.isAuth, invoice.getAllInvoiceOfOneUser);
-router.route('/invoice/:id').put(authMiddleware.isAuth, invoice.cancelOrder);
+    .get(authMiddleware.isAuth, invoice.getAllInvoiceOfOneUser)
+    .put(authMiddleware.isAuth, invoice.updateStatus);
 // user
 
 //

@@ -7,6 +7,7 @@
             :Data="getDataTable()"
             :isOrder="true"
             :fieldsMap="fieldsMap"
+            @handleChangeStatePurchase="handleChangeStatePurchase"
         ></Table>
     </div>
 </template>
@@ -31,8 +32,8 @@ export default {
             // fieldss,
             // studentData,
             Invoices: [],
-            fields: ['STT', 'Phone', 'Product', 'Total', 'Orderdate', 'Deliverydate'],
-            fieldsMap: ['ID', 'Phone', 'Product', 'Total', 'Orderdate', 'Deliverydate'],
+            fields: ['STT', 'Địa chỉ', 'Sản phẩm', 'Tổng cộng', 'Ngày đặt', 'Ngày giao', 'Sửa'],
+            fieldsMap: ['ID', 'Phone', 'Product', 'Total', 'Orderdate', 'Deliverydate', 'confirm'],
         };
     },
     methods: {
@@ -49,6 +50,8 @@ export default {
             this.Invoices.forEach(async (item, index) => {
                 let data = {};
                 data.ID = index;
+                data._id = item._id;
+                data.Status = item.status;
                 data.Phone = item.user.phone;
                 data.Product = item.detail;
                 data.Orderdate = item.orderdate;
@@ -70,6 +73,16 @@ export default {
                 // if (temporary_price) {
                 return this.formatNumberWithDot(temporary_price);
                 // }
+            }
+        },
+        async handleChangeStatePurchase(id, status) {
+            let data = {
+                id: id,
+                status: status,
+            };
+            const result = await InvoiceService.updateState(data);
+            if (result) {
+                this.getAllInvoice();
             }
         },
     },

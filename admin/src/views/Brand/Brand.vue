@@ -25,7 +25,7 @@ import Table from '@/components/table/table.vue';
 export default {
     data() {
         return {
-            brands: { type: Array, default: [] },
+            brands: [],
             images: images,
             fields: ['STT', 'Tên', 'Hình ảnh', 'Sửa'],
             fieldsMap: ['STT', 'name', 'img', 'edit'],
@@ -39,7 +39,6 @@ export default {
         async getAllBrand() {
             try {
                 this.brands = await BrandService.getAllBrand();
-                console.log(this.brands);
             } catch (error) {
                 console.log(error);
             }
@@ -55,17 +54,20 @@ export default {
         getDataTable() {
             let datas = [];
             try {
-                this.brands.map(async (item, index) => {
-                    let data = {};
-                    data.STT = index;
-                    data.id = item._id;
-                    data.name = item.name;
-                    data.img = item.img;
+                if (this.brands.length != 0) {
+                    this.brands.map(async (item, index) => {
+                        let data = {};
+                        data.STT = index;
+                        data.id = item._id;
+                        data.name = item.name;
+                        data.img = item.img;
 
-                    datas.push(data);
-                });
-                return datas;
+                        datas.push(data);
+                    });
+                    return datas;
+                }
             } catch (error) {
+                console.log(this.brands);
                 console.log(error);
             }
         },

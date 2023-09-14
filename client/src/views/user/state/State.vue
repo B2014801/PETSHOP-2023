@@ -116,9 +116,7 @@ export default {
                     (total, item) => total + item.ordernumber * item.oldprice.replace(/\./g, ''),
                     0,
                 );
-                if (temporary_price) {
-                    return this.formatNumberWithDot(temporary_price);
-                }
+                return this.formatNumberWithDot(temporary_price);
             }
         },
         getIconAndStatus(status) {
@@ -126,6 +124,7 @@ export default {
             const _status = parseInt(status);
             switch (_status) {
                 case 0:
+                case 1:
                     return '<p class="mb-0 text-success"><i class="fa-solid fa-check"></i> Đơn hàng đang được xác nhận</p>';
                 case 2:
                     return '<p class="mb-0 text-success"><i class="fa-solid fa-truck"></i> Đang giao hàng</p>';
@@ -140,7 +139,11 @@ export default {
         },
         async handleCancelOrder(id) {
             try {
-                const result = await InvoiceService.cancelOrder(id);
+                let data = {
+                    id: id,
+                    status: null,
+                };
+                const result = await InvoiceService.cancelOrder(data);
                 if (result) {
                     this.CountCanCelOrderSuccess++;
                     this.isShowCanCelOrderSuccess = true;
@@ -150,7 +153,7 @@ export default {
             } catch (error) {}
         },
         isShowBtnCancelOrder(status) {
-            return parseInt(status) == 0;
+            return parseInt(status) == 0 || parseInt(status) == 1;
         },
         hideCanCelOrderSuccess() {
             this.isShowCanCelOrderSuccess = false;
