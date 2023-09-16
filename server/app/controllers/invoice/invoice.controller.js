@@ -53,3 +53,12 @@ exports.updateStatus = async (req, res, next) => {
         console.log(error);
     }
 };
+exports.getRevenue = async (req, res, next) => {
+    try {
+        const invoiceService = new InvoiceService(MongoDB.client);
+        const documents = await invoiceService.getRevenueWith();
+        res.send(documents);
+    } catch (error) {
+        console.log(error);
+    }
+};

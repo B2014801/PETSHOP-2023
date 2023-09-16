@@ -5,9 +5,10 @@
         id="navBarCollapse"
     >
         <div class="w-50">
-            <Search />
+            <!-- <Search /> -->
+            <slot></slot>
             <div class="ms-2">
-                <Category />
+                <Category :Categorys="Categorys" />
             </div>
         </div>
     </div>
@@ -19,6 +20,7 @@ import Search from '@/components/search/Search.vue';
 export default {
     props: {
         isCollapsed: { type: Boolean },
+        Categorys: { type: Array },
     },
     components: {
         Category,

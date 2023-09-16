@@ -4,6 +4,7 @@
             <button class="navbar-toggler" type="button" @click="toggleCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <router-link to="/" class="mr-2">
                 <img :src="images.logo" class="" alt="" width="130" height="70" />
             </router-link>
@@ -60,7 +61,15 @@
             </div>
         </div>
     </nav>
-    <CollapseContent :isCollapsed="isCollapsed" />
+    <CollapseContent :isCollapsed="isCollapsed" :Categorys="Categorys">
+        <Search
+            @value="getProductWithName"
+            :products="products"
+            :LoadingSearch="LoadingSearch"
+            :isEmptyProduct="isEmptyProduct"
+            :isSearch="isSearch"
+        ></Search>
+    </CollapseContent>
 </template>
 <script>
 import { useAuthStore } from '@/stores/auth.store';

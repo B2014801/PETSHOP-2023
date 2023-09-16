@@ -1,7 +1,7 @@
 <template>
     <Form @submit="handleSubmit" :validation-schema="UserUpdateValidate" enctype="multipart/form-data">
         <div class="row">
-            <div class="col-md-4 col-sm-12 col-12 text-center">
+            <div class="col-md-4 col-sm-12 col-12 text-center" v-if="isShowImg">
                 <img
                     :src="user.img"
                     class="rounded-circle d-block mx-auto"
@@ -15,8 +15,11 @@
                 <ErrorMessage class="text-danger" name="img" />
             </div>
 
-            <div class="col-md-8 col-12 col-sm-12 mx-auto">
+            <div :class="{ 'col-md-8 col-12 col-sm-12': true, 'mx-auto': isShowImg == true }">
                 <div>
+                    <h6 v-if="countUpdateTime > 0" class="text-left my-2" style="color: #37e32a">
+                        <i class="fa-solid fa-check"></i> Cập nhật thành công x {{ countUpdateTime }}
+                    </h6>
                     <div class="form-group mb-2">
                         <label for="name">Họ và tên</label>
                         <Field type="text" class="form-control" name="name" id="hoten" v-model="user.name" />
@@ -39,6 +42,7 @@
                     <div class="profile-update-btn">
                         <button class="btn btn-success" type="submit">Cập nhật</button>
                         <button
+                            v-if="isShowImg"
                             class="btn btn-success"
                             name="doimatkhau"
                             data-toggle="modal"
@@ -46,7 +50,7 @@
                         >
                             Đổi mật khẩu
                         </button>
-                        <button @click.prevent="handleLogout" class="btn btn-danger">Đăng xuất</button>
+                        <button v-if="isShowImg" @click.prevent="handleLogout" class="btn btn-danger">Đăng xuất</button>
                     </div>
                 </div>
 
@@ -109,6 +113,8 @@ export default {
     },
     props: {
         user: { type: Object },
+        isShowImg: { type: Boolean, default: true },
+        countUpdateTime: { type: Number, default: 0 },
     },
     data() {
         const UserUpdateValidate = yup.object().shape({

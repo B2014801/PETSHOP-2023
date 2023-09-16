@@ -25,7 +25,7 @@
             </div>
         </div>
     </div>
-    <div class="product-list-devide-page">
+    <div class="product-list-devide-page" v-if="totalPages >= 2">
         <button @click="previousPage" :disabled="currentPage === 1"><i class="fa-solid fa-chevron-left"></i></button>
         <button
             @click="targetPage(index)"

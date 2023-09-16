@@ -64,6 +64,19 @@
                     Đơn hàng
                 </router-link>
             </li>
+            <li class="nav-item dropdown">
+                <router-link
+                    class="nav-link"
+                    href="index.php"
+                    id="navbarDropdownMenuLink"
+                    role="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    to="/revenue"
+                >
+                    Doanh thu
+                </router-link>
+            </li>
         </ul>
     </div>
 </template>

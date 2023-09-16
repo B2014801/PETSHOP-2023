@@ -14,6 +14,11 @@
             <tbody>
                 <tr v-for="item in filteredData" :key="item">
                     <td v-for="(field, index) in fieldsMap" :key="field">
+                        <div v-if="field == 'Address'">
+                            <p class="my-1">{{ item[field].phone }}</p>
+                            <p class="m-0">{{ item[field].address }}</p>
+                        </div>
+
                         <div v-if="isOrder && field == 'Product'">
                             <div v-for="(product, index) in item[field]" class="order-product-containter">
                                 <img :src="product.img" alt="" height="60" width="100" />
@@ -53,7 +58,7 @@
                                 <img :src="item[field]" alt="" height="60" width="100" />
                             </div>
                             <div v-else>
-                                <div v-if="field != 'Product'">
+                                <div v-if="field != 'Product' && field != 'Address'">
                                     {{ item[field] }}
                                 </div>
                             </div>

@@ -33,7 +33,7 @@ export default {
     methods: {
         async getAllProduct() {
             try {
-                this.products = await PetshopService.getAllProduct(this.id);
+                this.products = await PetshopService.getAllProductWithBrandId(this.id);
             } catch (error) {
                 console.log(error);
             }

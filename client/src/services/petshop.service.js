@@ -4,7 +4,10 @@ class PetShopService {
         this.api = createApiClient(baseUrl);
         this.apiWithAuthToken = createApiClient(baseUrl, true);
     }
-    async getAllProduct(id) {
+    async getAllProduct() {
+        return (await this.api.get('/product')).data;
+    }
+    async getAllProductWithBrandId(id) {
         return (await this.api.get(`/product?brandId=${id}`)).data;
     }
     async findProductById(id) {

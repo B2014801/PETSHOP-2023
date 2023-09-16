@@ -79,11 +79,11 @@ export default {
 .nav {
     margin: 0px 10px;
 }
-/* @media all and (min-width: 992px) { */
+// @media all and (min-width: 992px) {
 .navbar .nav-item:hover .dropdown-menu {
     display: block;
 }
-/* } */
+// }
 .nav-link,
 .dropdown-item,
 .nav-link-collapse {

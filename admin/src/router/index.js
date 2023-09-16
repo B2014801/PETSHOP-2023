@@ -12,6 +12,7 @@ import {
     AddBrand,
     EditBrand,
     Order,
+    Revenue,
 } from '@/views/';
 
 import { useAuthStore } from '@/stores/auth.store';
@@ -88,6 +89,12 @@ const routes = [
         path: '/order',
         name: 'order',
         component: Order,
+        // props: true,
+    },
+    {
+        path: '/revenue',
+        name: 'revenue',
+        component: Revenue,
         // props: true,
     },
 ];

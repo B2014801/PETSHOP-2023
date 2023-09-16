@@ -2,7 +2,7 @@
     <div class="container my-2" v-if="user != null">
         <hr />
         <h3 class="text-center text-uppercase">Thông tin cá nhân</h3>
-        <UpdateUserInforForm :user="user" @submit:update="handleUpdateUser" />
+        <UpdateUserInforForm :countUpdateTime="countUpdateTime" :user="user" @submit:update="handleUpdateUser" />
     </div>
 </template>
 
@@ -18,6 +18,7 @@ export default {
     data() {
         return {
             user: null,
+            countUpdateTime: 0,
         };
     },
     methods: {
@@ -38,6 +39,7 @@ export default {
                 const result = await UserService.update(data);
                 if (result) {
                     this.getUserInfor();
+                    this.countUpdateTime++;
                 }
             } catch (error) {
                 console.log(error);

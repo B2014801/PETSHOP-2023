@@ -9,6 +9,9 @@ class Invoice {
     async updateState(data) {
         return (await this.api.put('/', data)).data;
     }
+    async getRevenue() {
+        return (await this.api.get('/revenue')).data;
+    }
 }
 
 export default new Invoice();

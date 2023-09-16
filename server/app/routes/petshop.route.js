@@ -71,6 +71,7 @@ router
 
 //
 router.route('/invoice/all').get(authMiddleware.isAuth, invoice.getAllInvoice);
+router.route('/invoice/revenue').get(invoice.getRevenue);
 //
 brand;
 router.route('/brand').get(brand.getAllBrand).post(authMiddleware.isAuth, uploadMiddleware.single('img'), brand.create);

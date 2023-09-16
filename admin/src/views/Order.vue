@@ -33,13 +33,14 @@ export default {
             // studentData,
             Invoices: [],
             fields: ['STT', 'Địa chỉ', 'Sản phẩm', 'Tổng cộng', 'Ngày đặt', 'Ngày giao', 'Sửa'],
-            fieldsMap: ['ID', 'Phone', 'Product', 'Total', 'Orderdate', 'Deliverydate', 'confirm'],
+            fieldsMap: ['ID', 'Address', 'Product', 'Total', 'Orderdate', 'Deliverydate', 'confirm'],
         };
     },
     methods: {
         async getAllInvoice() {
             try {
                 this.Invoices = await InvoiceService.getAllInvoice();
+                console.log(this.Invoices);
             } catch (error) {
                 console.log(error);
             }
@@ -52,7 +53,7 @@ export default {
                 data.ID = index;
                 data._id = item._id;
                 data.Status = item.status;
-                data.Phone = item.user.phone;
+                data.Address = { address: item.user.address, phone: item.user.phone };
                 data.Product = item.detail;
                 data.Orderdate = item.orderdate;
                 data.Deliverydate = item.deliverydate;

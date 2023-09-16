@@ -20,7 +20,7 @@
                 <HalfCircleSpinner v-else class="mx-auto" :animation-duration="1200" :size="20" color="#4f0b14" />
             </div>
         </Form>
-        <div class="search-result-container-wrapper">
+        <div class="search-result-container-wrapper" v-if="isSearch">
             <div v-show="showSearchResults && isSearch && KeySearch != ''" class="search-result-container">
                 <div
                     v-for="(product, index) in products"
@@ -135,6 +135,7 @@ export default {
         top: 86%;
         right: 0;
         bottom: 0;
+
         z-index: 1;
         .search-result-container {
             padding: 10px 0;
@@ -143,6 +144,7 @@ export default {
             background-color: #fff;
             // height: 400px;
             min-width: 240px;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
             overflow-y: scroll;
             .search-result-item {
                 &:hover {

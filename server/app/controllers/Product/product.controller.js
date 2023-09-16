@@ -37,7 +37,8 @@ exports.getAllProduct = async (req, res, next) => {
             documents = await productService.find({});
         }
     } catch (error) {
-        return next(new ApiError(500, 'Error when get all product'));
+        // return next(new ApiError(500, 'Error when get all product'));
+        console.log(error);
     }
     return res.send(documents);
 };

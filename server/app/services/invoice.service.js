@@ -52,7 +52,7 @@ class InvoiceService {
                 filter.UserId = new ObjectId(userid);
             }
             // get Invoice with status of one user
-            const InvoiceProduct = await this.Invoice.find(filter).toArray();
+            const InvoiceProduct = await this.Invoice.find(filter).sort({ CreateDate: -1 }).toArray();
             //to get each product
             //to get each order
             let documents = [];
@@ -86,10 +86,11 @@ class InvoiceService {
                 }
                 order.detail = OrderDetail;
 
-                let { email, phone } = await this.User.findOne({ _id: items_remain.UserId });
+                let { email, phone, address } = await this.User.findOne({ _id: items_remain.UserId });
                 let user = {
                     email: email,
                     phone: phone,
+                    address: address,
                 };
                 order.status = items_remain.StatusId;
                 order.user = user;
@@ -127,6 +128,48 @@ class InvoiceService {
                 if (result) {
                     return true;
                 }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async getRevenueWith() {
+        try {
+            const result = await this.Invoice.aggregate([
+                {
+                    $unwind: '$Detail', // Flatten the "detail" array
+                },
+                {
+                    $project: {
+                        year: { $year: { $dateFromString: { dateString: '$CreateDate' } } },
+                        month: { $month: { $dateFromString: { dateString: '$CreateDate' } } },
+                        price: {
+                            $convert: {
+                                input: {
+                                    $reduce: {
+                                        input: { $split: ['$Detail.price', '.'] },
+                                        initialValue: '',
+                                        in: { $concat: ['$$value', '$$this'] },
+                                    },
+                                },
+                                to: 'double',
+                            },
+                        },
+                    },
+                },
+                {
+                    $group: {
+                        _id: { year: '$year', month: '$month' },
+                        totalRevenue: { $sum: '$price' },
+                        count: { $sum: 1 },
+                    },
+                },
+                {
+                    $sort: { '_id.year': 1, '_id.month': 1 },
+                },
+            ]).toArray();
+            if (result) {
+                return result;
             }
         } catch (error) {
             console.log(error);

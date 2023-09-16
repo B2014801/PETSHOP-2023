@@ -1,61 +1,14 @@
 <template>
     <div v-if="isShowCheckOut" class="container row mx-auto mt-2">
         <div class="col-md-6 col-12 mb-2">
-            <form>
-                <h3 class="col-12 pl-0">Thông tin thanh toán</h3>
-                <div class="form-inline">
-                    <div class="checkout-infor-namephone">
-                        <div class="form-group my-1">
-                            <label for="form-check-label"><b>Tên </b>(<strong class="text-danger">*</strong>)</label>
-                            <input
-                                type="text"
-                                name="hoten"
-                                value="hoten"
-                                class="form-control w-100 mt-1"
-                                placeholder="Nhập tên của bạn"
-                            />
-                        </div>
-                        <div class="form-group my-1">
-                            <label for="form-check-label"
-                                ><b>Số điện thoại </b> (<strong class="text-danger">*</strong>)</label
-                            >
-                            <input
-                                type="text"
-                                id="sdt"
-                                name="sodienthoai"
-                                value="sodienthoai"
-                                class="form-control w-100 mt-1"
-                                placeholder="Nhập Email của bạn"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group my-1 col-sm-12 pr-md-0 pr-sm-0 pl-0">
-                    <label for="form-check-label"><b>Email </b>(<strong class="text-danger">*</strong>)</label>
-                    <input
-                        type="text"
-                        name="email"
-                        value="email"
-                        class="form-control w-100 mt-1"
-                        placeholder="Nhập Email của bạn"
-                    />
-                </div>
-                <div class="form-group my-1 col-sm-12 pr-md-0 pr-sm-0 pl-0">
-                    <label for="form-check-label"
-                        ><b>Địa chỉ nhận hàng </b>(<strong class="text-danger">*</strong>)</label
-                    >
-                    <input
-                        type="text"
-                        id="diachi"
-                        name="diachi"
-                        value="diachi"
-                        class="form-control w-100 mt-1"
-                        placeholder="Nhập địa chỉ của bạn"
-                    />
-                </div>
-
-                <div><button class="btn btn-danger mt-2" name="capnhatthongtin" type="submit">Cập nhật</button></div>
-            </form>
+            <!-- <form> -->
+            <h3 class="col-12 pl-0">Thông tin thanh toán</h3>
+            <UpdateUserForm
+                :countUpdateTime="countUpdateTime"
+                :user="User"
+                :isShowImg="false"
+                @submit:update="handleUpdateUser"
+            />
         </div>
 
         <div class="col-md-6 col-12 mb-2 col" style="border: 2px solid blue">
@@ -184,8 +137,11 @@ import { Form, Field, ErrorMessage } from 'vee-validate';
 import { IntersectingCirclesSpinner } from 'epic-spinners';
 
 import CartService from '@/services/cart.service';
+import UserService from '@/services/user.service';
 import { useAuthStore } from '@/stores/auth.store';
 import InvoiceService from '@/services/invoice.service';
+import UpdateUserForm from '@/components/form/UpdateUserInforForm.vue';
+
 import * as yup from 'yup';
 export default {
     components: {
@@ -193,10 +149,12 @@ export default {
         Field,
         ErrorMessage,
         IntersectingCirclesSpinner,
+        UpdateUserForm,
     },
     data() {
         return {
             CheckOutData: [],
+            User: {},
             isShowCheckOut: false,
             isChooseMethodPayment: false,
             isChooseOneMethodPayment: null,
@@ -204,6 +162,7 @@ export default {
             isShowErrorChoosePaymentMethod: false,
             isShowEmptyCheckOut: false,
             isShowLoading: false,
+            countUpdateTime: 0,
         };
     },
     methods: {
@@ -221,7 +180,8 @@ export default {
             try {
                 const user = await this.getUser();
                 this.CheckOutData = await CartService.getCarts(user._id);
-                if (this.CheckOutData.length != 0) {
+                this.User = await UserService.getUser(user._id);
+                if (this.CheckOutData.length != 0 && Object.keys(this.User).length != 0) {
                     this.isShowCheckOut = true;
                 } else {
                     // this.isShowEmptyCart = true;
@@ -231,6 +191,17 @@ export default {
             } catch (error) {
                 // alert('vui lòng đăng nhập trước');
                 // this.$router.push({ name: 'login' });
+                console.log(error);
+            }
+        },
+        async handleUpdateUser(data) {
+            try {
+                const result = await UserService.update(data);
+                if (result) {
+                    this.countUpdateTime++;
+                    this.getCheckOutData();
+                }
+            } catch (error) {
                 console.log(error);
             }
         },
