@@ -26,9 +26,9 @@ exports.getAllProduct = async (req, res, next) => {
 
     try {
         const productService = new ProductService(MongoDB.client);
-        const { name, brandId } = req.query;
-        if (name) {
-            documents = await productService.findByName(name);
+        const { name, brandId, exceptId } = req.query;
+        if (name || exceptId) {
+            documents = await productService.findByName(name, exceptId);
         }
         if (brandId) {
             documents = await productService.findByBrandId(brandId);

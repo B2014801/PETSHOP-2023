@@ -39,7 +39,7 @@ class ProductService {
         return await cursor.toArray();
     }
     // find product by name
-    async findByName(name) {
+    async findByName(name, exceptId) {
         try {
             // Input search term with accented characters
             var searchTerm = name.toUpperCase(); // Change this to the accented character you want to search for
@@ -51,7 +51,8 @@ class ProductService {
                 I: '[IÍÌÎÏ]',
                 O: '[OÓÒÔÖÕ]',
                 U: '[UÚÙÛÜ]',
-                D: '[Đ]',
+                D: '[ĐD]',
+                Đ: '[DĐ]',
                 // Add more mappings for other accented characters as needed
             };
 
@@ -65,9 +66,16 @@ class ProductService {
                     term.push(char); // If the character is not accented, add it as is
                 }
             }
+
             var regexp = new RegExp(term.join(''));
 
-            const result = await this.Product.find({ name: { $regex: regexp, $options: 'i' } }).toArray();
+            let filter = {
+                name: { $regex: regexp, $options: 'i' },
+            };
+            if (exceptId) {
+                filter._id = { $ne: new ObjectId(exceptId) };
+            }
+            const result = await this.Product.find(filter).toArray();
             return result;
         } catch (error) {
             console.log(error);

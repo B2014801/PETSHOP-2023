@@ -25,6 +25,9 @@ class PetShopService {
     async findByName(name) {
         return (await this.api.get(`/product/?name=${name}`)).data;
     }
+    async findByNameExceptId(name, id) {
+        return (await this.api.get(`/product/?name=${name}&&exceptId=${id}`)).data;
+    }
     async addToCart(id, data) {
         return (await this.apiWithAuthToken.post(`/product/${id}`, data)).data;
     }

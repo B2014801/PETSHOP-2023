@@ -231,7 +231,7 @@
         <section>
             <hr />
             <h4>SẢN PHẨM TƯƠNG TỰ</h4>
-            <ProductList />
+            <ProductList :products="products" />
         </section>
     </section>
 </template>
@@ -247,6 +247,7 @@ export default {
     data() {
         return {
             product: {},
+            products: [],
             images: images,
             isShowProductDetail: false,
             isShowCollapse1: false,
@@ -271,6 +272,7 @@ export default {
                             .min(1, 'Tối thiểu là 1')
                             .max(this.product.number, 'Không đủ hàng'),
                     });
+                    this.findByName();
                     this.isShowProductDetail = true;
                 }
             } catch (error) {
@@ -284,6 +286,12 @@ export default {
                     hash: this.$route.hash,
                 });
             }
+        },
+        async findByName() {
+            try {
+                this.products = await PetshopService.findByNameExceptId(this.product.name, this.product._id);
+                console.log(this.products);
+            } catch (er) {}
         },
         handleCollapse1() {
             this.isShowCollapse1 = !this.isShowCollapse1;
