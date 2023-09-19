@@ -40,11 +40,38 @@ class ProductService {
     }
     // find product by name
     async findByName(name) {
-        const result = await this.Product.find({
-            //so sanh voi name trogn mongodb // khop chu khoa thuong : i
-            name: { $regex: new RegExp(name), $options: 'i' },
-        }).toArray();
-        return result;
+        try {
+            // Input search term with accented characters
+            var searchTerm = name.toUpperCase(); // Change this to the accented character you want to search for
+
+            // Define a mapping of accented characters to regular expressions
+            var map = {
+                A: '[AÁÀÂÄÃẮẰẶ]',
+                E: '[EÉÈÊË]',
+                I: '[IÍÌÎÏ]',
+                O: '[OÓÒÔÖÕ]',
+                U: '[UÚÙÛÜ]',
+                D: '[Đ]',
+                // Add more mappings for other accented characters as needed
+            };
+
+            var term = [];
+            for (var i = 0; i < searchTerm.length; i++) {
+                var char = searchTerm.charAt(i).toUpperCase();
+                var reg = map[char];
+                if (reg) {
+                    term.push(reg);
+                } else {
+                    term.push(char); // If the character is not accented, add it as is
+                }
+            }
+            var regexp = new RegExp(term.join(''));
+
+            const result = await this.Product.find({ name: { $regex: regexp, $options: 'i' } }).toArray();
+            return result;
+        } catch (error) {
+            console.log(error);
+        }
     }
     async findByBrandId(id) {
         return await this.Product.find({

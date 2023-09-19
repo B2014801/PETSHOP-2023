@@ -85,6 +85,10 @@ const routes = [
         props: true,
     },
     {
+        path: '/chat',
+        component: import('@/views/Chat.vue'),
+    },
+    {
         path: '/user',
         name: 'user',
         component: UserHome,
