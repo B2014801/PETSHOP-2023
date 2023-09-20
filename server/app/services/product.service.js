@@ -25,6 +25,13 @@ class ProductService {
     // create and save product
     async create(payload, img) {
         const product = this.extractProductData(payload, img);
+
+        const { format, addDays } = require('date-fns');
+
+        // Get the current date and format it as 'YYYY-MM-DD'
+        const currentDate = new Date();
+        const formattedDate = format(currentDate, 'yyyy-MM-dd HH:mm:ss');
+        product.createDate = formattedDate;
         const result = await this.Product.findOneAndUpdate(
             product,
             { $set: {} },
@@ -100,6 +107,15 @@ class ProductService {
         };
         // if (img) {
         const update = this.extractProductData(payload, img);
+
+        const product = this.extractProductData(payload, img);
+
+        const { format, addDays } = require('date-fns');
+
+        // Get the current date and format it as 'YYYY-MM-DD'
+        const currentDate = new Date();
+        const formattedDate = format(currentDate, 'yyyy-MM-dd HH:mm:ss');
+        update.updateDate = formattedDate;
         // }
         const result = await this.Product.findOneAndUpdate(filter, { $set: update }, { returnDocument: 'after' });
         return result.value;

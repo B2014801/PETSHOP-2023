@@ -9,8 +9,8 @@
                         </div>
                         <img :style="{ height: responseImg }" :src="product.img" class="card-img-top" alt="#" />
                         <div class="card-body text-center p-1">
-                            <p class="mb-1">{{ product.name }}</p>
                             <div v-if="!CategoryName">
+                                <p class="mb-1">{{ product.name }}</p>
                                 <span class="card-title" v-if="isDiscout(index)">
                                     <del class="discountDel">{{ getProductPrice(index) }}</del
                                     ><bdi class="text-danger fw-bold">{{ getProductAfterDisCount(index) }}</bdi>
@@ -18,6 +18,9 @@
                                 <span v-else class="card-title">
                                     <b>{{ getProductPrice(index) }}</b>
                                 </span>
+                            </div>
+                            <div v-else>
+                                <h5 class="brand-title">{{ product.name }}</h5>
                             </div>
                         </div>
                     </div>
@@ -50,7 +53,7 @@ export default {
         return {
             images: '',
             screenWidth: 0,
-            itemsPerPage: 1,
+            itemsPerPage: 2,
             currentPage: 1,
             // isSmallScreen: window.innerWidth <= 768,
         };
@@ -183,5 +186,9 @@ export default {
         border: none;
         color: #fff;
     }
+}
+.brand-title {
+    text-transform: uppercase;
+    font-size: 16px;
 }
 </style>
