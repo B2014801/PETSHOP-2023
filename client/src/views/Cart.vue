@@ -1,23 +1,25 @@
 <template>
     <div class="row mx-md-5 mx-1 my-2">
-        <div><h1 class="text-center">Giỏ Hàng</h1></div>
-        <div class="text-center">
-            <intersecting-circles-spinner
-                v-if="isShowLoading"
-                class="mx-auto"
-                :animation-duration="1200"
-                :size="50"
-                color="#ff1d5e"
-            />
+        <div class="my-2">
+            <h2 class="text-center">Giỏ Hàng</h2>
+            <div class="text-center">
+                <intersecting-circles-spinner
+                    v-if="isShowLoading"
+                    class="mx-auto"
+                    :animation-duration="1200"
+                    :size="50"
+                    color="#ff1d5e"
+                />
+            </div>
         </div>
-        <h6 v-if="isShowUpdateCartSuccess" class="text-left m-0" style="color: #37e32a">
+        <h6 v-if="isShowUpdateCartSuccess" class="text-left mb-2" style="color: #37e32a">
             <i class="fa-solid fa-check"></i> Giỏ hàng đã được cập nhật
         </h6>
-        <h6 v-if="isShowDeleteProductOutOfCartSuccess" class="text-left m-0" style="color: #37e32a">
+        <h6 v-if="isShowDeleteProductOutOfCartSuccess" class="text-left mb-2" style="color: #37e32a">
             <i class="fa-solid fa-check"></i> {{ recentDeleteProduct.name }} đã xóa khỏi giỏ hàng
         </h6>
         <div v-if="isShowCart" class="col-12 col-md-8 table-responsive-sm">
-            <table class="giohang-hienthi my-3">
+            <table class="cart-product-table">
                 <tr>
                     <th class="col" colspan="3">Sản phẩm</th>
                     <th class="col">giá</th>
@@ -38,7 +40,7 @@
                         </td>
                         <td style="width: 400px">{{ product.ProductData.name }}</td>
                         <td>
-                            <span>{{ product.ProductData.price }}</span>
+                            <span>{{ product.ProductData.price }} ₫</span>
                         </td>
                         <td>
                             <Form>
@@ -69,7 +71,6 @@
                                     :disabled="enableBtnUpdateCarts"
                                     id="submit-btn"
                                     type="submit"
-                                    name="cap-nhat-gio-hang"
                                     :class="{ btn: true, 'btn-primary': true, 'my-1': true }"
                                 >
                                     <HalfCircleSpinner
@@ -88,13 +89,13 @@
                 </tbody>
             </table>
         </div>
-        <div v-if="isShowCart" class="col mt-3">
-            <table class="giohang-conggiohang mb-3">
+        <div v-if="isShowCart" class="col">
+            <table class="cart-product-table">
                 <tr>
                     <th colspan="2" class="width-100 text-center">CỘNG GIỎ HÀNG</th>
                 </tr>
             </table>
-            <table class="giohang-conggiohang">
+            <table class="cart-product-table">
                 <tbody>
                     <tr>
                         <td>Tạm tính</td>
@@ -252,40 +253,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.giohang-hienthi,
-.giohang-hienthi td,
-.giohang-hienthi th {
-    border: 1px solid #000;
-    text-align: center;
-}
-.giohang-hienthi th {
-    text-transform: uppercase;
-}
-.giohang-hienthi span {
-    padding: 0 4px;
-    white-space: nowrap;
-}
-.giohang-conggiohang {
-    width: 100%;
-}
-.giohang-conggiohang,
-.giohang-conggiohang td,
-.giohang-conggiohang th {
-    border: 1px solid #000;
-}
-.delete-purchase-icon {
-    border-radius: 50%;
-    border: 1px solid #000;
-    padding: 4px;
-    background-color: #fff;
-}
-.delete-purchase-icon:hover {
-    background-color: pink;
-}
 // .giohang-hienthi {
 //     position: relative;
 // }
 .form-update-amount {
+    text-align: center;
     button {
         position: relative;
 
@@ -294,6 +266,31 @@ export default {
             left: 0;
             right: 0;
             top: 8px;
+        }
+    }
+}
+.cart-product-table {
+    width: 100%;
+    border: 2px dashed #a48c8ca8;
+    border-collapse: collapse;
+    margin-bottom: 6px;
+    th,
+    td {
+        text-transform: uppercase;
+        border: 2px dashed #a48c8ca8;
+        padding: 10px;
+    }
+    span {
+        padding: 0 4px;
+        white-space: nowrap;
+    }
+    .delete-purchase-icon {
+        border-radius: 50%;
+        border: 1px solid #000;
+        padding: 4px;
+        background-color: #fff;
+        &:hover {
+            background-color: pink;
         }
     }
 }

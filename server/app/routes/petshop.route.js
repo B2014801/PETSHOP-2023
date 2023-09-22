@@ -11,6 +11,7 @@ const category = require('../controllers/Category/category.controller');
 const uploadMiddleware = require('../middlewares/multer');
 const brand = require('../controllers/brand/brand.controller');
 const user = require('../controllers/user/user.controller');
+const voucher = require('../controllers/voucher/voucher.controller');
 
 router.route('/').get(product.home);
 
@@ -81,5 +82,12 @@ router
     .put(authMiddleware.isAuth, uploadMiddleware.single('img'), brand.update)
     .delete(authMiddleware.isAuth, brand.deleteBrand)
     .get(brand.findById);
+//
+//voucher
+router.route('/voucher').get(authMiddleware.isAuth, voucher.getAll);
+router.route('/voucher/add').post(authMiddleware.isAuth, voucher.create);
 
+router.route('/voucher/:id').get(voucher.findById).delete(authMiddleware.isAuth, voucher.delete);
+
+router.route('/voucher/update/:id').post(authMiddleware.isAuth, voucher.update);
 module.exports = router;

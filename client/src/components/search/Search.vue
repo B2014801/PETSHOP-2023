@@ -6,9 +6,9 @@
                     class="search-header border-0"
                     type="search"
                     placeholder="Tìm kiếm..."
-                    aria-label="Search"
                     style="outline: none; width: 90%"
                     name="search_query"
+                    autocomplete="off"
                     v-model="KeySearch"
                     @input="sendInputValue"
                     @focus="showSearchResults = true"
@@ -80,12 +80,14 @@ export default {
         //     }
         // },
         goToSearchResult() {
-            this.$router.push({
-                name: 'search',
-                query: {
-                    keySearch: this.KeySearch, // 'keySearch' is the query parameter name
-                },
-            });
+            if (this.KeySearch.trim() != '') {
+                this.$router.push({
+                    name: 'search',
+                    query: {
+                        keySearch: this.KeySearch, // 'keySearch' is the query parameter name
+                    },
+                });
+            }
         },
         sendInputValue() {
             this.$emit('value', this.KeySearch);

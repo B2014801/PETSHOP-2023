@@ -38,7 +38,7 @@
 
                         <div v-if="field == 'edit'">
                             <div class="update-icon">
-                                <router-link :to="'/' + brandorproduct + '/' + item.id">
+                                <router-link :to="'/' + categoryname + '/' + item.id">
                                     <i class="fas fa-edit"></i>
                                 </router-link>
                                 <i @click="() => deleteProduct(item.id)" class="fa-solid fa-trash"></i>
@@ -90,7 +90,7 @@ export default {
         fieldsMap: {
             type: Array,
         },
-        brandorproduct: {
+        categoryname: {
             type: String,
         },
     },

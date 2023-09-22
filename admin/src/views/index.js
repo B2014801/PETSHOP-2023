@@ -16,3 +16,5 @@ export { default as Order } from '@/views/Order.vue';
 export { default as Revenue } from '@/views/Revenue.vue';
 
 export { default as Category } from '@/views/Category/Category.vue';
+
+export { default as Voucher } from '@/views/Voucher.vue';

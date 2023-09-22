@@ -10,7 +10,7 @@
             :Data="getDataTable()"
             :fields="fields"
             :fieldsMap="fieldsMap"
-            brandorproduct="brand"
+            categoryname="brand"
             @deleteProduct="deleteBrand"
         />
     </div>

@@ -13,6 +13,7 @@ import {
     EditBrand,
     Order,
     Revenue,
+    Voucher,
 } from '@/views/';
 
 import { useAuthStore } from '@/stores/auth.store';
@@ -95,6 +96,19 @@ const routes = [
         path: '/revenue',
         name: 'revenue',
         component: Revenue,
+        // props: true,
+    },
+    {
+        path: '/voucher',
+        name: 'voucher',
+        component: Voucher,
+        props: true,
+        // props: true,
+    },
+    {
+        path: '/voucher/:id',
+        component: Voucher,
+        props: true,
         // props: true,
     },
 ];

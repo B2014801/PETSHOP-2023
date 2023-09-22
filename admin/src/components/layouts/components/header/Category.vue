@@ -1,80 +1,16 @@
 <template>
     <div>
         <ul class="navbar-nav">
-            <!-- <li class="nav-item dropdown">
-                <router-link
-                    class="nav-link"
-                    href="index.php"
-                    id="navbarDropdownMenuLink"
-                    role="button"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    to="/"
-                >
-                    Trang chủ
-                </router-link>
-            </li> -->
-            <li class="nav-item dropdown">
+            <li v-for="(category, index) in CategoryList" class="nav-item dropdown">
                 <router-link
                     class="nav-link"
                     id="navbarDropdownMenuLink"
                     role="button"
                     aria-haspopup="true"
                     aria-expanded="false"
-                    to="/"
+                    :to="category.link"
                 >
-                    Danh mục
-                </router-link>
-            </li>
-            <li class="nav-item dropdown">
-                <router-link
-                    class="nav-link"
-                    id="navbarDropdownMenuLink"
-                    role="button"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    to="/brand"
-                >
-                    Nhãn hiệu
-                </router-link>
-            </li>
-            <li class="nav-item dropdown">
-                <router-link
-                    class="nav-link"
-                    href="index.php"
-                    id="navbarDropdownMenuLink"
-                    role="button"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    to="/product"
-                >
-                    Sản phẩm
-                </router-link>
-            </li>
-            <li class="nav-item dropdown">
-                <router-link
-                    class="nav-link"
-                    href="index.php"
-                    id="navbarDropdownMenuLink"
-                    role="button"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    to="/order"
-                >
-                    Đơn hàng
-                </router-link>
-            </li>
-            <li class="nav-item dropdown">
-                <router-link
-                    class="nav-link"
-                    href="index.php"
-                    id="navbarDropdownMenuLink"
-                    role="button"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    to="/revenue"
-                >
-                    Doanh thu
+                    {{ category.title }}
                 </router-link>
             </li>
         </ul>
@@ -82,7 +18,39 @@
 </template>
 
 <script>
-export default {};
+const CategoryList = [
+    {
+        title: 'Danh mục',
+        link: '/',
+    },
+    {
+        title: 'Nhãn hiệu',
+        link: '/brand',
+    },
+    {
+        title: 'Sản phẩm',
+        link: '/product',
+    },
+    {
+        title: 'Đơn hàng',
+        link: '/order',
+    },
+    {
+        title: 'Doanh thu',
+        link: '/revenue',
+    },
+    {
+        title: 'Khuyến Mãi',
+        link: '/voucher',
+    },
+];
+export default {
+    data() {
+        return {
+            CategoryList,
+        };
+    },
+};
 </script>
 
 <style lang="scss" scoped></style>
