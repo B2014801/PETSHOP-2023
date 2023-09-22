@@ -31,7 +31,24 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label class="form-check-label mr-2">Mô tả</label></td>
+                    <td>Ngày hết hạn</td>
+                    <td>
+                        <Field
+                            class="form-control"
+                            type="date"
+                            id="myDate"
+                            name="expired_date"
+                            pattern="\d{4}-\d{2}-\d{2}"
+                            required
+                            v-model="VoucherData.expired_date"
+                        />
+                        <ErrorMessage name="expired_date" class="text-danger error-message" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="form-check-label mr-2">Mô tả</label>
+                    </td>
                     <td>
                         <Field
                             class="form-control"
@@ -87,6 +104,15 @@ export default {
             name: yup.string().required('Vui lòng nhập tên').min(2, 'Tên ít nhất 2 ký tự').max(40, 'Tên quá dài'),
 
             discount: yup.number().typeError('Giảm giá phải là một số'),
+            expired_date: yup
+                .date()
+                .required('Vui lòng chọn ngày hết hạn')
+                .typeError('Vui lòng chọn ngày hết hạn')
+                .test('is-future-date', 'Ngày hết hạn phải ở tương lai', (value) => {
+                    if (!value) return true; // Handle empty values separately
+                    const currentDate = new Date();
+                    return value > currentDate;
+                }),
         });
         let VoucherData = {};
         if (this.Add) {
@@ -95,6 +121,7 @@ export default {
                 discount: 0,
                 describe: '',
                 status: 'active',
+                expired_date: '',
             };
         } else {
             VoucherData = this.voucher;

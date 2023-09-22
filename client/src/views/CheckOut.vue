@@ -40,18 +40,37 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><b>Tạm tính </b></td>
+                            <td><b>Voucher</b></td>
                             <td class="text-end">
-                                <b>{{ getTemporaryPrice }}</b>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><b>Tổng</b></td>
-                            <td class="text-end">
-                                <b>{{ getTemporaryPrice }}</b>
+                                <button class="btn btn-secondary rounded p-1" @click.prevent="showVoucherModal = true">
+                                    Chọn
+                                </button>
                             </td>
                         </tr>
                     </table>
+                    <hr class="my-2" />
+                    <div class="checkout-detail">
+                        <div>
+                            <b>Chi tiết thanh toán </b>
+                        </div>
+                        <div>
+                            <span>Tổng tiền hàng </span>
+                            <span>{{ getTemporaryPrice }}</span>
+                        </div>
+                        <div>
+                            <span>Tổng tiền phí vận chuyển </span>
+                            <span>15.000 ₫</span>
+                        </div>
+                        <div v-for="index in selectedvoucher2">
+                            <span>{{ vouchers[index].name }}</span>
+                            <span>{{ vouchers[index].discount }}%</span>
+                        </div>
+                        <div>
+                            <span><b>Tổng thanh toán</b></span>
+                            <span class="text-danger fw-bold">{{ getTotalPrice }}</span>
+                        </div>
+                    </div>
+                    <hr class="my-2" />
                     <div class="form-inline">
                         <!-- <form> -->
                         <div class="accordion form-group col-12">
@@ -69,7 +88,7 @@
                                         name="PaymentMethods"
                                         v-model="isChooseMethodPayment"
                                     />
-                                    <label class="ms-2" for="checkboxOne">Hình thức thanh toán</label>
+                                    <label class="ms-2" for="checkboxOne"><b>Hình thức thanh toán</b></label>
                                 </div>
                                 <hr class="my-2" />
                                 <div v-if="isChooseMethodPayment">
@@ -130,6 +149,40 @@
         </div>
     </div>
     <div v-if="isShowEmptyCheckOut"><h6 class="text-center mt-3">Chưa có sản phẩm thanh toán!!</h6></div>
+    <!-- <div v-if="showVoucherModal" class="voucher-list-container">
+        <div class="voucher-list">
+            <h3>trung</h3>
+        </div>
+    </div> -->
+    <Model :showVoucherModal="showVoucherModal" @closeModel="closeModel()">
+        <div class="voucher-container">
+            <div class="voucher-title">
+                <h5 class="text-start">Chọn voucher</h5>
+                <i class="fa fa-times" aria-hidden="true" @click="closeModel()"></i>
+            </div>
+            <div class="voucher-item" v-for="(voucher, index) in vouchers">
+                <div>
+                    <label :for="index">
+                        <h6>
+                            {{ voucher.name }} : <b>{{ voucher.discount }} %</b>
+                        </h6>
+                    </label>
+                    <p v-html="getExpiredDate(voucher.expired_date)"></p>
+                </div>
+                <div>
+                    <input
+                        :disabled="isExpiredDate(voucher.expired_date)"
+                        type="checkbox"
+                        name="voucher-chosen"
+                        :id="index"
+                        :value="index"
+                        v-model="selectedvoucher"
+                    />
+                </div>
+            </div>
+            <div class="text-center"><button @click="handleVoucher()" class="btn btn-danger">Đồng ý</button></div>
+        </div>
+    </Model>
 </template>
 
 <script>
@@ -140,8 +193,9 @@ import CartService from '@/services/cart.service';
 import UserService from '@/services/user.service';
 import { useAuthStore } from '@/stores/auth.store';
 import InvoiceService from '@/services/invoice.service';
+import VoucherService from '@/services/voucher.service';
 import UpdateUserForm from '@/components/form/UpdateUserInforForm.vue';
-
+import Model from '@/components/models/model1.vue';
 import * as yup from 'yup';
 export default {
     components: {
@@ -150,11 +204,15 @@ export default {
         ErrorMessage,
         IntersectingCirclesSpinner,
         UpdateUserForm,
+        Model,
     },
     data() {
         return {
             CheckOutData: [],
             User: {},
+            vouchers: [],
+            selectedvoucher: [],
+            selectedvoucher2: [], // to not rerender
             isShowCheckOut: false,
             isChooseMethodPayment: false,
             isChooseOneMethodPayment: null,
@@ -163,6 +221,7 @@ export default {
             isShowEmptyCheckOut: false,
             isShowLoading: false,
             countUpdateTime: 0,
+            showVoucherModal: false,
         };
     },
     methods: {
@@ -194,6 +253,35 @@ export default {
                 console.log(error);
             }
         },
+        async getAllVoucher() {
+            try {
+                this.vouchers = await VoucherService.getAll();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        handleVoucher() {
+            this.closeModel();
+        },
+        isExpiredDate(date) {
+            // const formattedDateStr = dateStr.replace(/\//g, '-');
+            const currentDate = new Date();
+            const inputDate = new Date(date);
+            // Check if the input date is a valid date
+            if (isNaN(inputDate.getTime())) {
+                throw new Error('Invalid date format');
+            }
+
+            return inputDate < currentDate;
+        },
+        getExpiredDate(date) {
+            console.log(this.isExpiredDate(date));
+            if (this.isExpiredDate(date)) {
+                return '<p>Hết hạn</p>';
+            } else {
+                return `<p>HSD: ${date}</p>`;
+            }
+        },
         async handleUpdateUser(data) {
             try {
                 const result = await UserService.update(data);
@@ -214,6 +302,7 @@ export default {
             const priceFinal = this.formatNumberWithDot(priceInt * amount);
             return priceFinal;
         },
+
         async getDetail() {
             let Detail = [];
             await this.CheckOutData.map((item, index) =>
@@ -227,10 +316,12 @@ export default {
                     this.isShowLoading = true;
                     const user = await this.getUser();
                     const Detail = await this.getDetail();
-                    let data = await {
+                    const vouchers = this.getVoucherDetail;
+                    let data = {
                         UserId: user._id,
                         PaymentMethod: this.isChooseOneMethodPayment,
                         Detail: Detail,
+                        Vouchers: vouchers,
                     };
                     const result = await InvoiceService.create(data);
                     if (result) {
@@ -249,6 +340,10 @@ export default {
             this.isShowErrorChoosePaymentMethod = false;
             // }
         },
+
+        closeModel() {
+            this.showVoucherModal = false;
+        },
     },
     computed: {
         getTemporaryPrice() {
@@ -262,12 +357,40 @@ export default {
                 }
             }
         },
+        getTotalPrice() {
+            const products_price = this.CheckOutData.reduce(
+                (total, item) => total + item.Amount * item.ProductData.price.replace(/\./g, ''),
+                0,
+            );
+            let discount_percent = 0;
+            // if (!this.showVoucherModal) {
+            discount_percent = this.selectedvoucher2.reduce(
+                (total, itemindex) => total + this.vouchers[itemindex].discount,
+                0,
+            );
+            // }
+            const total = products_price - (products_price * discount_percent) / 100 - 15000;
+            return this.formatNumberWithDot(total);
+        },
+        getVoucherDetail() {
+            let voucher = [];
+            this.selectedvoucher2.map((itemindex, index) => {
+                voucher.push(this.vouchers[itemindex]);
+            });
+            return voucher;
+        },
     },
     watch: {
         isChooseOneMethodPayment: 'toggleDisplayError',
+        showVoucherModal(newValue) {
+            if (newValue == false) {
+                this.selectedvoucher2 = this.selectedvoucher;
+            }
+        },
     },
     created() {
         this.getCheckOutData();
+        this.getAllVoucher();
     },
 };
 </script>
@@ -289,6 +412,46 @@ export default {
     td {
         border: 2px dashed #a48c8ca8;
         padding: 10px;
+    }
+}
+.voucher-container {
+    margin: 0 auto;
+    width: 50%;
+    background-color: #fff;
+    & > div {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+    .voucher-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        i:hover {
+            color: rgb(118, 128, 114);
+            cursor: pointer;
+        }
+    }
+    .voucher-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        p {
+            font-size: 12px;
+            margin: 0;
+        }
+        &:hover {
+            background-color: rgb(225, 245, 219);
+            cursor: pointer;
+        }
+    }
+}
+.checkout-detail {
+    padding: 0 10px;
+    div {
+        margin: 4px 0;
+        display: flex;
+        justify-content: space-between;
     }
 }
 </style>

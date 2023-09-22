@@ -41,8 +41,8 @@ export default {
             // fieldss,
             // studentData,
             vouchers: [],
-            fields: ['STT', 'Tên', 'Giảm (%)', 'Trạng Thái', 'Sửa'],
-            fieldsMap: ['Id', 'name', 'discount', 'status', 'edit'],
+            fields: ['STT', 'Tên', 'Giảm (%)', 'Trạng Thái', 'Hết hạn', 'Sửa'],
+            fieldsMap: ['Id', 'name', 'discount', 'status', 'expired', 'edit'],
             IdOneVoucher: this.$route.params.id,
             voucher: null,
             action: this.$route.query.action,
@@ -88,6 +88,7 @@ export default {
                 data.id = item._id;
                 data.name = item.name;
                 data.discount = item.discount;
+                data.expired = item.expired_date;
                 data.status = item.status == 'active' ? 'khả dụng' : 'không khả dụng';
                 datas.push(data);
             });

@@ -25,6 +25,7 @@ class InvoiceService {
             DeliveryDate: formattedDeliveryDate,
             StatusId: 0,
             Detail: payload.Detail,
+            Vouchers: payload.Vouchers,
         };
         // Remove undefined fields
         Object.keys(invoice).forEach((key) => invoice[key] === undefined && delete invoice[key]);

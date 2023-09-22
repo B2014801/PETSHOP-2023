@@ -11,6 +11,7 @@ class Voucher {
             discount: payload.discount,
             describe: payload.describe,
             status: payload.status,
+            expired_date: payload.expired_date,
         };
         // Remove undefined fields
         Object.keys(Voucher).forEach((key) => Voucher[key] === undefined && delete Voucher[key]);
