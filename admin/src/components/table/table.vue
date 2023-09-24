@@ -18,23 +18,7 @@
                             <p class="my-1">{{ item[field].phone }}</p>
                             <p class="m-0">{{ item[field].address }}</p>
                         </div>
-
-                        <div v-if="isOrder && field == 'Product'">
-                            <div v-for="(product, index) in item[field]" class="order-product-containter">
-                                <img :src="product.img" alt="" height="60" width="100" />
-
-                                <span class="ms-3"
-                                    >{{ product.name }} <span class="ms-3">{{ product.oldprice }} ₫</span> x
-                                    <b>{{ product.ordernumber }}</b></span
-                                >
-                                <div v-if="product.name == null">
-                                    <p>Sản phẩm không tồn tại</p>
-                                </div>
-                            </div>
-                            <div v-if="item[field].length == 0 || product === null">
-                                <p>Sản phẩm không tồn tại</p>
-                            </div>
-                        </div>
+                        <slot name="orderProduct" :field="field" :item="item"></slot>
 
                         <div v-if="field == 'edit'">
                             <div class="update-icon">
@@ -44,15 +28,7 @@
                                 <i @click="() => deleteProduct(item.id)" class="fa-solid fa-trash"></i>
                             </div>
                         </div>
-                        <div v-if="field == 'confirm'">
-                            <button
-                                @click="handleChangeStatePurchase(item._id, item.Status)"
-                                :disabled="item.Status == 4 || item.Status == 2"
-                                class="btn btn-secondary"
-                            >
-                                {{ getTitleConfirm(item.Status) }}
-                            </button>
-                        </div>
+
                         <div v-else>
                             <div v-if="field == 'img'">
                                 <img :src="item[field]" alt="" height="60" width="100" />
@@ -175,22 +151,7 @@ export default {
         async deleteProduct(id) {
             this.$emit('deleteProduct', id);
         },
-        getTitleConfirm(status) {
-            let title = '';
-            if (status == 0) {
-                title = 'Duyệt';
-            }
-            if (status == 1 || status == 2) {
-                title = 'Giao';
-            }
-            if (status == 3) {
-                title = 'Hoàn Tất';
-            }
-            if (status == 4) {
-                title = 'Đã huỷ';
-            }
-            return title;
-        },
+
         handleChangeStatePurchase(id, status) {
             this.$emit('handleChangeStatePurchase', id, status);
         },
@@ -198,9 +159,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.order-product-containter {
-    display: flex;
-    justify-content: space-between;
-}
-</style>
+<style lang="scss" scoped></style>

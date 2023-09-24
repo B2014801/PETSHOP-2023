@@ -7,8 +7,50 @@
             :Data="getDataTable()"
             :isOrder="true"
             :fieldsMap="fieldsMap"
-            @handleChangeStatePurchase="handleChangeStatePurchase"
-        ></Table>
+        >
+            <!-- one item is one order -->
+            <template #orderProduct="{ field, item }">
+                <div v-if="field == 'Product'">
+                    <div v-for="(product, index) in item['Product']" class="order-product-containter">
+                        <img :src="product.img" alt="" height="60" width="100" />
+
+                        <span class="ms-3"
+                            >{{ product.name }} <span class="ms-3">{{ product.oldprice }} ₫</span> x
+                            <b>{{ product.ordernumber }}</b></span
+                        >
+
+                        <div v-if="product.name == null">
+                            <p>Sản phẩm không tồn tại</p>
+                        </div>
+                    </div>
+                    <div class="order-voucher-container">
+                        <div v-if="item['vouchers'] && item['vouchers'].length != 0">
+                            <div v-for="voucher in item['vouchers']" class="text-end">
+                                <span class="me-3">{{ voucher.name }}</span
+                                ><span>{{ voucher.discount }} %</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span>Phí vận chuyển </span>
+                            <span>15.000 ₫</span>
+                        </div>
+                    </div>
+
+                    <div v-if="item[field].length == 0 || product === null">
+                        <p>Sản phẩm không tồn tại</p>
+                    </div>
+                </div>
+                <div v-if="field == 'confirm'">
+                    <button
+                        @click="handleChangeStatePurchase(item._id, item.Status)"
+                        :disabled="item.Status == 4 || item.Status == 2"
+                        class="btn btn-secondary"
+                    >
+                        {{ getTitleConfirm(item.Status) }}
+                    </button>
+                </div>
+            </template>
+        </Table>
     </div>
 </template>
 
@@ -40,7 +82,6 @@ export default {
         async getAllInvoice() {
             try {
                 this.Invoices = await InvoiceService.getAllInvoice();
-                console.log(this.Invoices);
             } catch (error) {
                 console.log(error);
             }
@@ -57,7 +98,8 @@ export default {
                 data.Product = item.detail;
                 data.Orderdate = item.orderdate;
                 data.Deliverydate = item.deliverydate;
-                data.Total = this.getTemporaryPrice(item.detail);
+                data.vouchers = item.vouchers;
+                data.Total = this.getTemporaryPrice(item.detail, item.vouchers);
                 datas.push(data);
             });
             return datas;
@@ -65,16 +107,24 @@ export default {
         formatNumberWithDot(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' ₫'; //1000 to 1.000
         },
-        getTemporaryPrice(products) {
+        getTemporaryPrice(products, vouchers) {
+            let products_price = 0;
             if (products.length != 0) {
-                const temporary_price = products.reduce(
+                products_price = products.reduce(
                     (total, item) => total + item.ordernumber * item.oldprice.replace(/\./g, ''),
                     0,
                 );
                 // if (temporary_price) {
-                return this.formatNumberWithDot(temporary_price);
                 // }
             }
+            let discount_percent = 0;
+            if (vouchers && vouchers.length != 0) {
+                // if (!this.showVoucherModal) {
+                discount_percent = vouchers.reduce((total, item) => total + item.discount, 0);
+                // }
+            }
+            const total = products_price - (products_price * discount_percent) / 100 - 15000;
+            return this.formatNumberWithDot(total);
         },
         async handleChangeStatePurchase(id, status) {
             let data = {
@@ -86,6 +136,22 @@ export default {
                 this.getAllInvoice();
             }
         },
+        getTitleConfirm(status) {
+            let title = '';
+            if (status == 0) {
+                title = 'Duyệt';
+            }
+            if (status == 1 || status == 2) {
+                title = 'Giao';
+            }
+            if (status == 3) {
+                title = 'Hoàn Tất';
+            }
+            if (status == 4) {
+                title = 'Đã huỷ';
+            }
+            return title;
+        },
     },
     created() {
         this.getAllInvoice();
@@ -93,4 +159,16 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.order-product-containter {
+    display: flex;
+    justify-content: space-between;
+}
+.order-voucher-container {
+    margin-top: 2px;
+    border-top: 1px solid #ccc;
+    span:nth-child(2) {
+        min-width: 30px;
+    }
+}
+</style>

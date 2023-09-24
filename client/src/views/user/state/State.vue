@@ -33,10 +33,21 @@
 
                 <tr>
                     <td colspan="2" class="text-end">
+                        <div>
+                            <div v-for="item in invoice.vouchers">
+                                <span class="me-2">{{ item.name }}</span>
+                                <span>{{ item.discount }}%</span>
+                            </div>
+                            <div>
+                                <span class="me-2">Phí vận chuyển</span>
+                                <span>15.000 đ</span>
+                            </div>
+                        </div>
+                        <hr />
                         <!-- <form method="POST"> -->
                         Tổng đơn :
                         <span class="text-danger font-weight-bold me-2"
-                            ><b>{{ getToTalPrice(invoice.detail) }} </b></span
+                            ><b>{{ getToTalPrice(invoice) }} </b></span
                         >
                         <button
                             v-if="isShowBtnCancelOrder(invoice.status)"
@@ -111,12 +122,18 @@ export default {
             return priceFinal;
         },
         getToTalPrice(invoice) {
-            if (invoice != 0) {
-                const temporary_price = invoice.reduce(
+            if (invoice) {
+                const products_price = invoice.detail.reduce(
                     (total, item) => total + item.ordernumber * item.oldprice.replace(/\./g, ''),
                     0,
                 );
-                return this.formatNumberWithDot(temporary_price);
+                let voucher_discount = 0;
+                if (invoice.vouchers && invoice.vouchers.length != 0) {
+                    voucher_discount = invoice.vouchers.reduce((total, item) => total + item.discount, 0);
+                }
+                console.log(voucher_discount);
+                const total = products_price - (products_price * voucher_discount) / 100 - 15000;
+                return this.formatNumberWithDot(total);
             }
         },
         getIconAndStatus(status) {

@@ -14,5 +14,4 @@ export { default as CreateAccount } from './user/CreateAccount.vue';
 
 export { default as UserHome } from './user/Home.vue';
 export { default as State } from './user/state/State.vue';
-export { default as AllPurchase } from './user/state/All.vue';
 export { default as ProfileHome } from './user/profile/ProfileHome.vue';

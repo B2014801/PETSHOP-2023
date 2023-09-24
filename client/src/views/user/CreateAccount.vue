@@ -11,6 +11,7 @@
 <script>
 import CreateAccountForm from '@/components/form/CreateAccountForm.vue';
 import PetshopService from '@/services/petshop.service';
+
 export default {
     components: {
         CreateAccountForm,
@@ -18,6 +19,7 @@ export default {
     data() {
         return {
             accounts: [],
+
             isShowSuccessMessage: false,
             isShowFailRegister: false,
         };
@@ -37,6 +39,7 @@ export default {
                 this.isShowFailRegister = true;
             }
         },
+
         async goToLogin() {
             this.$router.push({ name: 'login' });
         },

@@ -34,11 +34,13 @@
                         <Field type="text" class="form-control m-0" name="phone" v-model="user.phone" />
                         <ErrorMessage class="text-danger" name="phone" />
                     </div>
-                    <div class="form-group mb-2">
-                        <label for="address">Địa chỉ nhận hàng</label>
-                        <Field type="text" class="form-control" name="address" id="address" v-model="user.address" />
-                        <ErrorMessage class="text-danger" name="address" />
-                    </div>
+                    <Address
+                        :isClickSubmit="isClickSubmit"
+                        @isChosenAddress="isChosenAddress"
+                        @address:data="getAddressData"
+                        :user_address="user.address"
+                    >
+                    </Address>
                     <div class="profile-update-btn">
                         <button class="btn btn-success" type="submit">Cập nhật</button>
                         <button
@@ -105,11 +107,13 @@
 import { useAuthStore } from '@/stores/auth.store';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
+import Address from '@/components/address/vietnamaddress.vue';
 export default {
     components: {
         Form,
         Field,
         ErrorMessage,
+        Address,
     },
     props: {
         user: { type: Object },
@@ -130,36 +134,50 @@ export default {
             //     .required('Mật khẩu không khớp')
             //     .oneOf([yup.ref('password')], 'Mật khẩu không khớp'),
             phone: yup.string().matches(/((09|03|07|08|05)+([0-9]{8})\b)/g, 'Số điện thoại không hợp lệ.'),
-            address: yup
-                .string()
-                .required('Bạn chưa nhập địa chỉ')
-                .min(2, 'Địa chỉ phải có ít nhất 10 ký tự')
-                .max(30, 'Địa chỉ ít hơn 50 ký tự'),
+            // address: yup
+            //     .string()
+            //     .required('Bạn chưa nhập địa chỉ')
+            //     .min(2, 'Địa chỉ phải có ít nhất 10 ký tự')
+            //     .max(100, 'Địa chỉ ít hơn 100 ký tự'),
         });
         return {
             UserUpdateValidate,
+            isClickSubmit: false,
+            data_address: [],
+            isChosenAddres: false,
         };
     },
     methods: {
         async handleSubmit() {
             try {
-                const formData = new FormData();
+                this.isClickSubmit = true;
+                if (this.isChosenAddres) {
+                    let formData = new FormData();
 
-                // Utility function to append object properties to FormData
-                function appendIfDefined(key, value) {
-                    if (value !== undefined && value !== null) {
-                        formData.append(key, value);
+                    // Utility function to append object properties to FormData
+                    function appendIfDefined(key, value) {
+                        if (value !== undefined && value !== null) {
+                            formData.append(key, value);
+                        }
                     }
-                }
-                for (const key in this.user) {
-                    if (this.user.hasOwnProperty(key)) {
-                        appendIfDefined(key, this.user[key]);
+                    for (const key in this.user) {
+                        if (this.user.hasOwnProperty(key)) {
+                            appendIfDefined(key, this.user[key]);
+                        }
                     }
+
+                    this.$emit('submit:update', formData);
                 }
-                this.$emit('submit:update', formData);
             } catch (error) {
                 console.log(error);
             }
+        },
+        isChosenAddress(data) {
+            this.isChosenAddres = data;
+        },
+        getAddressData(data) {
+            this.data_address = data;
+            this.user.address = data.selectedWard + ', ' + data.selectedDistrict + ', ' + data.selectedTown;
         },
         handleLogout() {
             const auth = useAuthStore();

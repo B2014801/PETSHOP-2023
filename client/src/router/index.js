@@ -14,7 +14,6 @@ import {
     Search,
     UserHome,
     State,
-    AllPurchase,
     ProfileHome,
     Brand,
 } from '@/views/';
@@ -98,10 +97,6 @@ const routes = [
                 name: 'state',
                 component: State,
                 props: (route) => ({ state: route.query.state }),
-            },
-            {
-                path: '/user/all',
-                component: AllPurchase,
             },
 
             {

@@ -81,6 +81,12 @@
                     </div>
                     <ErrorMessage name="password_repeat" class="text-danger" />
                 </div>
+                <Address
+                    :isClickSubmit="isClickSubmit"
+                    @isChosenAddress="isChosenAddress"
+                    @address:data="getAddressData"
+                >
+                </Address>
                 <div class="mt-2">
                     <button class="btn btn-info me-4" name="dangky" type="submit">Đăng ký</button>
                     <button to="/login" class="btn btn-info" name="dangky" @click="goToLogin">Đăng nhập</button>
@@ -93,9 +99,16 @@
 <script>
 import * as yup from 'yup';
 import { Form, Field, ErrorMessage } from 'vee-validate';
+import Address from '@/components/address/vietnamaddress.vue';
 export default {
     props: {
         isShowFailRegister: { type: Boolean, default: false },
+    },
+    components: {
+        Form,
+        Field,
+        ErrorMessage,
+        Address,
     },
     data() {
         const validateCreate = yup.object().shape({
@@ -125,21 +138,33 @@ export default {
                 phone: '',
                 password: '',
             },
+            address_data: {},
+            isClickSubmit: false,
+            isChosenAddres: false,
         };
     },
-    components: {
-        Form,
-        Field,
-        ErrorMessage,
-    },
+
     emits: ['create:account'],
     methods: {
-        handleSubmitCreate() {
+        async handleSubmitCreate() {
+            try {
+                this.isClickSubmit = true;
+                if (this.isChosenAddres) {
+                    this.$emit('create:account', this.formData);
+                }
+            } catch (er) {
+                console.log(er);
+            }
             // truyền dữ liệu từ comp con đến comp cha
-            this.$emit('create:account', this.formData);
         },
         goToLogin() {
             this.$router.push({ name: 'login' });
+        },
+        getAddressData(data) {
+            this.formData.address = data.selectedWard + ', ' + data.selectedDistrict + ', ' + data.selectedTown;
+        },
+        isChosenAddress(bl) {
+            this.isChosenAddres = bl;
         },
     },
 };

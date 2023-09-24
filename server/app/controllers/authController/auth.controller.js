@@ -12,6 +12,7 @@ exports.register = async (req, res) => {
     const email = req.body.email.toLowerCase();
     const phone = req.body.phone;
     const name = req.body.name;
+    const address = req.body.address;
     const authService = new AuthService(MongoDB.client);
     let user = await authService.getUser(email);
     if (user) res.status(409).send('Tên tài khoản đã tồn tại.');
@@ -24,7 +25,7 @@ exports.register = async (req, res) => {
             phone: phone,
             role: 'user',
             img: process.env.SERVER_LINK_USER_IMG + 'defaultuser.jpg',
-            address: '',
+            address: address,
         };
         const createUser = await authService.createUser(newUser);
         if (!createUser) {

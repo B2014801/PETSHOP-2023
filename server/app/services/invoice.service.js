@@ -97,6 +97,7 @@ class InvoiceService {
                 order.user = user;
                 order.orderdate = items_remain.CreateDate;
                 order.deliverydate = items_remain.DeliveryDate;
+                order.vouchers = items_remain.Vouchers;
                 documents.push(order);
             };
 
