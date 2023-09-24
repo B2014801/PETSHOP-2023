@@ -64,6 +64,7 @@ export default {
     },
     mounted() {
         this.getProductHomePage();
+        document.title = 'Home';
     },
 };
 </script>

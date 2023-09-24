@@ -54,6 +54,7 @@
                                         value="1"
                                         style="outline: none"
                                         v-model="product.Amount"
+                                        @input="inputChanged = true"
                                     />
                                     <button @click.prevent="handlePlusOrderProduct(index)" id="plus-sp">+</button>
                                     <ErrorMessage name="order_number" class="text-danger ms-2" />
@@ -68,7 +69,7 @@
                         <td colspan="6">
                             <Form @submit="updateCart" class="form-update-amount">
                                 <button
-                                    :disabled="enableBtnUpdateCarts"
+                                    :disabled="!isAmountInputChanged"
                                     id="submit-btn"
                                     type="submit"
                                     :class="{ btn: true, 'btn-primary': true, 'my-1': true }"
@@ -150,9 +151,9 @@ export default {
             isShowUpdateCartSuccess: false,
             isShowDeleteProductOutOfCartSuccess: false,
             isShowEmptyCart: false,
-            isEnableBtnUpdateCart: true,
             isShowLoading: true,
             isShowLoadingUpdateCart: false,
+            inputChanged: false,
         };
     },
     methods: {
@@ -187,13 +188,13 @@ export default {
         handleMinusOrderProduct(index) {
             if (this.cart[index].Amount >= 2) {
                 this.cart[index].Amount--;
-                this.isEnableBtnUpdateCart = false;
+                this.enableBtnUpdateCarts;
             }
         },
         handlePlusOrderProduct(index) {
             if (this.cart[index].Amount < 10) {
                 this.cart[index].Amount++;
-                this.isEnableBtnUpdateCart = false;
+                this.enableBtnUpdateCarts;
             }
         },
 
@@ -239,8 +240,12 @@ export default {
             }
         },
         enableBtnUpdateCarts() {
-            return this.isEnableBtnUpdateCart;
+            this.inputChanged = true;
         },
+        isAmountInputChanged() {
+            return this.inputChanged;
+        },
+
         // enableBtnCheckOut(){
         //     return
         // },
@@ -248,6 +253,7 @@ export default {
 
     created() {
         this.getCart();
+        document.title = 'Cart';
     },
 };
 </script>
@@ -276,10 +282,13 @@ export default {
     margin-bottom: 6px;
     th,
     td {
-        text-transform: uppercase;
         border: 2px dashed #a48c8ca8;
         padding: 10px;
     }
+    th {
+        text-transform: uppercase;
+    }
+
     span {
         padding: 0 4px;
         white-space: nowrap;

@@ -19,6 +19,9 @@ export default {
     data() {
         return { imgs: imgs };
     },
+    created() {
+        document.title = 'Abount';
+    },
 };
 </script>
 

@@ -392,6 +392,7 @@ export default {
     created() {
         this.getCheckOutData();
         this.getAllVoucher();
+        document.title = 'Cart';
     },
 };
 </script>

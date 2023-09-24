@@ -29,7 +29,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+    mounted() {
+        document.title = 'Contact';
+    },
+};
 </script>
 
 <style lang="scss" scoped>

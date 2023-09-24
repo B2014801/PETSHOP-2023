@@ -117,6 +117,7 @@ const getMaxAndMin = (array) => {
 let autoresizeKey = 1;
 
 onMounted(() => {
+    document.title = 'Revenue';
     autoresizeKey++;
     getRevenue();
 });

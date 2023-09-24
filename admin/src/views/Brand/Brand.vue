@@ -73,6 +73,7 @@ export default {
         },
     },
     created() {
+        document.title = 'Brand';
         this.getAllBrand();
     },
 };

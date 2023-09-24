@@ -21,7 +21,7 @@
             </div>
         </Form>
         <div class="search-result-container-wrapper" v-if="isSearch">
-            <div v-show="showSearchResults && isSearch && KeySearch != ''" class="search-result-container">
+            <div v-show="showSearchResults && isSearch && KeySearch.trim() != ''" class="search-result-container">
                 <div
                     v-for="(product, index) in products"
                     class="search-result-item"

@@ -26,6 +26,7 @@ export default {
     },
     mounted() {
         this.getProductSearchResult();
+        document.title = 'Search';
     },
 };
 </script>

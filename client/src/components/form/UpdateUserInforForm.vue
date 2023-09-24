@@ -3,6 +3,7 @@
         <div class="row">
             <div class="col-md-4 col-sm-12 col-12 text-center" v-if="isShowImg">
                 <img
+                    v-if="!imageUrl"
                     :src="user.img"
                     class="rounded-circle d-block mx-auto"
                     width="200"
@@ -10,8 +11,17 @@
                     alt=""
                     style="object-fit: cover"
                 />
-                <label for="img" class="text-center bg-success text-white p-2 rounded mt-2">Tải ảnh lên</label>
-                <Field type="file" id="img" name="img" class="d-none" v-model="user.img" />
+                <img
+                    v-if="imageUrl"
+                    :src="imageUrl"
+                    alt="Selected Image"
+                    class="rounded-circle d-block mx-auto"
+                    width="200"
+                    height="200"
+                    style="object-fit: cover"
+                />
+                <label for="img" class="text-center bg-success text-white p-2 rounded mt-2">Tải ảnh lên </label>
+                <Field type="file" id="img" name="img" class="d-none" v-model="user.img" @change="displayImage" />
                 <ErrorMessage class="text-danger" name="img" />
             </div>
 
@@ -145,6 +155,7 @@ export default {
             isClickSubmit: false,
             data_address: [],
             isChosenAddres: false,
+            imageUrl: null,
         };
     },
     methods: {
@@ -183,6 +194,31 @@ export default {
             const auth = useAuthStore();
             auth.logout();
             this.$router.push({ name: 'login' });
+        },
+        displayImage(event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                // Create a FileReader to read the image file
+                const reader = new FileReader();
+
+                // Define a callback for when the reading is completed
+                reader.onload = (e) => {
+                    // Set the image URL to the result of the FileReader
+                    this.imageUrl = e.target.result;
+                };
+
+                // Read the image file as a data URL
+                reader.readAsDataURL(file);
+            } else {
+                // If no file is selected, clear the image URL
+                this.imageUrl = null;
+            }
+        },
+    },
+    watch: {
+        'user.img'(nevl) {
+            console.log(nevl);
         },
     },
 };

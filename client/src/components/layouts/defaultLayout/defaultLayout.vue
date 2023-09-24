@@ -76,7 +76,7 @@ export default {
     right: 0;
     margin: 0 auto;
     animation: scrollheader 0.7s ease;
-    z-index: 3;
+    z-index: 8;
 }
 
 @keyframes scrollheader {

@@ -154,6 +154,7 @@ export default {
         },
     },
     created() {
+        document.title = 'Order';
         this.getAllInvoice();
     },
 };

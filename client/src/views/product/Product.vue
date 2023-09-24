@@ -76,8 +76,14 @@ export default {
             }
         },
     },
+    watch: {
+        id() {
+            this.getAllProduct();
+        },
+    },
     mounted() {
         this.getAllProduct();
+        document.title = 'Product';
     },
 };
 </script>

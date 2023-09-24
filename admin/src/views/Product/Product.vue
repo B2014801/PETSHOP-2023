@@ -73,6 +73,7 @@ export default {
         },
     },
     mounted() {
+        document.title = 'Product';
         this.getAllProduct();
     },
 };

@@ -3,23 +3,12 @@
         <div class="container">
             <div>
                 <ul class="User-Home-Nav">
-                    <li>
-                        <router-link to="/user/profile">TÀI KHOẢN</router-link>
-                    </li>
-                    <li>
-                        <router-link :to="{ name: 'state' }">TẤT CẢ</router-link>
-                    </li>
-                    <li>
-                        <router-link :to="{ name: 'state', query: { state: 0 } }">CHỜ XÁC NHẬN</router-link>
-                    </li>
-                    <li>
-                        <router-link :to="{ name: 'state', query: { state: 2 } }">ĐANG GIAO HÀNG</router-link>
-                    </li>
-                    <li>
-                        <router-link :to="{ name: 'state', query: { state: 3 } }">HOÀN THÀNH</router-link>
-                    </li>
-                    <li>
-                        <router-link :to="{ name: 'state', query: { state: 4 } }">ĐÃ HỦY</router-link>
+                    <li
+                        v-for="(category, index) in list_user_category"
+                        @click="setActiveItem(index)"
+                        :class="{ 'active-category': activeItemIndex == index }"
+                    >
+                        <router-link :to="category.link">{{ category.title }}</router-link>
                     </li>
                 </ul>
             </div>
@@ -29,7 +18,45 @@
 </template>
 
 <script>
-export default {};
+const list_user_category = [
+    {
+        title: 'TÀI KHOẢN',
+        link: '/user/profile',
+    },
+    {
+        title: 'TẤT CẢ',
+        link: { name: 'state' },
+    },
+    {
+        title: 'CHỜ XÁC NHẬN',
+        link: { name: 'state', query: { state: 0 } },
+    },
+    {
+        title: 'ĐANG GIAO HÀNG',
+        link: { name: 'state', query: { state: 2 } },
+    },
+    {
+        title: 'HOÀN THÀNH',
+        link: { name: 'state', query: { state: 3 } },
+    },
+    {
+        title: 'ĐÃ HỦY',
+        link: { name: 'state', query: { state: 4 } },
+    },
+];
+export default {
+    data() {
+        return { list_user_category, activeItemIndex: 0 };
+    },
+    methods: {
+        setActiveItem(index) {
+            this.activeItemIndex = index;
+        },
+    },
+    created() {
+        document.title = 'User';
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -50,10 +77,10 @@ export default {};
         flex-basis: 0%;
         // background-color: aqua;
         padding: 16px 0;
-        border-bottom: 2px solid rgb(240 210 255);
+        border-bottom: 2px solid rgba(0, 0, 0, 0.09);
 
         a:hover {
-            color: red;
+            color: #ee4d2d;
         }
         a {
             // font-size: 2vh;
@@ -61,6 +88,9 @@ export default {};
             color: #000;
             padding: 16px 0;
         }
+    }
+    .active-category {
+        border-color: #ee4d2d;
     }
 }
 </style>

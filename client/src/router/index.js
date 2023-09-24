@@ -88,7 +88,7 @@ const routes = [
         component: import('@/views/Chat.vue'),
     },
     {
-        path: '/user',
+        path: '/user/profile',
         name: 'user',
         component: UserHome,
         children: [

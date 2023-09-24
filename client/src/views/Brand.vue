@@ -30,8 +30,14 @@ export default {
             }
         },
     },
+    watch: {
+        CategoryId(nv) {
+            this.getBrands();
+        },
+    },
     created() {
         this.getBrands();
+        document.title = 'Brand';
     },
 };
 </script>

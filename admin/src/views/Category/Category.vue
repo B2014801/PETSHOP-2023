@@ -147,6 +147,7 @@ export default {
         },
     },
     mounted() {
+        document.title = 'Category';
         this.getAll();
     },
 };

@@ -129,6 +129,7 @@ export default {
     },
     computed: {},
     mounted() {
+        document.title = 'Voucher';
         this.getVouchers();
         this.getActionEdit();
         this.getActionAdd();
