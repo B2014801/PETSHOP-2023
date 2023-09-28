@@ -3,11 +3,13 @@
         <div class="col-md-6 col-12 mb-2">
             <!-- <form> -->
             <h3 class="col-12 pl-0">Thông tin thanh toán</h3>
+
             <UpdateUserForm
                 :countUpdateTime="countUpdateTime"
                 :user="User"
                 :isShowImg="false"
                 @submit:update="handleUpdateUser"
+                @isUserDataValid="isUserDataValid"
             />
         </div>
 
@@ -223,6 +225,7 @@ export default {
             isShowLoading: false,
             countUpdateTime: 0,
             showVoucherModal: false,
+            isuserDataValid: null,
         };
     },
     methods: {
@@ -253,6 +256,10 @@ export default {
                 // this.$router.push({ name: 'login' });
                 console.log(error);
             }
+        },
+        isUserDataValid(data) {
+            console.log(data);
+            this.isuserDataValid = data;
         },
         async getAllVoucher() {
             try {
@@ -307,30 +314,39 @@ export default {
         async getDetail() {
             let Detail = [];
             await this.CheckOutData.map((item, index) =>
-                Detail.push({ _id: item.ProductData._id, price: item.ProductData.price, amount: item.Amount }),
+                Detail.push({
+                    _id: item.ProductData._id,
+                    name: item.ProductData.name,
+                    price: item.ProductData.price,
+                    amount: item.Amount,
+                }),
             );
             return Detail;
         },
         async handleCheckOut() {
             try {
-                if (this.isChooseOneMethodPayment) {
-                    this.isShowLoading = true;
-                    const user = await this.getUser();
-                    const Detail = await this.getDetail();
-                    const vouchers = this.getVoucherDetail;
-                    let data = {
-                        UserId: user._id,
-                        PaymentMethod: this.isChooseOneMethodPayment,
-                        Detail: Detail,
-                        Vouchers: vouchers,
-                    };
-                    const result = await InvoiceService.create(data);
-                    if (result) {
-                        this.isShowLoading = false;
-                        this.isShowCheckOutSuccess = true;
+                if (this.isuserDataValid) {
+                    if (this.isChooseOneMethodPayment) {
+                        this.isShowLoading = true;
+                        const user = await this.getUser();
+                        const Detail = await this.getDetail();
+                        const vouchers = this.getVoucherDetail;
+                        let data = {
+                            UserId: user._id,
+                            PaymentMethod: this.isChooseOneMethodPayment,
+                            Detail: Detail,
+                            Vouchers: vouchers,
+                        };
+                        const result = await InvoiceService.create(data);
+                        if (result) {
+                            this.isShowLoading = false;
+                            this.isShowCheckOutSuccess = true;
+                        }
+                    } else {
+                        this.isShowErrorChoosePaymentMethod = true;
                     }
                 } else {
-                    this.isShowErrorChoosePaymentMethod = true;
+                    alert('vui lòng cập nhật thông tin');
                 }
             } catch (error) {
                 console.log(error);
@@ -392,7 +408,7 @@ export default {
     created() {
         this.getCheckOutData();
         this.getAllVoucher();
-        document.title = 'Cart';
+        document.title = 'Checkout';
     },
 };
 </script>

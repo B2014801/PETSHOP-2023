@@ -42,10 +42,12 @@
                     <Field type="checkbox" id="remember" name="nho-mat-khau" class="form-check-input" />
                     <label for="remember" class="form-check-label">Ghi nhớ tôi</label>
                 </div>
-                <div>
+                <div class="btn-login-register-container">
                     <button class="btn btn-info" type="submit">Đăng nhập</button>
                     <router-link class="btn btn-info ms-4" to="/register" role="button">Tạo tài khoản</router-link>
                 </div>
+                <div class="login-choice"><span>Đăng nhập với</span></div>
+                <Oauth @submit:oauthdata="handleSubmitOauth" />
             </div>
         </Form>
     </div>
@@ -54,6 +56,7 @@
 <script>
 import * as yup from 'yup';
 import { Field, Form, ErrorMessage } from 'vee-validate';
+import Oauth from '@/components/login/Oauth.vue';
 export default {
     props: {
         errorLoginEmailOrPassword: { type: Boolean },
@@ -62,6 +65,7 @@ export default {
         Field,
         Form,
         ErrorMessage,
+        Oauth,
     },
     data() {
         const loginValidate = yup.object().shape({
@@ -81,8 +85,37 @@ export default {
         submitLogin() {
             this.$emit('submit:login', this.user);
         },
+        handleSubmitOauth(data) {
+            console.log(data);
+            this.$emit('submit:login', data);
+        },
     },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.login-choice span {
+    color: #5b6987;
+    display: -ms-grid;
+    display: grid;
+    font-size: 16px;
+    width: 100%;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    text-align: center;
+    -ms-grid-columns: minmax(20px, 1fr) auto minmax(20px, 1fr);
+    grid-template-columns: minmax(20px, 1fr) auto minmax(20px, 1fr);
+    grid-gap: 19px;
+}
+.login-choice span:after,
+.login-choice span:before {
+    content: '';
+    border-top: 1px solid #e5e8ed;
+}
+.btn-login-register-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+</style>

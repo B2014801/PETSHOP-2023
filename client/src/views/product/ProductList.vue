@@ -20,7 +20,7 @@
                                 </span>
                             </div>
                             <div v-else>
-                                <h5 class="brand-title">{{ product.name }}</h5>
+                                <h5 class="brand-title my-auto">{{ product.name }}</h5>
                             </div>
                         </div>
                     </div>

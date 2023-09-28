@@ -87,10 +87,12 @@
                     @address:data="getAddressData"
                 >
                 </Address>
-                <div class="mt-2">
+                <div class="btn-login-register-container">
                     <button class="btn btn-info me-4" name="dangky" type="submit">Đăng ký</button>
                     <button to="/login" class="btn btn-info" name="dangky" @click="goToLogin">Đăng nhập</button>
                 </div>
+                <div class="login-choice"><span>Đăng ký với</span></div>
+                <Oauth @submit:oauthdata="handleSubmitCreateOauth" />
             </div>
         </Form>
     </div>
@@ -100,6 +102,7 @@
 import * as yup from 'yup';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import Address from '@/components/address/vietnamaddress.vue';
+import Oauth from '@/components/login/Oauth.vue';
 export default {
     props: {
         isShowFailRegister: { type: Boolean, default: false },
@@ -109,6 +112,7 @@ export default {
         Field,
         ErrorMessage,
         Address,
+        Oauth,
     },
     data() {
         const validateCreate = yup.object().shape({
@@ -157,6 +161,9 @@ export default {
             }
             // truyền dữ liệu từ comp con đến comp cha
         },
+        async handleSubmitCreateOauth(data) {
+            this.$emit('create:account', data);
+        },
         goToLogin() {
             this.$router.push({ name: 'login' });
         },
@@ -170,4 +177,29 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.login-choice span {
+    color: #5b6987;
+    display: -ms-grid;
+    display: grid;
+    font-size: 16px;
+    width: 100%;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    text-align: center;
+    -ms-grid-columns: minmax(20px, 1fr) auto minmax(20px, 1fr);
+    grid-template-columns: minmax(20px, 1fr) auto minmax(20px, 1fr);
+    grid-gap: 19px;
+}
+.login-choice span:after,
+.login-choice span:before {
+    content: '';
+    border-top: 1px solid #e5e8ed;
+}
+.btn-login-register-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+</style>

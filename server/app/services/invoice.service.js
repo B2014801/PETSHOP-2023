@@ -1,3 +1,4 @@
+const { el } = require('date-fns/locale');
 const { ObjectId } = require('mongodb');
 class InvoiceService {
     constructor(client) {
@@ -12,7 +13,7 @@ class InvoiceService {
 
         // Get the current date and format it as 'YYYY-MM-DD'
         const currentDate = new Date();
-        const formattedDate = format(currentDate, 'yyyy-MM-dd');
+        const formattedDate = format(currentDate, 'yyyy-MM-dd HH:mm');
 
         // Calculate the delivery date (5 days from the current date)
         const deliveryDate = addDays(currentDate, 5);
@@ -78,21 +79,33 @@ class InvoiceService {
                 order._id = new ObjectId(items_remain._id);
                 order.status = items_remain.status;
                 for (const item of items) {
-                    let product = await this.Product.findOne({ _id: new ObjectId(item._id) });
-                    if (product) {
-                        product.ordernumber = item.amount;
-                        product.oldprice = item.price ?? ''; //get recent price
-                        OrderDetail.push(product); // Collect the result in the documents array.
+                    let product = {};
+                    product = await this.Product.findOne({ _id: new ObjectId(item._id) });
+                    if (!product) {
+                        product = {};
+                        product.isexist = false;
+                        product.name = item.name;
+                        product.img = process.env.SERVER_LINK_PRODUCT_IMG + 'default_notexist_product.png';
+                    } else {
+                        product.isexist = true;
                     }
+                    product.ordernumber = item.amount;
+                    product.oldprice = item.price ?? ''; //get recent price
+                    OrderDetail.push(product); // Collect the result in the documents array.
                 }
                 order.detail = OrderDetail;
 
-                let { email, phone, address } = await this.User.findOne({ _id: items_remain.UserId });
-                let user = {
-                    email: email,
-                    phone: phone,
-                    address: address,
-                };
+                let user = await this.User.findOne({ _id: items_remain.UserId });
+                if (!user) {
+                    user = {};
+                } else {
+                    user = {
+                        email: user.email,
+                        phone: user.phone,
+                        address: user.address,
+                    };
+                }
+
                 order.status = items_remain.StatusId;
                 order.user = user;
                 order.orderdate = items_remain.CreateDate;

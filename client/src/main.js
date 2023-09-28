@@ -13,15 +13,31 @@ import './assets/css/global.scss';
 import App from './App.vue';
 import router from './router';
 
+import gAuthPlugin from 'vue3-google-oauth2';
+let gauthClientId = '487233793694-uh5ohpjahe0eo9ado0s19dmprdddmeeg.apps.googleusercontent.com';
+import { gapi } from 'gapi-script';
+try {
+    gapi.load('client:auth2', () => {
+        gapi.client.init({
+            clientId: gauthClientId,
+        });
+    });
+} catch (error) {}
 createApp(App).use(Vuex);
-// createApp(App).use(VueCookies);
-// createApp(App).use(createPinia());
 
 createApp(App).use(VueTippy, {
     defaultProps: { placement: 'bottom' },
     directive: 'tippy', // => v-tippy
     component: 'tippy', // => <tippy/>
 });
-const vm = createApp(App).use(createPinia()).use(router).mount('#app');
+const vm = createApp(App)
+    .use(createPinia())
+    .use(gAuthPlugin, {
+        clientId: gauthClientId,
+        scope: 'email',
+        prompt: 'consent',
+    })
+    .use(router)
+    .mount('#app');
 
 export default vm;

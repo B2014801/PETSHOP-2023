@@ -1,6 +1,23 @@
+const { SALT_ROUNDS } = require('../variables/auth');
+const bcrypt = require('bcrypt');
 class AuthService {
     constructor(client) {
         this.User = client.db().collection('users');
+    }
+    extractUserData(payload) {
+        const user = {
+            name: payload.name,
+            email: payload.email,
+            password: payload.password ? bcrypt.hashSync(payload.password, SALT_ROUNDS) : '',
+            phone: payload.phone,
+            role: 'user',
+            img: payload.OAuthtype ? payload.img : process.env.SERVER_LINK_USER_IMG + 'defaultuser.jpg',
+            address: payload.address,
+            type: 'OAuthgg',
+        };
+        // Remove undefined fields
+        Object.keys(user).forEach((key) => user[key] === undefined && delete user[key]);
+        return user;
     }
     async getUser(email) {
         try {
@@ -13,7 +30,8 @@ class AuthService {
 
     async createUser(user) {
         try {
-            await this.User.insertOne(user);
+            let data = this.extractUserData(user);
+            await this.User.insertOne(data);
             return true;
         } catch (error) {
             console.log(error);

@@ -26,6 +26,10 @@
             </div>
 
             <div :class="{ 'col-md-8 col-12 col-sm-12': true, 'mx-auto': isShowImg == true }">
+                <h6 v-show="!isuserValid" class="text-center py-1" style="background-color: #d1f4da">
+                    <i class="fa fa-warning me-2" style="color: #f7c102"></i> Vui lòng cập nhật thông tin
+                </h6>
+
                 <div>
                     <h6 v-if="countUpdateTime > 0" class="text-left my-2" style="color: #37e32a">
                         <i class="fa-solid fa-check"></i> Cập nhật thành công x {{ countUpdateTime }}
@@ -111,6 +115,7 @@
             </div>
         </div>
     </Form>
+    <Form :validation-schema="UserUpdateValidate"> </Form>
 </template>
 
 <script>
@@ -138,17 +143,10 @@ export default {
                 .min(2, 'tên phải có ít nhất 2 ký tự')
                 .max(30, 'Tên ít hơn 30 ký tự'),
 
-            // password: yup.string().required('Bạn chưa nhập mật khẩu').max(100, 'Địa chỉ tối đa 100 ký tự.'),
-            // password_repeat: yup
-            //     .string()
-            //     .required('Mật khẩu không khớp')
-            //     .oneOf([yup.ref('password')], 'Mật khẩu không khớp'),
-            phone: yup.string().matches(/((09|03|07|08|05)+([0-9]{8})\b)/g, 'Số điện thoại không hợp lệ.'),
-            // address: yup
-            //     .string()
-            //     .required('Bạn chưa nhập địa chỉ')
-            //     .min(2, 'Địa chỉ phải có ít nhất 10 ký tự')
-            //     .max(100, 'Địa chỉ ít hơn 100 ký tự'),
+            phone: yup
+                .string()
+                .required('vui lòng nhập số điện thoại')
+                .matches(/((09|03|07|08|05)+([0-9]{8})\b)/g, 'Số điện thoại không hợp lệ.'),
         });
         return {
             UserUpdateValidate,
@@ -156,6 +154,7 @@ export default {
             data_address: [],
             isChosenAddres: false,
             imageUrl: null,
+            isuserValid: null,
         };
     },
     methods: {
@@ -215,11 +214,40 @@ export default {
                 this.imageUrl = null;
             }
         },
+        isShowUserNotvalid() {
+            this.isUserDataValid.then((isValid) => {
+                this.isuserValid = isValid;
+            });
+        },
+    },
+    computed: {
+        async isUserDataValid() {
+            try {
+                // Use the validation schema to validate the data
+                const result = await this.UserUpdateValidate.isValid(this.user);
+                return result;
+            } catch (error) {
+                return false; // Data is not valid
+            }
+        },
     },
     watch: {
-        'user.img'(nevl) {
-            console.log(nevl);
+        'user.img'(newVal) {
+            console.log(newVal);
         },
+        user(newVal) {
+            this.isUserDataValid.then((isValid) => {
+                this.$emit('isUserDataValid', isValid);
+                this.isuserValid = isValid;
+            });
+        },
+    },
+    mounted() {
+        // You can use this.isUserDataValid as a function here to get the result.
+        this.isUserDataValid.then((isValid) => {
+            this.$emit('isUserDataValid', isValid);
+            this.isuserValid = isValid;
+        });
     },
 };
 </script>

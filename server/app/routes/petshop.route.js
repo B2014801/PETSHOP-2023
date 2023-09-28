@@ -90,4 +90,11 @@ router.route('/voucher/add').post(authMiddleware.isAuth, voucher.create);
 router.route('/voucher/:id').get(voucher.findById).delete(authMiddleware.isAuth, voucher.delete);
 
 router.route('/voucher/update/:id').post(authMiddleware.isAuth, voucher.update);
+
+// Routes
+// router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+const passport = require('passport');
+
+// router.post('/auth/google/', authController.loginWithGG);
+
 module.exports = router;

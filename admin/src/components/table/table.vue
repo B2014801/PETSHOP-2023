@@ -15,8 +15,13 @@
                 <tr v-for="item in filteredData" :key="item">
                     <td v-for="(field, index) in fieldsMap" :key="field">
                         <div v-if="field == 'Address'">
-                            <p class="my-1">{{ item[field].phone }}</p>
-                            <p class="m-0">{{ item[field].address }}</p>
+                            <div v-if="item[field].phone">
+                                <p class="my-1">{{ item[field].phone }}</p>
+                                <p class="m-0">{{ item[field].address }}</p>
+                            </div>
+                            <div v-else>
+                                <p>Khách hàng không còn tồn tại</p>
+                            </div>
                         </div>
                         <slot name="orderProduct" :field="field" :item="item"></slot>
 

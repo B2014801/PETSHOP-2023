@@ -19,8 +19,8 @@
                             <b>{{ product.ordernumber }}</b></span
                         >
 
-                        <div v-if="product.name == null">
-                            <p>Sản phẩm không tồn tại</p>
+                        <div class="order-product-notexist" v-if="product.isexist == false">
+                            <!-- <h6>Sản phẩm không tồn tại</h6> -->
                         </div>
                     </div>
                     <div class="order-voucher-container">
@@ -36,9 +36,9 @@
                         </div>
                     </div>
 
-                    <div v-if="item[field].length == 0 || product === null">
+                    <!-- <div v-if="item[field].length == 0 || product === null">
                         <p>Sản phẩm không tồn tại</p>
-                    </div>
+                    </div> -->
                 </div>
                 <div v-if="field == 'confirm'">
                     <button
@@ -162,8 +162,21 @@ export default {
 
 <style lang="scss" scoped>
 .order-product-containter {
+    position: relative;
     display: flex;
     justify-content: space-between;
+    margin-bottom: 2px;
+    .order-product-notexist {
+        text-align: center;
+
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(114, 106, 106, 0.5);
+        h6 {
+            margin: 20px 0;
+        }
+    }
 }
 .order-voucher-container {
     margin-top: 2px;
