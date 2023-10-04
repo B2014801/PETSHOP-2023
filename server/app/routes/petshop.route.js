@@ -12,6 +12,7 @@ const uploadMiddleware = require('../middlewares/multer');
 const brand = require('../controllers/brand/brand.controller');
 const user = require('../controllers/user/user.controller');
 const voucher = require('../controllers/voucher/voucher.controller');
+const comment = require('../controllers/comments/comment.controller');
 
 router.route('/').get(product.home);
 
@@ -96,5 +97,8 @@ router.route('/voucher/update/:id').post(authMiddleware.isAuth, voucher.update);
 const passport = require('passport');
 
 // router.post('/auth/google/', authController.loginWithGG);
+// comments
+router.route('/comments').get(comment.getAll);
+router.route('/comments/add').post(comment.create);
 
 module.exports = router;

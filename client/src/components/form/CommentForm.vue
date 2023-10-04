@@ -55,17 +55,14 @@
 <script>
 import io from 'socket.io-client';
 import { Form, Field, ErrorMessage } from 'vee-validate';
-import CommentService from '@/services/comment.service';
 import * as yup from 'yup';
 import { useAuthStore } from '@/stores/auth.store';
 export default {
-    props: { ProductId: { type: String } },
     data() {
         return {
             comment: {
                 content: '',
                 star: 0,
-                product_id: this.ProductId,
             },
         };
     },
@@ -77,32 +74,20 @@ export default {
     created() {
         try {
             this.socket = io('http://localhost:3000');
-            // this.socket.on('chat message', (message) => {
-            //     this.messages.push(message);
-            // });
+            this.socket.on('comment', (comment) => {
+                this.$emit('newcomment', comment);
+            });
         } catch (error) {
             console.log(error);
         }
     },
     methods: {
-        async getUser() {
-            const auth = useAuthStore();
-            await auth.loadAuthState();
-            if (auth.user) {
-                return auth.user.user;
-            } else {
-                alert('Bạn phải đăng nhập trước');
-                this.$router.push({ name: 'login' });
-            }
-        },
         async sendMessage() {
             try {
-                if (this.comment.content.trim() === '') return;
+                // if (this.comment.content.trim() === '') return;
                 // this.socket.emit('comment', this.comment);
                 // this.socket.emit('comment', this.comment);
-                const user = await this.getUser();
-                this.comment.user_id = user._id;
-                const result = await CommentService.create(this.comment);
+                this.$emit('comment', this.comment);
             } catch (error) {
                 console.log(error);
             }

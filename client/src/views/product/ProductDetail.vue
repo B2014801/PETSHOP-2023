@@ -135,94 +135,9 @@
                     >
                         <div class="accordion-body mt-3">
                             <h5 class="text-center">Nhận xét về tensp</h5>
-                            <div class="card-comment w-100">
-                                <div class="d-flex">
-                                    <div>
-                                        <img
-                                            src="./pages/main/quanlytaikhoan/uploads/<?php echo $row['hinhanh']!=''? $row['hinhanh'] :'user.jpg' ?>"
-                                            width="40"
-                                            height="40"
-                                            class="rounded-circle mt-2"
-                                        />
-                                    </div>
-                                    <div class="col-10">
-                                        <div class="comment-box">
-                                            <h6>hoten</h6>
-
-                                            <div class="rating-other-user d-inline-block w-100">
-                                                <!-- <?php for($i=0;$i<$row['so_sao'];$i++){ ?> -->
-                                                <i class="fa-solid fa-star" style="color: #ff0000"></i>
-                                                <!-- <?php }?> -->
-                                                <!-- <?php for($i=0;$i<5-$row['so_sao'];$i++){ ?> -->
-                                                <i class="fa-sharp fa-regular fa-star" style="color: #ff0000"></i>
-                                                <!-- <?php }?> -->
-                                            </div>
-                                            <p class="mb-0">ngay</p>
-                                            <p class="mb-0">noi dung</p>
-
-                                            <!-- <?php if((isset($_SESSION['ktradangnhap'])&&$_SESSION['ktradangnhap']==$row['id_taikhoan'])||isset( $_SESSION['tendangnhapadmin'])){ echo '<a href="pages/main/binhluan.php?action=xoabinhluan&&id='.$row['id_binhluan'].'"class="btn btn-danger">Xoá</a>';} ?> -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <form
-                                action="pages/main/binhluan.php?id_sanpham=<?php echo $_GET['sanpham'] ?>"
-                                method="POST"
-                            >
-                                <div class="card-comment">
-                                    <div class="d-flex">
-                                        <div>
-                                            <!-- <img src=> -->
-                                        </div>
-                                        <div class="col-10">
-                                            <div class="comment-box ml-2">
-                                                <h4>Thêm bình luận</h4>
-                                                <div class="rating">
-                                                    <input type="radio" name="rating" value="5" id="5" /><label for="5"
-                                                        >☆</label
-                                                    >
-                                                    <input type="radio" name="rating" value="4" id="4" /><label for="4"
-                                                        >☆</label
-                                                    >
-                                                    <input type="radio" name="rating" value="3" id="3" /><label for="3"
-                                                        >☆</label
-                                                    >
-                                                    <input type="radio" name="rating" value="2" id="2" /><label for="2"
-                                                        >☆</label
-                                                    >
-                                                    <input type="radio" name="rating" value="1" id="1" /><label for="1"
-                                                        >☆</label
-                                                    >
-                                                </div>
-                                                <div class="comment-area">
-                                                    <textarea
-                                                        class="form-control"
-                                                        name="noidung"
-                                                        placeholder="Bạn cảm thấy sản phẩm này thế nào?"
-                                                        rows="3"
-                                                    ></textarea>
-                                                </div>
-                                                <div class="comment-btns mt-2">
-                                                    <!-- <div class="row"> -->
-                                                    <!-- <div class="col-6"> -->
-                                                    <div class="text-left">
-                                                        <button
-                                                            class="btn btn-success"
-                                                            name="thembinhluan"
-                                                            type="submit"
-                                                        >
-                                                            GỬI
-                                                        </button>
-                                                    </div>
-                                                    <!-- </div> -->
-                                                    <!-- </div> -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                            <!-- //lis -->
+                            <comment-list :comments="comments" />
+                            <commentform @comment="handleAddComment" @newcomment="getComments(product._id)" />
                         </div>
                     </div>
                 </div>
@@ -243,11 +158,15 @@ import PetshopService from '@/services/petshop.service';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
 import { useAuthStore } from '@/stores/auth.store';
+import commentform from '@/components/form/CommentForm.vue';
+import CommentList from '@/components/comment/CommentList.vue';
+import CommentService from '@/services/comment.service';
 export default {
     data() {
         return {
             product: {},
             products: [],
+            comments: [],
             images: images,
             isShowProductDetail: false,
             isShowCollapse1: false,
@@ -258,7 +177,7 @@ export default {
         };
     },
     props: { id: { type: String } },
-    components: { ProductList, Form, Field, ErrorMessage },
+    components: { ProductList, Form, Field, ErrorMessage, commentform, CommentList },
     methods: {
         async findById(id) {
             try {
@@ -350,6 +269,20 @@ export default {
             const AfterDiscount = PriceInt - (PriceInt * this.product.discount) / 100;
             return this.formatNumberWithDot(AfterDiscount);
         },
+        async getComments(product_id) {
+            try {
+                this.comments = await CommentService.getAll(product_id);
+            } catch (error) {}
+        },
+        async handleAddComment(data) {
+            const user = await this.getUser();
+            data.user_id = user._id;
+            data.product_id = this.product._id;
+            const result = await CommentService.create(data);
+            if (result) {
+                // this.getComments(this.product._id);
+            }
+        },
     },
     computed: {
         getProductPrice() {
@@ -373,6 +306,7 @@ export default {
     },
     created() {
         this.findById(this.id);
+        this.getComments(this.id);
     },
 };
 </script>
