@@ -10,19 +10,22 @@
             </router-link>
             <div class="collapse navbar-collapse justify-content-between mr-3">
                 <Category :Categorys="Categorys" />
-                <Search
-                    @value="getProductWithName"
-                    :products="products"
-                    :LoadingSearch="LoadingSearch"
-                    :isEmptyProduct="isEmptyProduct"
-                    :isSearch="isSearch"
-                ></Search>
+                <div class="header-search">
+                    <Search
+                        @value="getProductWithName"
+                        :products="products"
+                        :LoadingSearch="LoadingSearch"
+                        :isEmptyProduct="isEmptyProduct"
+                        :isSearch="isSearch"
+                    ></Search>
+                    <div>
+                        <Microphone></Microphone>
+                    </div>
+                </div>
             </div>
 
-            <div class="d-inline text-white">
-                <router-link to="/cart" class="text-white mr-3"
-                    ><i class="fa-solid fa-cart-shopping mx-3"></i
-                ></router-link>
+            <div class="d-inline">
+                <router-link to="/cart" class="text-white"><i class="fa-solid fa-cart-shopping mx-3"></i></router-link>
 
                 <span v-if="!isUserLogin">
                     <router-link to="/login" class="text-white text-decoration-none"
@@ -54,6 +57,7 @@
 import { useAuthStore } from '@/stores/auth.store';
 import images from '@/assets/imgs';
 import Search from '@/components/search/Search.vue';
+import Microphone from '@/components/search/Microphone.vue';
 import CollapseContent from './CollapseContent.vue';
 import Category from './Category.vue';
 
@@ -77,6 +81,7 @@ export default {
         CollapseContent,
         Category,
         // ButtonCollapse,
+        Microphone,
     },
     methods: {
         toggleCollapse() {
@@ -131,4 +136,9 @@ export default {
     mounted() {},
 };
 </script>
-<style></style>
+<style scoped lang="scss">
+.header-search {
+    display: flex;
+    align-items: center;
+}
+</style>

@@ -23,7 +23,7 @@ export default {
         },
 
         onOutsideClick(event) {
-            if (!this.$refs.voucherList.contains(event.target)) {
+            if (this.$refs.voucherList && !this.$refs.voucherList.contains(event.target)) {
                 if (this.count != 0) {
                     this.closeModal();
                     this.count = 0;
@@ -72,6 +72,7 @@ export default {
     width: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     transition: opacity 0.15s linear;
+    z-index: 300;
     .voucher-list {
         position: relative;
         max-width: 500px;
