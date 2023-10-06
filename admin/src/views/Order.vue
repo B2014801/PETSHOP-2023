@@ -10,6 +10,15 @@
         >
             <!-- one item is one order -->
             <template #orderProduct="{ field, item }">
+                <div v-if="field == 'Address'">
+                    <div v-if="item['Address'].phone">
+                        <p class="my-1">{{ item['Address'].phone }}</p>
+                        <p class="m-0">{{ item[field].address }}</p>
+                    </div>
+                    <div v-else>
+                        <p>Khách hàng không còn tồn tại</p>
+                    </div>
+                </div>
                 <div v-if="field == 'Product'">
                     <div v-for="(product, index) in item['Product']" class="order-product-containter">
                         <img :src="product.img" alt="" height="60" width="100" />

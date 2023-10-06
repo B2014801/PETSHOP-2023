@@ -6,23 +6,14 @@
         <table id="tableComponent" class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th v-for="field in fields" :key="field" @click="sortTable(field)" class="p-1">
+                    <th v-for="(field, index) in fields" :key="field" @click="sortTable(fieldsMap[index])" class="p-1">
                         {{ field }} <i class="fa-solid fa-sort"></i>
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in filteredData" :key="item">
+                <tr v-for="item in sortedAndFilteredData" :key="item">
                     <td v-for="(field, index) in fieldsMap" :key="field">
-                        <div v-if="field == 'Address'">
-                            <div v-if="item[field].phone">
-                                <p class="my-1">{{ item[field].phone }}</p>
-                                <p class="m-0">{{ item[field].address }}</p>
-                            </div>
-                            <div v-else>
-                                <p>Khách hàng không còn tồn tại</p>
-                            </div>
-                        </div>
                         <slot name="orderProduct" :field="field" :item="item"></slot>
 
                         <div v-if="field == 'edit'">
@@ -52,7 +43,7 @@
 </template>
 
 <script>
-import { sortBy } from 'lodash';
+import { sortBy, orderBy } from 'lodash';
 
 import Search from '@/components/search/search.vue';
 
@@ -84,7 +75,8 @@ export default {
             sortedData: this.Data,
             classProps: 'w-50 mx-auto  border m-1 p-2',
             searchQuery: '',
-            sortedField: '',
+            sortField: '', // The currently selected sorting field
+            sortDirection: 'desc',
         };
     },
     computed: {
@@ -106,6 +98,10 @@ export default {
                                     break; // If a match is found in any field, break out of the loop
                                 }
                             }
+                        }
+                        if (field == 'Address') {
+                            // check for all name in product
+                            value = item[field].phone + item[field].address;
                         } else {
                             value = item[field];
                         }
@@ -130,8 +126,8 @@ export default {
             const filteredData = this.filteredData;
 
             // Then, apply sorting to the filtered data
-            if (this.sortedField) {
-                return sortBy(filteredData, [this.sortedField]);
+            if (this.sortField) {
+                return orderBy(filteredData, [this.sortField], [this.sortDirection]);
             } else {
                 // If no sorting field is selected, return the filtered data as is
                 return filteredData;
@@ -140,15 +136,6 @@ export default {
     },
 
     methods: {
-        sortTable(field) {
-            // Toggle sorting direction if the same field is clicked again
-            if (field === this.sortedField) {
-                this.sortedData.reverse();
-            } else {
-                this.sortedField = field;
-                this.sortedData = sortBy(this.sortedData, [field]);
-            }
-        },
         onSearch(query) {
             // Update the searchQuery when the search event is emitted by the Search component
             this.searchQuery = query;
@@ -159,6 +146,16 @@ export default {
 
         handleChangeStatePurchase(id, status) {
             this.$emit('handleChangeStatePurchase', id, status);
+        },
+        sortTable(field) {
+            if (field === this.sortField) {
+                // Toggle sorting direction if the same field is clicked again
+                this.sortDirection = this.sortDirection === 'desc' ? 'asc' : 'desc';
+            } else {
+                // If a new field is clicked, set it as the sorting field and reset direction to 'asc'
+                this.sortField = field;
+                this.sortDirection = 'desc';
+            }
         },
     },
 };
