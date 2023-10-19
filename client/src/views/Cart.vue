@@ -131,6 +131,8 @@ import * as yup from 'yup';
 
 import CartService from '@/services/cart.service';
 import { useAuthStore } from '@/stores/auth.store';
+import { cartStore } from '@/stores/main.store';
+
 export default {
     components: {
         Form,
@@ -224,6 +226,8 @@ export default {
                 this.isShowDeleteProductOutOfCartSuccess = true;
                 this.isShowUpdateCartSuccess = false;
                 this.getCart();
+                let CartStore = cartStore();
+                CartStore.minusAmount();
             }
         },
     },

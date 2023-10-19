@@ -123,17 +123,7 @@ export default {
         },
         getToTalPrice(invoice) {
             if (invoice) {
-                const products_price = invoice.detail.reduce(
-                    (total, item) => total + item.ordernumber * item.oldprice.replace(/\./g, ''),
-                    0,
-                );
-                let voucher_discount = 0;
-                if (invoice.vouchers && invoice.vouchers.length != 0) {
-                    voucher_discount = invoice.vouchers.reduce((total, item) => total + item.discount, 0);
-                }
-                console.log(voucher_discount);
-                const total = products_price - (products_price * voucher_discount) / 100 - 15000;
-                return this.formatNumberWithDot(total);
+                return invoice.total + ' ₫';
             }
         },
         getIconAndStatus(status) {

@@ -13,11 +13,11 @@ class InvoiceService {
 
         // Get the current date and format it as 'YYYY-MM-DD'
         const currentDate = new Date();
-        const formattedDate = format(currentDate, 'yyyy-MM-dd HH:mm');
+        const formattedDate = format(currentDate, ' HH:mm dd-MM-yyyy');
 
         // Calculate the delivery date (5 days from the current date)
         const deliveryDate = addDays(currentDate, 5);
-        const formattedDeliveryDate = format(deliveryDate, 'yyyy-MM-dd');
+        const formattedDeliveryDate = format(deliveryDate, 'dd-MM-yyyy');
 
         const invoice = {
             PaymentMethod: payload.PaymentMethod,
@@ -27,6 +27,7 @@ class InvoiceService {
             StatusId: 0,
             Detail: payload.Detail,
             Vouchers: payload.Vouchers,
+            Total: payload.Total,
         };
         // Remove undefined fields
         Object.keys(invoice).forEach((key) => invoice[key] === undefined && delete invoice[key]);
@@ -101,6 +102,7 @@ class InvoiceService {
                 } else {
                     user = {
                         email: user.email,
+                        name: user.name,
                         phone: user.phone,
                         address: user.address,
                     };
@@ -111,6 +113,7 @@ class InvoiceService {
                 order.orderdate = items_remain.CreateDate;
                 order.deliverydate = items_remain.DeliveryDate;
                 order.vouchers = items_remain.Vouchers;
+                order.total = items_remain.Total;
                 documents.push(order);
             };
 
@@ -118,6 +121,7 @@ class InvoiceService {
             for (const items of InvoiceProduct) {
                 await Detail(items.Detail, items);
             }
+
             return documents; // This will print the collected documents after all processing is done.
         } catch (error) {
             console.log(error);
@@ -128,6 +132,20 @@ class InvoiceService {
             let StatusChangeTo = null;
             if (data.status == 0) {
                 StatusChangeTo = 1;
+                let invoices = await this.Invoice.findOne({ _id: new ObjectId(data.id) });
+                console.log(invoices);
+                for (const invoice of invoices.Detail) {
+                    let product = await this.Product.findOne({ _id: new ObjectId(invoice._id) });
+                    console.log(invoice);
+                    let number_after_order =
+                        parseInt(product.number) - parseInt(invoice.amount) < 0
+                            ? 0
+                            : parseInt(product.number) - parseInt(invoice.amount);
+                    await this.Product.findOneAndUpdate(
+                        { _id: new ObjectId(invoice._id) },
+                        { $set: { number: number_after_order } },
+                    );
+                }
             }
             if (data.status == 1) {
                 StatusChangeTo = 2;
@@ -152,9 +170,6 @@ class InvoiceService {
         try {
             const result = await this.Invoice.aggregate([
                 {
-                    $unwind: '$Detail', // Flatten the "detail" array
-                },
-                {
                     $project: {
                         year: { $year: { $dateFromString: { dateString: '$CreateDate' } } },
                         month: { $month: { $dateFromString: { dateString: '$CreateDate' } } },
@@ -162,7 +177,7 @@ class InvoiceService {
                             $convert: {
                                 input: {
                                     $reduce: {
-                                        input: { $split: ['$Detail.price', '.'] },
+                                        input: { $split: ['$Total', '.'] },
                                         initialValue: '',
                                         in: { $concat: ['$$value', '$$this'] },
                                     },

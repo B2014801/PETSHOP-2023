@@ -25,7 +25,9 @@
             </div>
 
             <div class="d-inline">
-                <router-link to="/cart" class="text-white"><i class="fa-solid fa-cart-shopping mx-3"></i></router-link>
+                <router-link to="/cart" class="text-white">
+                    <toprightamout v-if="initCartAmout"><i class="fa-solid fa-cart-shopping mx-3"></i></toprightamout>
+                </router-link>
 
                 <span v-if="!isUserLogin">
                     <router-link to="/login" class="text-white text-decoration-none"
@@ -55,14 +57,17 @@
 </template>
 <script>
 import { useAuthStore } from '@/stores/auth.store';
+import { cartStore } from '@/stores/main.store';
 import images from '@/assets/imgs';
 import Search from '@/components/search/Search.vue';
 import Microphone from '@/components/search/Microphone.vue';
 import CollapseContent from './CollapseContent.vue';
 import Category from './Category.vue';
+import toprightamout from '@/components/toprightamout.vue';
 
 import CategoryService from '@/services/category.service';
 import PetshopService from '@/services/petshop.service';
+import Cartservice from '@/services/cart.service';
 // import ButtonCollapse from '@/components/button/ButtonCollapse.vue';
 export default {
     data() {
@@ -71,9 +76,11 @@ export default {
             isCollapsed: false,
             Categorys: [],
             products: [],
+
             LoadingSearch: false,
             isEmptyProduct: false,
             isSearch: null,
+            initCartAmout: false,
         };
     },
     components: {
@@ -82,6 +89,7 @@ export default {
         Category,
         // ButtonCollapse,
         Microphone,
+        toprightamout,
     },
     methods: {
         toggleCollapse() {
@@ -118,6 +126,30 @@ export default {
                 }
             } catch (error) {}
         },
+        async getUser() {
+            const auth = useAuthStore();
+            await auth.loadAuthState();
+            if (auth.user) {
+                return auth.user.user;
+            } else {
+                alert('Bạn phải đăng nhập trước');
+                this.$router.push({ name: 'login' });
+            }
+        },
+        async getCart() {
+            try {
+                const user = await this.getUser();
+                let cart = await Cartservice.getCarts(user._id);
+
+                let CartStore = cartStore();
+                CartStore.setAmount(cart.length);
+                this.initCartAmout = true;
+            } catch (error) {
+                // alert('vui lòng đăng nhập trước');
+                // this.$router.push({ name: 'login' });
+                console.log(error);
+            }
+        },
     },
     computed: {
         isUserLogin() {
@@ -132,6 +164,7 @@ export default {
     },
     created() {
         this.getCategorys();
+        this.getCart();
     },
     mounted() {},
 };

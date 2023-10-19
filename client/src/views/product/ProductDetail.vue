@@ -134,7 +134,7 @@
                         v-if="isShowCollapse2"
                     >
                         <div class="accordion-body mt-3">
-                            <h5 class="text-center">Nhận xét về tensp</h5>
+                            <h5 class="text-center">Nhận xét về {{ product.name }}</h5>
                             <!-- //lis -->
                             <comment-list :comments="comments" />
                             <commentform @comment="handleAddComment" @newcomment="getComments(product._id)" />
@@ -161,6 +161,7 @@ import { useAuthStore } from '@/stores/auth.store';
 import commentform from '@/components/form/CommentForm.vue';
 import CommentList from '@/components/comment/CommentList.vue';
 import CommentService from '@/services/comment.service';
+import { cartStore } from '@/stores/main.store';
 export default {
     data() {
         return {
@@ -255,6 +256,10 @@ export default {
                 const result = await PetshopService.addToCart(this.id, data);
                 if (result) {
                     this.isShowAddToCartSuccess = true;
+                    if (result.updatedExisting == false) {
+                        let CartStore = cartStore();
+                        CartStore.plusAmount();
+                    }
                 }
             } catch (error) {
                 console.log(error);

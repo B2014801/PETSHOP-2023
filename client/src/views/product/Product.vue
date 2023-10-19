@@ -54,6 +54,7 @@ export default {
             if (this.sort == 'new') {
                 return this.products.sort((a, b) => {
                     const dateA = new Date(a.createDate);
+
                     const dateB = new Date(b.createDate);
 
                     if (dateA < dateB) return 1;

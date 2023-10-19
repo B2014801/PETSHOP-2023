@@ -1,9 +1,10 @@
 <template>
     <div class="mt-3 mb-4 mx-2">
+        <h4 class="text-center mt-3">Nhãn hiệu sản phẩm</h4>
+        <h4 class="text-center">({{ brands.length }})</h4>
         <div class="text-center">
             <router-link to="/brand/add"><button class="btn btn-secondary">Thêm</button></router-link>
         </div>
-        <h4 class="text-center my-3">Nhãn hiệu sản phẩm</h4>
 
         <Table
             v-if="brands.length != 0"

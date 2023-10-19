@@ -1,5 +1,8 @@
 <template>
     <div class="mt-3 mb-4 mx-2">
+        <h4 class="text-center mt-3">Voucher</h4>
+        <h4 class="text-center">({{ vouchers.length }})</h4>
+        <h4></h4>
         <div v-if="!action" class="text-center">
             <router-link :to="{ name: 'voucher', query: { action: 'add' } }"
                 ><button class="btn btn-secondary">Thêm</button></router-link

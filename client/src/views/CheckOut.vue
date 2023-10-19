@@ -38,7 +38,7 @@
                                 {{ Product.ProductData.name }} <b> x{{ Product.Amount }} </b>
                             </td>
                             <td class="text-end">
-                                <b>{{ getTemporaryPriceOfOneProduct(Product.ProductData.price, Product.Amount) }}</b>
+                                <b>{{ getTemporaryPriceOfOneProduct(Product.ProductData.price, Product.Amount) }} ₫</b>
                             </td>
                         </tr>
                         <tr>
@@ -57,7 +57,7 @@
                         </div>
                         <div>
                             <span>Tổng tiền hàng </span>
-                            <span>{{ getTemporaryPrice }}</span>
+                            <span>{{ getTemporaryPrice }} ₫</span>
                         </div>
                         <div>
                             <span>Tổng tiền phí vận chuyển </span>
@@ -69,7 +69,7 @@
                         </div>
                         <div>
                             <span><b>Tổng thanh toán</b></span>
-                            <span class="text-danger fw-bold">{{ getTotalPrice }}</span>
+                            <span class="text-danger fw-bold">{{ getTotalPrice }} ₫</span>
                         </div>
                     </div>
                     <hr class="my-2" />
@@ -283,7 +283,6 @@ export default {
             return inputDate < currentDate;
         },
         getExpiredDate(date) {
-            console.log(this.isExpiredDate(date));
             if (this.isExpiredDate(date)) {
                 return '<p>Hết hạn</p>';
             } else {
@@ -302,7 +301,7 @@ export default {
             }
         },
         formatNumberWithDot(number) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' ₫'; //1000 to 1.000
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); //1000 to 1.000
         },
         getTemporaryPriceOfOneProduct(price, amount) {
             const priceInt = price.replace(/\./g, ''); //1.000.000 to 1000000
@@ -331,11 +330,13 @@ export default {
                         const user = await this.getUser();
                         const Detail = await this.getDetail();
                         const vouchers = this.getVoucherDetail;
+
                         let data = {
                             UserId: user._id,
                             PaymentMethod: this.isChooseOneMethodPayment,
                             Detail: Detail,
                             Vouchers: vouchers,
+                            Total: this.getTotalPrice,
                         };
                         const result = await InvoiceService.create(data);
                         if (result) {
@@ -386,7 +387,7 @@ export default {
                 0,
             );
             // }
-            const total = products_price - (products_price * discount_percent) / 100 - 15000;
+            const total = products_price - (products_price * discount_percent) / 100 + 15000;
             return this.formatNumberWithDot(total);
         },
         getVoucherDetail() {

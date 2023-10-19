@@ -1,6 +1,7 @@
 <template>
     <div class="mx-2">
-        <h4 class="text-center my-3">Đơn hàng</h4>
+        <h4 class="text-center mt-3">Đơn hàng</h4>
+        <h4 class="text-center m-0">({{ Invoices.length }})</h4>
         <Table
             v-if="Invoices.length != 0"
             :fields="fields"
@@ -12,6 +13,7 @@
             <template #orderProduct="{ field, item }">
                 <div v-if="field == 'Address'">
                     <div v-if="item['Address'].phone">
+                        <p class="my-1">{{ item['Address'].name }}</p>
                         <p class="my-1">{{ item['Address'].phone }}</p>
                         <p class="m-0">{{ item[field].address }}</p>
                     </div>
@@ -103,38 +105,17 @@ export default {
                 data.ID = index;
                 data._id = item._id;
                 data.Status = item.status;
-                data.Address = { address: item.user.address, phone: item.user.phone };
+                data.Address = { address: item.user.address, phone: item.user.phone, name: item.user.name };
                 data.Product = item.detail;
                 data.Orderdate = item.orderdate;
                 data.Deliverydate = item.deliverydate;
                 data.vouchers = item.vouchers;
-                data.Total = this.getTemporaryPrice(item.detail, item.vouchers);
+                data.Total = item.total + ' ₫';
                 datas.push(data);
             });
             return datas;
         },
-        formatNumberWithDot(number) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' ₫'; //1000 to 1.000
-        },
-        getTemporaryPrice(products, vouchers) {
-            let products_price = 0;
-            if (products.length != 0) {
-                products_price = products.reduce(
-                    (total, item) => total + item.ordernumber * item.oldprice.replace(/\./g, ''),
-                    0,
-                );
-                // if (temporary_price) {
-                // }
-            }
-            let discount_percent = 0;
-            if (vouchers && vouchers.length != 0) {
-                // if (!this.showVoucherModal) {
-                discount_percent = vouchers.reduce((total, item) => total + item.discount, 0);
-                // }
-            }
-            const total = products_price - (products_price * discount_percent) / 100 - 15000;
-            return this.formatNumberWithDot(total);
-        },
+
         async handleChangeStatePurchase(id, status) {
             let data = {
                 id: id,

@@ -38,9 +38,9 @@
                             type="date"
                             id="myDate"
                             name="expired_date"
-                            pattern="\d{4}-\d{2}-\d{2}"
                             required
                             v-model="VoucherData.expired_date"
+                            pattern="\d{2}-\d{2}-\d{4}"
                         />
                         <ErrorMessage name="expired_date" class="text-danger error-message" />
                     </td>
