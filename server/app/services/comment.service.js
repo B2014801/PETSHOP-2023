@@ -1,8 +1,10 @@
 const { ObjectId } = require('mongodb');
+
 class Comment {
     constructor(client) {
         // get collection Comment
         this.Comment = client.db().collection('comments');
+        this.User = client.db().collection('users');
     }
     // Định nghĩa các phương thức truy xuất CSDL sử dụng mongodb API
     extractCommentData(payload) {
@@ -14,6 +16,7 @@ class Comment {
         const Comment = {
             content: payload.content,
             star: payload.star,
+            url: payload.url,
             user_id: new ObjectId(payload.user_id),
             product_id: new ObjectId(payload.product_id),
             comment_date: formattedDate,
@@ -30,7 +33,11 @@ class Comment {
                 { $set: {} },
                 { returnDocument: 'after', upsert: true },
             );
-            return result.value;
+            let result2 = result.value;
+            let user = await this.User.findOne({ _id: new ObjectId(result.value.user_id) });
+            result2.user_name = user.name;
+            result2.user_img = user.img;
+            return result2;
         } catch (error) {
             console.log(error);
         }

@@ -13,7 +13,7 @@ class InvoiceService {
 
         // Get the current date and format it as 'YYYY-MM-DD'
         const currentDate = new Date();
-        const formattedDate = format(currentDate, ' HH:mm dd-MM-yyyy');
+        const formattedDate = format(currentDate, 'HH:mm:ss dd-MM-yyyy');
 
         // Calculate the delivery date (5 days from the current date)
         const deliveryDate = addDays(currentDate, 5);
@@ -35,9 +35,22 @@ class InvoiceService {
     }
     // create and save invoice
     async create(payload) {
-        const invoice = this.extractProductData(payload);
-        const result = await this.Invoice.insertOne(invoice);
-        return result;
+        try {
+            const invoice = this.extractProductData(payload);
+            let result = await this.Invoice.insertOne(invoice);
+            if (result) {
+                let user = await this.User.findOne({ _id: invoice.UserId });
+                result = {
+                    name: user.name,
+                    img: user.img,
+                    id: user._id,
+                };
+            }
+
+            return result;
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     async getAllInvoice(state, userid) {
@@ -56,6 +69,15 @@ class InvoiceService {
             }
             // get Invoice with status of one user
             const InvoiceProduct = await this.Invoice.find(filter).sort({ CreateDate: -1 }).toArray();
+            const { parse, format } = require('date-fns');
+            InvoiceProduct.sort((a, b) => {
+                const parsedDateA = parse(a.CreateDate, 'HH:mm:ss dd-MM-yyyy', new Date());
+                const parsedDateB = parse(b.CreateDate, 'HH:mm:ss dd-MM-yyyy', new Date());
+
+                const formattedDateA = new Date(format(parsedDateA, "yyyy-MM-dd'T'HH:mm:ss"));
+                const formattedDateB = new Date(format(parsedDateB, "yyyy-MM-dd'T'HH:mm:ss"));
+                return formattedDateB - formattedDateA;
+            });
             //to get each product
             //to get each order
             let documents = [];

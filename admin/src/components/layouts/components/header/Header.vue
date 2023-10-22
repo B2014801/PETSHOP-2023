@@ -7,40 +7,13 @@
             <router-link to="/" class="mr-2">
                 <img :src="images.logo" class="" alt="" width="130" height="70" />
             </router-link>
-            <div class="collapse navbar-collapse justify-content-between mr-3">
-                <Category v-if="showCategory" />
+            <div v-if="showCategory" class="collapse navbar-collapse justify-content-between mr-3">
+                <Category />
                 <!-- <Search></Search> -->
+                <HeaderNotification :notifications="notifications"></HeaderNotification>
             </div>
 
-            <div class="d-inline text-white">
-                <!-- '<a href="'.(isset($_SESSION['tendangnhapadmin']) ? 'admincp' : 'index.php?quanly=taikhoan').'">
-                    <i class="fa-solid fa-user mr-3 ml-2"></i
-                ></a> -->
-                <!-- <a
-                    class="text-decoration-none text-white"
-                    style="position: absolute; top: 0; right: 0"
-                    data-toggle="modal"
-                    data-target="#modal-logout"
-                    ><i class="fa-solid fa-arrow-right-from-bracket mr-3"></i>Thoát</a
-                > -->
-                <!-- <div id="modal-logout" class="modal fade" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content border">
-                            <h4 class="text-center text-warning">Bạn có chắc muốn thoát không</h4>
-                            <div class="display-inline mx-auto">
-                                <a href="index.php?action=dangxuat" role="button" class="btn btn-danger mr-2">Có</a>
-                                <a role="button" class="btn btn-danger" data-dismiss="modal">Không</a>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-                <!-- <router-link to="/login" class="text-white text-decoration-none"
-                    ><i class="fa-solid fa-user"></i> |
-                </router-link>
-                <router-link to="/register" class="text-white text-decoration-none"
-                    ><i class="fa-solid fa-user-plus"></i
-                ></router-link> -->
-            </div>
+            <div class="d-inline text-white"></div>
         </div>
     </nav>
     <CollapseContent v-if="showCategory" :isCollapsed="isCollapsed" />
@@ -50,13 +23,19 @@ import images from '@/assets/imgs';
 import Search from '@/components/search/Search.vue';
 import CollapseContent from './CollapseContent.vue';
 import Category from './Category.vue';
-// import ButtonCollapse from '@/components/button/ButtonCollapse.vue';
+import HeaderNotification from '@/components/notification/HeaderNotification.vue';
+import io from 'socket.io-client';
+import AlertNotification from '@/components/notification/AlertNotification.vue';
+import { useToast } from 'vue-toastification';
+import { aleartNotification } from '@/stores/main.js';
+import notificationService from '@/services/notification.service';
 export default {
     props: {
         showCategory: { type: Boolean },
     },
     data() {
         return {
+            notifications: [],
             images: images,
             isCollapsed: false,
         };
@@ -65,12 +44,66 @@ export default {
         Search,
         CollapseContent,
         Category,
-        // ButtonCollapse,
+        HeaderNotification,
     },
     methods: {
         toggleCollapse() {
             this.isCollapsed = !this.isCollapsed;
         },
+        async getNotification() {
+            try {
+                this.socket = io('http://localhost:3000');
+                this.socket.on('comment', (comment) => {
+                    let _comment = {
+                        name: comment.user_name,
+                        img: comment.user_img,
+                        title: 'Đã thêm một bình luận',
+                        url: comment.url + '#comment',
+                    };
+                    this.notifications.push(_comment);
+                    let AleartNotifications = aleartNotification();
+                    AleartNotifications.setNotification(_comment);
+                    const toast = useToast();
+                    toast.success(AlertNotification, { icon: false });
+                });
+                this.socket.on('gotNewInvoice', (invoice) => {
+                    let _invoice = {
+                        name: invoice.name,
+                        img: invoice.img,
+                        title: 'Đã đặt một đơn hàng',
+                        url: '/order',
+                    };
+                    this.notifications.push(_invoice);
+                    let AleartNotifications = aleartNotification();
+                    AleartNotifications.setNotification(_invoice);
+                    const toast = useToast();
+                    toast.success(AlertNotification, { icon: false });
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async getNotificationFromDb() {
+            try {
+                let result = await notificationService.getAll();
+                if (result) {
+                    result.map((item, index) => {
+                        this.notifications.push({
+                            name: item.Data.name,
+                            img: item.Data.img,
+                            title: item.title,
+                            url: item.url,
+                        });
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+    },
+    created() {
+        this.getNotificationFromDb();
+        this.getNotification();
     },
 };
 </script>

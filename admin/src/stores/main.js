@@ -1,18 +1,19 @@
-// store.js
-import Vuex from 'vuex';
+import { defineStore } from 'pinia';
 
-const store = new Vuex.Store({
-    state: {
-        accessToken: null,
-    },
-    mutations: {
-        setAccessToken(state, token) {
-            state.accessToken = token;
-        },
+export const aleartNotification = defineStore('alertnotic', {
+    state() {
+        return {
+            notification: {},
+        };
     },
     getters: {
-        accessToken: (state) => state.accessToken,
+        getNotification() {
+            return this.notification;
+        },
+    },
+    actions: {
+        setNotification(notification) {
+            this.notification = notification;
+        },
     },
 });
-
-export default store;

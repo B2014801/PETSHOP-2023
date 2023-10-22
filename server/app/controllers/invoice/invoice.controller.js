@@ -2,14 +2,28 @@ const ApiError = require('../../api-errors');
 const MongoDB = require('../../utils/mongodb.util');
 const InvoiceService = require('../../services/invoice.service');
 const { default: add } = require('date-fns/add/index.js');
+const socket = require('../../socket/socketio');
+const NotificationService = require('../../services/notification.service');
 
 exports.create = async (req, res, next) => {
     try {
         const invoiceService = new InvoiceService(MongoDB.client);
         const documents = await invoiceService.create(req.body);
+        const io = socket.getIo();
+        let notification = {
+            userId: documents.id,
+            title: 'Đã đặt một đơn hàng',
+            url: '/order',
+        };
+        //broadcast message to admin
+        io.emit('gotNewInvoice', documents);
+
+        const notificationService = new NotificationService(MongoDB.client);
+        await notificationService.create(notification);
+
         res.send(documents);
     } catch (error) {
-        next(new ApiError(500, 'error when create invoice'));
+        console.log(error);
     }
 };
 

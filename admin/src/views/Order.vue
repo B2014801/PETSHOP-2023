@@ -68,6 +68,7 @@
 <script>
 import InvoiceService from '@/services/invoice.service';
 import Table from '@/components/table/table.vue';
+import io from 'socket.io-client';
 export default {
     components: {
         Table,
@@ -146,6 +147,16 @@ export default {
     created() {
         document.title = 'Order';
         this.getAllInvoice();
+
+        try {
+            this.socket = io('http://localhost:3000');
+            this.socket.on('gotNewInvoice', (invoice) => {
+                this.getAllInvoice();
+                console.log(1);
+            });
+        } catch (error) {
+            console.log(error);
+        }
     },
 };
 </script>

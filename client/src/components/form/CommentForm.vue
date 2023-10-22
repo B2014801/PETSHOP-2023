@@ -63,6 +63,7 @@ export default {
             comment: {
                 content: '',
                 star: 0,
+                url: document.URL,
             },
         };
     },

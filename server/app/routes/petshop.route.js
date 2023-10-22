@@ -13,6 +13,7 @@ const brand = require('../controllers/brand/brand.controller');
 const user = require('../controllers/user/user.controller');
 const voucher = require('../controllers/voucher/voucher.controller');
 const comment = require('../controllers/comments/comment.controller');
+const notification = require('../controllers/notification/notification.controller');
 
 router.route('/').get(product.home);
 
@@ -100,5 +101,7 @@ const passport = require('passport');
 // comments
 router.route('/comments').get(comment.getAll);
 router.route('/comments/add').post(comment.create);
+//notification
+router.route('/notification').post(notification.create).get(notification.getAll);
 
 module.exports = router;

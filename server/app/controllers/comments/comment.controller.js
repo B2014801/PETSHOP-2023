@@ -3,20 +3,30 @@ const MongoDB = require('../../utils/mongodb.util');
 const CommentService = require('../../services/comment.service');
 const BrandController = require('../brand/brand.controller');
 const socket = require('../../socket/socketio'); // Adjust the path to your socket.js file
+const NotificationService = require('../../services/notification.service');
 
 exports.create = async (req, res, next) => {
     try {
         const commentService = new CommentService(MongoDB.client);
-        const document = await commentService.create(req.body);
+        let document = await commentService.create(req.body);
 
         // Get the io instance and emit a message to clients
         const io = socket.getIo();
         //broadcast message
+
+        let notification = {
+            userId: document.user_id,
+            title: 'Đã thêm một bình luận',
+            url: document.url + '#comment',
+        };
         io.emit('comment', document);
+
+        const notificationService = new NotificationService(MongoDB.client);
+        await notificationService.create(notification);
 
         return res.send(document);
     } catch (error) {
-        return next(new ApiError(500, 'An error occurred while creating the category' + error));
+        console.log(error);
     }
 };
 

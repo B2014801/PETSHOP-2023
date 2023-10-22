@@ -67,7 +67,6 @@
                 </div>
             </div>
         </section>
-
         <section>
             <div class="accordion accordion-flush" id="accordionFlushExample">
                 <div class="accordion-item">

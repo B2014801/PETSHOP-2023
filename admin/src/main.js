@@ -12,7 +12,8 @@ import './views/assets/main.scss';
 import './assets/css/global.scss';
 import App from './App.vue';
 import router from './router';
-// import store from './stores/main';
+import Toast from 'vue-toastification';
+import 'vue-toastification/dist/index.css';
 
 createApp(App).use(Vuex);
 // createApp(App).use(VueCookies);
@@ -21,5 +22,13 @@ createApp(App).use(Vuex);
 createApp(App).use(VueTippy, {
     defaultProps: { placement: 'bottom' },
 });
-const vm = createApp(App).use(createPinia()).use(router).mount('#app');
+const vm = createApp(App)
+    .use(createPinia())
+    .use(Toast, {
+        transition: 'Vue-Toastification__bounce',
+        maxToasts: 2,
+        newestOnTop: true,
+    })
+    .use(router)
+    .mount('#app');
 export default vm;

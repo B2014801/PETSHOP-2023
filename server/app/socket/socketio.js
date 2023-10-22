@@ -5,7 +5,7 @@ let io; // Declare a variable to store the io instance globally
 exports.initSocket = (server) => {
     io = socketIO(server, {
         cors: {
-            origin: 'http://localhost:3001',
+            origin: ['http://localhost:3001', 'http://localhost:3002'],
             methods: ['GET', 'POST'],
         },
     });
@@ -19,7 +19,7 @@ exports.initSocket = (server) => {
         // });
 
         socket.on('disconnect', () => {
-            console.log('A user disconnected');
+            // console.log('A user disconnected');
         });
     });
 };
