@@ -45,10 +45,9 @@ exports.login = async (req, res) => {
             }
         }
         // create time survive of  tocken life
-        const accessTokenLife = process.env.ACCESS_TOKEN_LIFE || jwtVariable.accessTokenLife;
+        const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
         // scret token
-        const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || jwtVariable.accessTokenSecret;
-
+        const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
         //to save in access token
         const dataForAccessToken = {
             email: user.email,

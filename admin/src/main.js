@@ -26,7 +26,7 @@ const vm = createApp(App)
     .use(createPinia())
     .use(Toast, {
         transition: 'Vue-Toastification__bounce',
-        maxToasts: 2,
+        maxToasts: 1,
         newestOnTop: true,
     })
     .use(router)

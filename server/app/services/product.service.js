@@ -56,8 +56,8 @@ class ProductService {
                 A: '[AÁÀÂÄÃẮẰẶ]',
                 E: '[EÉÈÊË]',
                 I: '[IÍÌÎÏ]',
-                O: '[OÓÒÔÖÕ]',
-                U: '[UÚÙÛÜ]',
+                O: '[OÓÒÔÖÕỐ]',
+                U: '[UÚÙÛÜỮ]',
                 D: '[ĐD]',
                 Đ: '[DĐ]',
                 // Add more mappings for other accented characters as needed

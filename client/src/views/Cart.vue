@@ -171,6 +171,7 @@ export default {
         },
         async getCart() {
             try {
+                console.log(1);
                 const user = await this.getUser();
 
                 this.cart = await CartService.getCarts(user._id);
@@ -183,8 +184,7 @@ export default {
                 }
             } catch (error) {
                 // alert('vui lòng đăng nhập trước');
-                // this.$router.push({ name: 'login' });
-                console.log(error);
+                this.$router.push({ name: 'login' });
             }
         },
         handleMinusOrderProduct(index) {

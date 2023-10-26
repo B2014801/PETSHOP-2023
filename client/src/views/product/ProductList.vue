@@ -53,7 +53,7 @@ export default {
         return {
             images: '',
             screenWidth: 0,
-            itemsPerPage: 2,
+            itemsPerPage: 10,
             currentPage: 1,
             // isSmallScreen: window.innerWidth <= 768,
         };

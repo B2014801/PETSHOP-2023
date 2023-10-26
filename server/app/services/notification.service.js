@@ -46,6 +46,9 @@ class NotificationService {
                     'Data.name': 1,
                 },
             },
+            {
+                $sort: { _id: -1 },
+            },
         ]);
         if (documents) {
             return documents.toArray();

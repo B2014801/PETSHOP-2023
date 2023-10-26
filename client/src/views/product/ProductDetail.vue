@@ -208,8 +208,7 @@ export default {
         },
         async findByName() {
             try {
-                this.products = await PetshopService.findByNameExceptId(this.product.name, this.product._id);
-                console.log(this.products);
+                this.products = (await PetshopService.getAllProductWithBrandId(this.product.brand)).slice(0, 4);
             } catch (er) {}
         },
         handleCollapse1() {
@@ -280,6 +279,7 @@ export default {
         },
         async handleAddComment(data) {
             const user = await this.getUser();
+            console.log(data);
             data.user_id = user._id;
             data.product_id = this.product._id;
             const result = await CommentService.create(data);

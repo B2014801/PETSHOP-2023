@@ -68,6 +68,9 @@ import toprightamout from '@/components/toprightamout.vue';
 import CategoryService from '@/services/category.service';
 import PetshopService from '@/services/petshop.service';
 
+import { cartStore } from '@/stores/main.store';
+import Cartservice from '@/services/cart.service';
+
 // import ButtonCollapse from '@/components/button/ButtonCollapse.vue';
 export default {
     data() {
@@ -125,6 +128,21 @@ export default {
                 }
             } catch (error) {}
         },
+        async getUser() {
+            const auth = useAuthStore();
+            await auth.loadAuthState();
+            if (auth.user) {
+                return auth.user.user;
+            }
+        },
+        async getTopAmountCart() {
+            try {
+                const user = await this.getUser();
+                let cart = await Cartservice.getCarts(user._id);
+                let CartStore = cartStore();
+                CartStore.setAmount(cart.length);
+            } catch (error) {}
+        },
     },
     computed: {
         isUserLogin() {
@@ -140,7 +158,9 @@ export default {
     created() {
         this.getCategorys();
     },
-    mounted() {},
+    mounted() {
+        this.getTopAmountCart();
+    },
 };
 </script>
 <style scoped lang="scss">

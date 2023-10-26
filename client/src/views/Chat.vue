@@ -1,52 +1,38 @@
 <template>
     <div>
-        <i @click="startRecognition" class="fa-solid fa-microphone text-white ms-3"></i>
+        <button @click="exportToExcel">Export to Excel</button>
     </div>
 </template>
 
 <script>
+import * as XLSX from '/node_modules/.vite/deps/xlsx.js';
+
 export default {
-    data() {
-        return {
-            isListening: false,
-        };
-    },
     methods: {
-        startRecognition() {
-            if ('webkitSpeechRecognition' in window) {
-                const recognition = new webkitSpeechRecognition();
-                recognition.lang = 'vi-VN'; // Set the language to Vietnamese
+        exportToExcel() {
+            // Your JSON data
+            const jsonData = [
+                { Name: 'John', Age: 30, City: 'New York' },
+                { Name: 'Alice', Age: 25, City: 'Los Angeles' },
+                { Name: 'Bob', Age: 35, City: 'Chicago' },
+            ];
 
-                recognition.onstart = () => {
-                    this.isListening = true;
-                };
+            // Create a worksheet
+            const ws = XLSX.utils.json_to_sheet(jsonData);
 
-                recognition.onend = () => {
-                    this.isListening = false;
-                };
+            // Create a workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-                recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript.toLowerCase();
-                    console.log('Recognized:', transcript);
+            // Generate a Blob object containing the Excel file
+            const blob = XLSX.write(wb, { bookType: 'xlsx', type: 'blob' });
 
-                    // Handle recognized text here
-                    if (transcript === 'xin chào') {
-                        // Handle recognized command
-                        console.log('Xin chào!'); // "Xin chào!" means "Hello!" in Vietnamese
-                    }
-
-                    // Add more commands as needed
-                };
-
-                recognition.start();
-            } else {
-                alert('Speech recognition is not supported in your browser.');
-            }
+            // Create a link to trigger the download
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'data.xlsx';
+            link.click();
         },
     },
 };
 </script>
-
-<style scoped>
-/* Add your component-specific styles here */
-</style>

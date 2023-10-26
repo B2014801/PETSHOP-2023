@@ -85,9 +85,6 @@ export default {
     methods: {
         async sendMessage() {
             try {
-                // if (this.comment.content.trim() === '') return;
-                // this.socket.emit('comment', this.comment);
-                // this.socket.emit('comment', this.comment);
                 this.$emit('comment', this.comment);
             } catch (error) {
                 console.log(error);

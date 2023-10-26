@@ -5,7 +5,7 @@
                 <i class="fa-solid fa-bell"></i>
             </div>
 
-            <ul v-show="isShowNotification" class="notification-container">
+            <ul v-show="isShowNotification && notifications.length != 0" class="notification-container">
                 <li v-for="notification in notifications">
                     <a :href="notification.url" target="_blank">
                         <img :src="notification.img" /><span
@@ -63,7 +63,9 @@ export default {
     background-color: rgb(83, 80, 80);
     border-radius: 8px;
     padding: 10px 2px;
-    min-width: 370px;
+    min-width: 378px;
+    max-height: 80vh;
+    overflow-y: scroll;
     img {
         border-radius: 9999px;
         object-fit: cover;
