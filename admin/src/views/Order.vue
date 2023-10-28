@@ -1,7 +1,17 @@
 <template>
     <div class="mx-2">
         <h4 class="text-center mt-3">Đơn hàng</h4>
-        <h4 class="text-center m-0">({{ Invoices.length }})</h4>
+        <h4 class="text-center m-0">({{ filteredInvoice.length }})</h4>
+        <div class="invoice-filter">
+            <select name="" id="" v-model="status">
+                <option :value="5">Tất cả</option>
+                <option :value="0">Chưa duyệt</option>
+                <option :value="1">Đã duyệt</option>
+                <option :value="2">Đang giao</option>
+                <option :value="3">Đã giao</option>
+                <option :value="4">Đã huỷ</option>
+            </select>
+        </div>
         <Table
             v-if="Invoices.length != 0"
             :fields="fields"
@@ -88,6 +98,7 @@ export default {
             Invoices: [],
             fields: ['STT', 'Địa chỉ', 'Sản phẩm', 'Tổng cộng', 'Ngày đặt', 'Ngày giao', 'Sửa'],
             fieldsMap: ['ID', 'Address', 'Product', 'Total', 'Orderdate', 'Deliverydate', 'confirm'],
+            status: 5,
         };
     },
     methods: {
@@ -101,7 +112,7 @@ export default {
         getDataTable() {
             let datas = [];
 
-            this.Invoices.forEach(async (item, index) => {
+            this.filteredInvoice.forEach(async (item, index) => {
                 let data = {};
                 data.ID = index;
                 data._id = item._id;
@@ -144,6 +155,17 @@ export default {
             return title;
         },
     },
+    computed: {
+        filteredInvoice() {
+            if (this.status == 5) {
+                return this.Invoices;
+            } else {
+                return this.Invoices.filter((invoice) => {
+                    return parseInt(invoice.status) == parseInt(this.status);
+                });
+            }
+        },
+    },
     created() {
         document.title = 'Order';
         this.getAllInvoice();
@@ -184,6 +206,18 @@ export default {
     border-top: 1px solid #ccc;
     span:nth-child(2) {
         min-width: 30px;
+    }
+}
+.invoice-filter {
+    text-align: end;
+    margin: 10px 10px 0 0;
+    select {
+        height: 35px;
+        border: 1px solid #ddd;
+        &:focus {
+            box-shadow: 0 0 3px 2px #ddd;
+            outline: none;
+        }
     }
 }
 </style>
