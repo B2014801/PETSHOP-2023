@@ -13,7 +13,7 @@
             </select>
         </div>
         <Table
-            v-if="Invoices.length != 0"
+            v-if="filteredInvoice.length != 0"
             :fields="fields"
             :Data="getDataTable()"
             :isOrder="true"

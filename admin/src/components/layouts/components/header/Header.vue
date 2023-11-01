@@ -10,7 +10,11 @@
             <div v-if="showCategory" class="collapse navbar-collapse justify-content-between mr-3">
                 <Category />
                 <!-- <Search></Search> -->
-                <HeaderNotification :notifications="notifications"></HeaderNotification>
+
+                <div class="logout-notice">
+                    <HeaderNotification :notifications="notifications.slice(0, 8)"></HeaderNotification>
+                    <button @click="handleLogout" class="btn btn-light" style="font-size: ">Đăng xuất</button>
+                </div>
             </div>
 
             <div class="d-inline text-white"></div>
@@ -28,6 +32,7 @@ import io from 'socket.io-client';
 import AlertNotification from '@/components/notification/AlertNotification.vue';
 import { useToast } from 'vue-toastification';
 import { aleartNotification } from '@/stores/main.js';
+import { useAuthStore } from '@/stores/auth.store.js';
 import notificationService from '@/services/notification.service';
 export default {
     props: {
@@ -54,13 +59,14 @@ export default {
             try {
                 this.socket = io('http://localhost:3000');
                 this.socket.on('comment', (comment) => {
+                    console.log(1);
                     let _comment = {
                         name: comment.user_name,
                         img: comment.user_img,
                         title: 'Đã thêm một bình luận',
                         url: comment.url + '#comment',
                     };
-                    this.notifications.push(_comment);
+                    this.getNotificationFromDb();
                     let AleartNotifications = aleartNotification();
                     AleartNotifications.setNotification(_comment);
                     const toast = useToast();
@@ -85,6 +91,7 @@ export default {
         },
         async getNotificationFromDb() {
             try {
+                this.notifications = [];
                 let result = await notificationService.getAll();
                 if (result) {
                     result.map((item, index) => {
@@ -100,6 +107,11 @@ export default {
                 console.log(error);
             }
         },
+        async handleLogout() {
+            let auth = useAuthStore();
+            auth.logout();
+            this.$router.push({ name: 'login' });
+        },
     },
     created() {
         this.getNotificationFromDb();
@@ -107,7 +119,7 @@ export default {
     },
 };
 </script>
-<style>
+<style lang="scss">
 .nav {
     margin: 0px 10px;
 }
@@ -136,5 +148,14 @@ export default {
 }
 .dropdown-item:focus {
     background-color: rgb(156, 228, 231) !important;
+}
+.logout-notice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    button {
+        margin-left: 10px;
+    }
 }
 </style>

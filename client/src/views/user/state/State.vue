@@ -40,7 +40,7 @@
                             </div>
                             <div>
                                 <span class="me-2">Phí vận chuyển</span>
-                                <span>15.000 đ</span>
+                                <span>15.000 ₫</span>
                             </div>
                         </div>
                         <hr />

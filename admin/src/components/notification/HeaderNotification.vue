@@ -65,7 +65,6 @@ export default {
     padding: 10px 2px;
     min-width: 378px;
     max-height: 80vh;
-    overflow-y: scroll;
     img {
         border-radius: 9999px;
         object-fit: cover;
