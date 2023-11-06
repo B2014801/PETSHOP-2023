@@ -30,9 +30,17 @@ export default {
             }
         },
         async getUserInfor() {
-            const user = await this.getUser();
+            try {
+                const user = await this.getUser();
 
-            this.user = await UserService.getUser(user._id);
+                this.user = await UserService.getUser(user._id);
+                const auth = useAuthStore();
+                if (auth.getExpired == true) {
+                    this.$router.push({ name: 'login' });
+                }
+            } catch (e) {
+                this.$router.push({ name: 'login' });
+            }
         },
         async handleUpdateUser(data) {
             try {

@@ -1,7 +1,8 @@
 <template>
-    <div class="mt-4">
+    <div class="mt-4 table-component-container">
         <div class="searchBar">
             <Search :classProps="classProps" @search="onSearch" />
+            <button class="btn btn-secondary btn-export-csv" @click="downloadExcel">CSV</button>
         </div>
         <table id="tableComponent" class="table table-bordered table-striped">
             <thead>
@@ -157,8 +158,32 @@ export default {
                 this.sortDirection = 'desc';
             }
         },
+        jsonToExcel(data) {
+            const csv = '\uFEFF' + data.map((row) => Object.values(row).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'application/csv;charset=UTF-8' });
+            return URL.createObjectURL(blob);
+        },
+
+        downloadExcel() {
+            const excelData = this.jsonToExcel(this.Data);
+            const link = document.createElement('a');
+            link.href = excelData;
+            link.download = 'data.csv';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        },
     },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.table-component-container {
+    position: relative;
+}
+.btn-export-csv {
+    position: absolute;
+    top: 8px;
+}
+</style>

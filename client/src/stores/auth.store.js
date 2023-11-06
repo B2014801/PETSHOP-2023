@@ -40,7 +40,7 @@ export const useAuthStore = defineStore('auth', {
                 this.user = response;
 
                 localStorage.setItem('user', JSON.stringify(response));
-
+                this.isExpire = false;
                 return response;
             }
         },

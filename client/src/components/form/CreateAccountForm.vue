@@ -52,15 +52,12 @@
                         <Field
                             id="password"
                             name="password"
-                            type="password"
+                            :type="isShowPassword1 ? 'text' : 'password'"
                             class="form-control border-0"
                             placeholder="Nhập mật khẩu của bạn"
                             v-model="formData.password"
                         />
-                        <i
-                            onclick="ShowPassword(document.querySelector('#password-dangky'))"
-                            class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"
-                        ></i>
+                        <i @click="showPassword1" class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"></i>
                     </div>
                     <ErrorMessage name="password" class="text-danger" />
                 </div>
@@ -70,14 +67,11 @@
                         <Field
                             id="password_repeat"
                             name="password_repeat"
-                            type="password"
+                            :type="isShowPassword2 ? 'text' : 'password'"
                             class="form-control border-0"
                             placeholder="Nhập mật khẩu của bạn"
                         />
-                        <i
-                            onclick="ShowPassword(document.querySelector('#password-dangky-laplai'))"
-                            class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"
-                        ></i>
+                        <i @click="showPassword2" class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"></i>
                     </div>
                     <ErrorMessage name="password_repeat" class="text-danger" />
                 </div>
@@ -145,6 +139,8 @@ export default {
             address_data: {},
             isClickSubmit: false,
             isChosenAddres: false,
+            isShowPassword1: false,
+            isShowPassword2: false,
         };
     },
 
@@ -172,6 +168,12 @@ export default {
         },
         isChosenAddress(bl) {
             this.isChosenAddres = bl;
+        },
+        showPassword1() {
+            this.isShowPassword1 = !this.isShowPassword1;
+        },
+        showPassword2() {
+            this.isShowPassword2 = !this.isShowPassword2;
         },
     },
 };

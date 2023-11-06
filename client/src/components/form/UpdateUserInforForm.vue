@@ -63,59 +63,60 @@
                             name="doimatkhau"
                             data-toggle="modal"
                             data-target="#modal-doimk"
+                            @click.prevent="showModal = true"
                         >
                             Đổi mật khẩu
                         </button>
                         <button v-if="isShowImg" @click.prevent="handleLogout" class="btn btn-danger">Đăng xuất</button>
                     </div>
                 </div>
-
-                <div id="modal-doimk" class="modal fade" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content border p-3">
-                            <!-- <form action="" method="POST" @submit="ValidateDoimk"> -->
-                            <div class="mb-2 form-group">
-                                <label for="matkhau-moi" class="">Mật khẩu mới: </label>
-                                <div class="input-group border w-100">
-                                    <input
-                                        id="matkhau-moi"
-                                        name="matkhau-moi"
-                                        type="password"
-                                        class="form-control border-0"
-                                    />
-                                    <i
-                                        @click="ShowPassword(document.querySelector('#matkhau-moi'))"
-                                        class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"
-                                    ></i>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="matkhau-moi-laplai" class="">Lập lại mật khẩu: </label>
-                                <div class="input-group border w-100">
-                                    <input
-                                        id="matkhau-moi-laplai"
-                                        name="matkhau-moi-laplai"
-                                        type="password"
-                                        class="form-control border-0"
-                                    />
-                                    <i
-                                        @click="ShowPassword(document.querySelector('#matkhau-moi-laplai'))"
-                                        class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"
-                                    ></i>
-                                </div>
-                            </div>
-                            <div class="display-inline mx-auto text-center mt-2">
-                                <button class="btn btn-danger mr-2" name="doi-matkhau" type="submit">Gửi</button>
-                                <a role="button" class="btn btn-danger" data-dismiss="modal">Huỷ</a>
-                            </div>
-                            <!-- </form> -->
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </Form>
-    <Form :validation-schema="UserUpdateValidate"> </Form>
+    <Model :showVoucherModal="showModal" @closeModel="closeModel()">
+        <div class="profile-change-password-model">
+            <Form @submit="handleChangePassword" :validation-schema="PasswordValidate">
+                <div v-if="isShowWrongOldPass">
+                    <strong class="text-danger">Mật khẩu cũ không chính xác</strong>
+                </div>
+                <div class="form-group">
+                    <label for="">Mật khẩu cũ <strong class="text-danger">(*)</strong></label>
+                    <Field type="password" class="form-control m-0" name="old_password" v-model="newUserData.oldpass">
+                    </Field>
+                </div>
+                <div class="form-group">
+                    <label for="">Mật khẩu mới <strong class="text-danger">(*)</strong></label>
+                    <div class="input-group border rounded">
+                        <Field
+                            :type="isShowPassword1 ? 'text' : 'password'"
+                            class="form-control m-0 border-0"
+                            name="password"
+                        >
+                        </Field>
+                        <i @click="showPassword1" class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"></i>
+                    </div>
+                    <ErrorMessage name="password" class="text-danger" />
+                </div>
+                <div class="form-group">
+                    <label for="">Lặp lại mật khẩu <strong class="text-danger">(*)</strong></label>
+                    <div class="input-group border rounded">
+                        <Field
+                            :type="isShowPassword2 ? 'text' : 'password'"
+                            class="form-control m-0 border-0"
+                            name="password_repeat"
+                            v-model="newUserData.newpass"
+                        >
+                        </Field>
+                        <i @click="showPassword2" class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"></i>
+                    </div>
+                    <ErrorMessage name="password_repeat" class="text-danger" />
+                </div>
+                <div>
+                    <button class="btn btn-success" type="submit">Cập nhật</button>
+                </div>
+            </Form>
+        </div>
+    </Model>
 </template>
 
 <script>
@@ -123,12 +124,15 @@ import { useAuthStore } from '@/stores/auth.store';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
 import Address from '@/components/address/vietnamaddress.vue';
+import Model from '@/components/models/model1.vue';
+import bcrypt from 'bcryptjs';
 export default {
     components: {
         Form,
         Field,
         ErrorMessage,
         Address,
+        Model,
     },
     props: {
         user: { type: Object },
@@ -148,13 +152,30 @@ export default {
                 .required('vui lòng nhập số điện thoại')
                 .matches(/((09|03|07|08|05)+([0-9]{8})\b)/g, 'Số điện thoại không hợp lệ.'),
         });
+        const PasswordValidate = yup.object().shape({
+            password: yup.string().required('Bạn chưa nhập mật khẩu').max(100, 'Địa chỉ tối đa 100 ký tự.'),
+            password_repeat: yup
+                .string()
+                .required('Mật khẩu không khớp')
+                .oneOf([yup.ref('password')], 'Mật khẩu không khớp'),
+        });
         return {
+            _user: this.user,
             UserUpdateValidate,
+            PasswordValidate,
             isClickSubmit: false,
             data_address: [],
             isChosenAddres: false,
             imageUrl: null,
             isuserValid: null,
+            showModal: false,
+            newUserData: {
+                oldpass: '',
+                newpass: '',
+            },
+            isShowWrongOldPass: false,
+            isShowPassword1: false,
+            isShowPassword2: false,
         };
     },
     methods: {
@@ -170,9 +191,9 @@ export default {
                             formData.append(key, value);
                         }
                     }
-                    for (const key in this.user) {
-                        if (this.user.hasOwnProperty(key)) {
-                            appendIfDefined(key, this.user[key]);
+                    for (const key in this._user) {
+                        if (this._user.hasOwnProperty(key)) {
+                            appendIfDefined(key, this._user[key]);
                         }
                     }
 
@@ -219,6 +240,32 @@ export default {
                 this.isuserValid = isValid;
             });
         },
+        closeModel() {
+            this.showModal = false;
+        },
+        async handleChangePassword() {
+            // const hashedPassword = await bcrypt.hash(this.newpassword, saltRounds);
+            try {
+                const isMatch = await bcrypt.compare(this.newUserData.oldpass, this.user.password);
+                if (isMatch) {
+                    const saltRounds = 10; // Number of salt rounds
+                    this._user.password = await bcrypt.hash(this.newUserData.newpass, saltRounds);
+                    this.handleSubmit();
+                    this.closeModel();
+                    this.isShowWrongOldPass = false;
+                } else {
+                    this.isShowWrongOldPass = true;
+                }
+            } catch (error) {
+                console.error('Error verifying password:', error);
+            }
+        },
+        showPassword1() {
+            this.isShowPassword1 = !this.isShowPassword1;
+        },
+        showPassword2() {
+            this.isShowPassword2 = !this.isShowPassword2;
+        },
     },
     computed: {
         async isUserDataValid() {
@@ -257,5 +304,15 @@ export default {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+}
+.profile-change-password-model {
+    padding: 10px;
+    background-color: #fff;
+
+    div:nth-last-child(1) {
+        display: flex;
+        justify-content: center;
+        margin-top: 6px;
+    }
 }
 </style>
