@@ -342,6 +342,7 @@ export default {
                         if (result) {
                             this.isShowLoading = false;
                             this.isShowCheckOutSuccess = true;
+                            // this.$router.push({ name: 'home' });
                         }
                     } else {
                         this.isShowErrorChoosePaymentMethod = true;

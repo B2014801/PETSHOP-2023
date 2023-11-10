@@ -79,11 +79,16 @@ export default {
                         title: 'Đã đặt một đơn hàng',
                         url: '/order',
                     };
-                    this.notifications.push(_invoice);
+                    this.getNotificationFromDb();
                     let AleartNotifications = aleartNotification();
                     AleartNotifications.setNotification(_invoice);
                     const toast = useToast();
-                    toast.success(AlertNotification, { icon: false });
+                    toast.success(AlertNotification, {
+                        icon: false,
+                        onClick: () => {
+                            toast.clear();
+                        },
+                    });
                 });
             } catch (error) {
                 console.log(error);
@@ -100,6 +105,7 @@ export default {
                             img: item.Data.img,
                             title: item.title,
                             url: item.url,
+                            date: item.date,
                         });
                     });
                 }

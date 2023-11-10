@@ -2,7 +2,21 @@
     <div class="mt-4 table-component-container">
         <div class="searchBar">
             <Search :classProps="classProps" @search="onSearch" />
-            <button class="btn btn-secondary btn-export-csv" @click="downloadExcel">CSV</button>
+            <button class="btn btn-secondary btn-export-csv" @click="downloadExcel">CSV {{ totalPages }}</button>
+            <div class="break-page">
+                <button @click="previousPage" :disabled="currentPage === 1">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <select name="" id="" v-model="itemsPerPage">
+                    <option :value="5">5</option>
+                    <option :value="10">10</option>
+                    <option :value="15">15</option>
+                    <option :value="20">20</option>
+                </select>
+                <button @click="nextPage" :disabled="currentPage === totalPages">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
         <table id="tableComponent" class="table table-bordered table-striped">
             <thead>
@@ -78,13 +92,15 @@ export default {
             searchQuery: '',
             sortField: '', // The currently selected sorting field
             sortDirection: 'desc',
+            itemsPerPage: 5,
+            currentPage: 1,
         };
     },
     computed: {
         filteredData() {
             if (typeof this.searchQuery === 'string') {
                 const query = this.searchQuery.toLowerCase().trim();
-                return this.Data.filter((item) => {
+                return this.paginatedProducts.filter((item) => {
                     // Initialize a flag to check if the query matches any field
                     let match = false;
                     // Loop through all fields in the item
@@ -134,6 +150,15 @@ export default {
                 return filteredData;
             }
         },
+        totalPages() {
+            return Math.ceil(this.Data.length / this.itemsPerPage);
+        },
+        // Slice the products array based on the current page and items per page
+        paginatedProducts() {
+            const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+            const endIndex = startIndex + this.itemsPerPage;
+            return this.Data.slice(startIndex, endIndex);
+        },
     },
 
     methods: {
@@ -174,6 +199,16 @@ export default {
             link.click();
             document.body.removeChild(link);
         },
+        previousPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        },
     },
 };
 </script>
@@ -185,5 +220,39 @@ export default {
 .btn-export-csv {
     position: absolute;
     top: 8px;
+}
+.break-page {
+    position: absolute;
+    top: 10px;
+    right: 0px;
+
+    select {
+        height: 35px;
+        border: 1px solid #ddd;
+        &:focus {
+            box-shadow: 0 0 3px 2px #ddd;
+            outline: none;
+        }
+    }
+    button {
+        font-size: 16px;
+        font-weight: 500;
+        min-width: 35px;
+        min-height: 35px;
+        border: 1px solid #ddd;
+        &:not(:disabled):hover {
+            background-color: rgb(34, 101, 105);
+            border: none;
+            color: #fff;
+        }
+    }
+    button:first-child {
+        border-bottom-left-radius: 10px;
+        border-top-left-radius: 10px;
+    }
+    button:last-child {
+        border-bottom-right-radius: 10px;
+        border-top-right-radius: 10px;
+    }
 }
 </style>

@@ -12,7 +12,7 @@
             <tbody>
                 <tr>
                     <td colspan="2">
-                        <p v-html="getIconAndStatus(invoice.status)"></p>
+                        <p v-html="getIconAndStatus(invoice.status, invoice.deliverydate)"></p>
                     </td>
                 </tr>
 
@@ -126,7 +126,7 @@ export default {
                 return invoice.total + ' ₫';
             }
         },
-        getIconAndStatus(status) {
+        getIconAndStatus(status, date) {
             // <p class="mb-0 text-success"><i class="fa-solid fa-check"></i> Đơn hàng đang được xác nhận</p>
             const _status = parseInt(status);
             switch (_status) {
@@ -134,7 +134,7 @@ export default {
                 case 1:
                     return '<p class="mb-0 text-success"><i class="fa-solid fa-check"></i> Đơn hàng đang được xác nhận</p>';
                 case 2:
-                    return '<p class="mb-0 text-success"><i class="fa-solid fa-truck"></i> Đang giao hàng</p>';
+                    return `<p class="mb-0 text-success"><i class="fa-solid fa-truck"></i> Đang giao hàng (dự kiến: ${date})</p>`;
                 case 3:
                     return '<p class="mb-0 text-success"><i class="fa-solid fa-truck"></i> Đơn hàng đã được giao thành công</p>';
                 case 4:

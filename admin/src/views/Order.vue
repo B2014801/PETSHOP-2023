@@ -64,7 +64,7 @@
                 <div v-if="field == 'confirm'">
                     <button
                         @click="handleChangeStatePurchase(item._id, item.Status)"
-                        :disabled="item.Status == 4 || item.Status == 2"
+                        :disabled="item.Status == 4 || item.Status == 3"
                         class="btn btn-secondary"
                     >
                         {{ getTitleConfirm(item.Status) }}
@@ -143,15 +143,19 @@ export default {
             if (status == 0) {
                 title = 'Duyệt';
             }
-            if (status == 1 || status == 2) {
+            if (status == 1) {
                 title = 'Giao';
             }
+            if (status == 2) {
+                title = 'Hoàn tất';
+            }
             if (status == 3) {
-                title = 'Hoàn Tất';
+                title = 'Đã giao';
             }
             if (status == 4) {
                 title = 'Đã huỷ';
             }
+
             return title;
         },
     },
@@ -210,7 +214,7 @@ export default {
 }
 .invoice-filter {
     text-align: end;
-    margin: 10px 10px 0 0;
+    margin: 10px 0 0 0;
     select {
         height: 35px;
         border: 1px solid #ddd;

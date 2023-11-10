@@ -279,7 +279,6 @@ export default {
         },
         async handleAddComment(data) {
             const user = await this.getUser();
-            console.log(data);
             data.user_id = user._id;
             data.product_id = this.product._id;
             const result = await CommentService.create(data);
@@ -306,7 +305,10 @@ export default {
         },
     },
     watch: {
-        id: 'findById',
+        id() {
+            this.findById(this.id);
+            this.getComments(this.id);
+        },
     },
     created() {
         this.findById(this.id);

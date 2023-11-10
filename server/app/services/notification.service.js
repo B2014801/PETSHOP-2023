@@ -6,10 +6,16 @@ class NotificationService {
     }
 
     extractNotificationData(payload) {
+        const { format, addDays } = require('date-fns');
+
+        // Get the current date and format it as 'YYYY-MM-DD'
+        const currentDate = new Date();
+        const formattedDate = format(currentDate, 'HH:mm dd-MM-yyyy');
         const notification = {
             userId: payload.userId,
             title: payload.title,
             url: payload.url,
+            date: formattedDate,
         };
         Object.keys(notification).forEach((key) => notification[key] === undefined && delete notification[key]);
         return notification;
@@ -42,6 +48,7 @@ class NotificationService {
                 $project: {
                     title: 1,
                     url: 1,
+                    date: 1,
                     'Data.img': 1,
                     'Data.name': 1,
                 },

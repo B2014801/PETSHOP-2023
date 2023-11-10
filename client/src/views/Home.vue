@@ -49,6 +49,7 @@ export default {
         async getProductHomePage() {
             try {
                 this.products = await petshopService.getAllProduct();
+                this.products = this.products.slice(0, 4);
             } catch (error) {}
         },
         resetCarousel() {

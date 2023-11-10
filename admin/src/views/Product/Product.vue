@@ -29,7 +29,7 @@ export default {
         return {
             products: [],
             images: images,
-            fields: ['STT', 'Tên', 'Hình ảnh', 'Giá', 'Giảm', 'Kho', 'Sửa'],
+            fields: ['STT', 'Tên', 'Hình ảnh', 'Giá(₫)', 'Giảm(%)', 'Kho', 'Sửa'],
             fieldsMap: ['STT', 'name', 'img', 'price', 'discount', 'number', 'edit'],
         };
     },
@@ -62,9 +62,9 @@ export default {
                     data.id = item._id;
                     data.name = item.name;
                     data.img = item.img;
-                    data.price = item.price + ' ₫';
+                    data.price = item.price;
                     data.discount = item.discount;
-                    data.number = item.number;
+                    data.number = parseInt(item.number);
                     datas.push(data);
                 });
                 return datas;

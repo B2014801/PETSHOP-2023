@@ -138,7 +138,7 @@ export default {
                 .number('Vui lòng nhập số')
                 .typeError('Số lượng phải là một số')
                 .required('Vui lòng nhập số lượng'),
-            product_discount: yup.number().typeError('Giảm giá phải là một số'),
+            product_discount: yup.number().typeError('Giảm giá phải là một số').max(100, 'Tối đa 100'),
         });
         let ProductData = {};
         if (this.Add) {

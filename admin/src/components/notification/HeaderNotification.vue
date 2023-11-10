@@ -8,9 +8,11 @@
             <ul v-show="isShowNotification && notifications.length != 0" class="notification-container">
                 <li v-for="notification in notifications">
                     <a :href="notification.url" target="_blank">
-                        <img :src="notification.img" /><span
-                            ><b>{{ notification.name }}</b> {{ notification.title }}</span
-                        >
+                        <img :src="notification.img" />
+                        <span>
+                            <b>{{ notification.name }}</b> {{ notification.title }}
+                            <p>{{ notification.date }}</p>
+                        </span>
                     </a>
                 </li>
             </ul>
@@ -65,6 +67,14 @@ export default {
     padding: 10px 2px;
     min-width: 378px;
     max-height: 80vh;
+    a {
+        display: flex;
+        p {
+            margin: 0;
+            font-size: 12px;
+            color: #0866ff;
+        }
+    }
     img {
         border-radius: 9999px;
         object-fit: cover;
