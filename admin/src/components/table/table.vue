@@ -2,7 +2,7 @@
     <div class="mt-4 table-component-container">
         <div class="searchBar">
             <Search :classProps="classProps" @search="onSearch" />
-            <button class="btn btn-secondary btn-export-csv" @click="downloadExcel">CSV {{ totalPages }}</button>
+            <button class="btn btn-secondary btn-export-csv" @click="downloadExcel">CSV</button>
             <div class="break-page">
                 <button @click="previousPage" :disabled="currentPage === 1">
                     <i class="fa-solid fa-chevron-left"></i>

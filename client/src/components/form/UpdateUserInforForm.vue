@@ -63,7 +63,7 @@
                             name="doimatkhau"
                             data-toggle="modal"
                             data-target="#modal-doimk"
-                            @click.prevent="showModal = true"
+                            @click.prevent="handleShowModel"
                         >
                             Đổi mật khẩu
                         </button>
@@ -81,8 +81,17 @@
                 </div>
                 <div class="form-group">
                     <label for="">Mật khẩu cũ <strong class="text-danger">(*)</strong></label>
-                    <Field type="password" class="form-control m-0" name="old_password" v-model="newUserData.oldpass">
-                    </Field>
+                    <div class="input-group border rounded">
+                        <Field
+                            :type="isShowPassword0 ? 'text' : 'password'"
+                            class="form-control m-0 border-0"
+                            name="old_password"
+                            v-model="newUserData.oldpass"
+                        >
+                        </Field>
+                        <i @click="showPassword0" class="fa-sharp fa-solid fa-eye border-0 bg-white px-2 my-auto"></i>
+                    </div>
+                    <ErrorMessage name="old_password" class="text-danger" />
                 </div>
                 <div class="form-group">
                     <label for="">Mật khẩu mới <strong class="text-danger">(*)</strong></label>
@@ -153,7 +162,16 @@ export default {
                 .matches(/((09|03|07|08|05)+([0-9]{8})\b)/g, 'Số điện thoại không hợp lệ.'),
         });
         const PasswordValidate = yup.object().shape({
-            password: yup.string().required('Bạn chưa nhập mật khẩu').max(100, 'Địa chỉ tối đa 100 ký tự.'),
+            password: yup
+                .string()
+                .required('Bạn chưa nhập mật khẩu')
+                .max(100, 'Mật khẩu tối đa 100 ký tự.')
+                .min(8, 'Tối thiếu 8 ký tự'),
+            old_password: yup
+                .string()
+                .required('Bạn chưa nhập mật khẩu')
+                .max(100, 'Mật khẩu tối đa 100 ký tự.')
+                .min(8, 'Tối thiếu 8 ký tự'),
             password_repeat: yup
                 .string()
                 .required('Mật khẩu không khớp')
@@ -174,6 +192,7 @@ export default {
                 newpass: '',
             },
             isShowWrongOldPass: false,
+            isShowPassword0: false,
             isShowPassword1: false,
             isShowPassword2: false,
         };
@@ -252,6 +271,10 @@ export default {
                     this._user.password = await bcrypt.hash(this.newUserData.newpass, saltRounds);
                     this.handleSubmit();
                     this.closeModel();
+                    this.newUserData = {
+                        oldpass: '',
+                        newpass: '',
+                    };
                     this.isShowWrongOldPass = false;
                 } else {
                     this.isShowWrongOldPass = true;
@@ -260,11 +283,24 @@ export default {
                 console.error('Error verifying password:', error);
             }
         },
+        showPassword0() {
+            this.isShowPassword0 = !this.isShowPassword0;
+        },
         showPassword1() {
             this.isShowPassword1 = !this.isShowPassword1;
         },
         showPassword2() {
             this.isShowPassword2 = !this.isShowPassword2;
+        },
+        handleShowModel() {
+            if (this.user.type) {
+                if (this.user.type == 'OAuthgg') {
+                    window.location.href =
+                        'https://accounts.google.com/v3/signin/challenge/pwd?TL=AIBe4_Lu0JAP5yM-VnpCSsHVknsjra5NnBKt2YTacbfu6NVLXCUfKJdDwFaknzMa&cid=1&continue=https%3A%2F%2Fmyaccount.google.com%2Fsigninoptions%2Fpassword%3Fcontinue%3Dhttps%3A%2F%2Fmyaccount.google.com%2Fsecurity&flowName=GlifWebSignIn&hl=vi&ifkv=AVQVeyyB3utIrzWXhZouf_Bkm6WXT_EclQVp7B6NMBS3bz4tQ6YwRkMj8dtMqg3BxobFMImVlHGG4Q&kdi=CAM&rart=ANgoxccb4ykv_b0cfkymhrMNbfAFi_uhJzqR3k40ctj_BlHgu_7CCs3ZSpkz2jv71NFwQJKXXwQpVYkEoOja6bQvBwOO7BaM7XTH-j5SXG2wwAarPwVmyzo&rpbg=1&sarp=1&scc=1&service=accountsettings';
+                }
+            } else {
+                this.showModal = true;
+            }
         },
     },
     computed: {
