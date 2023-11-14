@@ -32,6 +32,7 @@ export default {
                 const result = await ProductService.update(this.id, data);
                 if (result) {
                     this.isShowUpdateSuccess = true;
+                    this.$router.push({ name: 'product' });
                 }
             } catch (er) {
                 console.log(er);

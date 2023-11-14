@@ -96,7 +96,7 @@ export default {
             // fieldss,
             // studentData,
             Invoices: [],
-            fields: ['STT', 'Địa chỉ', 'Sản phẩm', 'Tổng cộng', 'Ngày đặt', 'Ngày giao', 'Sửa'],
+            fields: ['STT', 'Địa chỉ', 'Sản phẩm', 'Tổng cộng(₫)', 'Ngày đặt', 'Ngày giao', 'Sửa'],
             fieldsMap: ['ID', 'Address', 'Product', 'Total', 'Orderdate', 'Deliverydate', 'confirm'],
             status: 5,
         };
@@ -122,7 +122,7 @@ export default {
                 data.Orderdate = item.orderdate;
                 data.Deliverydate = item.deliverydate;
                 data.vouchers = item.vouchers;
-                data.Total = item.total + ' ₫';
+                data.Total = item.total;
                 datas.push(data);
             });
             return datas;
