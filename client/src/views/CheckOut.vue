@@ -253,8 +253,8 @@ export default {
                 }
             } catch (error) {
                 // alert('vui lòng đăng nhập trước');
-                // this.$router.push({ name: 'login' });
-                console.log(error);
+                this.$router.push({ name: 'login' });
+                // console.log(error);
             }
         },
         isUserDataValid(data) {
@@ -322,33 +322,46 @@ export default {
             );
             return Detail;
         },
+        checkEnoughProductNumber() {
+            let flag = false;
+            this.CheckOutData.map((item, index) => {
+                if (parseInt(item.ProductData.number) <= 0) {
+                    flag = true;
+                }
+            });
+            return flag == false;
+        },
         async handleCheckOut() {
             try {
-                if (this.isuserDataValid) {
-                    if (this.isChooseOneMethodPayment) {
-                        this.isShowLoading = true;
-                        const user = await this.getUser();
-                        const Detail = await this.getDetail();
-                        const vouchers = this.getVoucherDetail;
+                if (this.checkEnoughProductNumber() == true) {
+                    if (this.isuserDataValid) {
+                        if (this.isChooseOneMethodPayment) {
+                            this.isShowLoading = true;
+                            const user = await this.getUser();
+                            const Detail = await this.getDetail();
+                            const vouchers = this.getVoucherDetail;
 
-                        let data = {
-                            UserId: user._id,
-                            PaymentMethod: this.isChooseOneMethodPayment,
-                            Detail: Detail,
-                            Vouchers: vouchers,
-                            Total: this.getTotalPrice,
-                        };
-                        const result = await InvoiceService.create(data);
-                        if (result) {
-                            this.isShowLoading = false;
-                            this.isShowCheckOutSuccess = true;
-                            // this.$router.push({ name: 'home' });
+                            let data = {
+                                UserId: user._id,
+                                PaymentMethod: this.isChooseOneMethodPayment,
+                                Detail: Detail,
+                                Vouchers: vouchers,
+                                Total: this.getTotalPrice,
+                            };
+                            const result = await InvoiceService.create(data);
+                            if (result) {
+                                this.isShowLoading = false;
+                                this.isShowCheckOutSuccess = true;
+                                // this.$router.push({ name: 'home' });
+                            }
+                        } else {
+                            this.isShowErrorChoosePaymentMethod = true;
                         }
                     } else {
-                        this.isShowErrorChoosePaymentMethod = true;
+                        alert('vui lòng cập nhật thông tin');
                     }
                 } else {
-                    alert('vui lòng cập nhật thông tin');
+                    this.$router.push({ name: 'cart' });
                 }
             } catch (error) {
                 console.log(error);
