@@ -25,7 +25,7 @@ const list_user_category = [
     },
     {
         title: 'TẤT CẢ',
-        link: { name: 'state' },
+        link: { name: 'state', query: { state: 'all' } },
     },
     {
         title: 'CHỜ XÁC NHẬN',

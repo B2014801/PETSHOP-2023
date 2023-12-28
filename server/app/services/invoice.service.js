@@ -57,14 +57,14 @@ class InvoiceService {
         let status = parseInt(state);
         try {
             const filter = {};
-            if (state && userid) {
+            if (state && userid && state != 'all') {
                 filter.UserId = new ObjectId(userid);
                 if (status == 1 || status == 0) {
                     filter.StatusId = { $in: [0, 1] };
                 } else {
                     filter.StatusId = status;
                 }
-            } else if (userid && !state) {
+            } else if (userid && state == 'all') {
                 filter.UserId = new ObjectId(userid);
             }
             // get Invoice with status of one user
