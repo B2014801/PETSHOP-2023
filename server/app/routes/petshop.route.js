@@ -23,16 +23,14 @@ router
     .get(product.getAllProduct)
     .post(authMiddleware.isAuth, uploadMiddleware.single('img'), product.create);
 
-// router.use('/api/petshop/product/img/:id', express.static(path.join(__dirname, '../store/img')));
-
-// router.route('/product/img/:id').get(product.getProductImg);
 router
     .route('/product/:id')
     .put(authMiddleware.isAuth, uploadMiddleware.single('img'), product.update)
     .delete(authMiddleware.isAuth, product.deleteProduct)
     .get(product.findById)
     .post(authMiddleware.isAuth, cart.create);
-
+//search with img
+router.route('/product_img').post(uploadMiddleware.single('img'), product.findByImg);
 //cart
 // router.route('/cart').get(authMiddleware.isAuth, cart.getAll);
 router

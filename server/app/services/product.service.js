@@ -66,11 +66,16 @@ class ProductService {
             var term = [];
             for (var i = 0; i < searchTerm.length; i++) {
                 var char = searchTerm.charAt(i).toUpperCase();
-                var reg = map[char];
-                if (reg) {
-                    term.push(reg);
-                } else {
-                    term.push(char); // If the character is not accented, add it as is
+                let spechar = [' ́', ' ̃', ' ̣', ' ̀'];
+                spechar = spechar.map((char) => char.trim());
+                // no add ? ~ . `
+                if (!spechar.includes(char)) {
+                    var reg = map[char];
+                    if (reg) {
+                        term.push(reg);
+                    } else {
+                        term.push(char); // If the character is not accented, add it as is
+                    }
                 }
             }
 

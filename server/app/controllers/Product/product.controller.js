@@ -1,6 +1,7 @@
 const ApiError = require('../../api-errors');
 const MongoDB = require('../../utils/mongodb.util');
 const ProductService = require('../../services/product.service');
+const { labelMap } = require('./labelMap');
 const fs = require('fs');
 const path = require('path');
 
@@ -19,6 +20,26 @@ exports.createProduct = async (req, res, next) => {
     } catch (error) {
         return next(new ApiError(500, 'An error occurred while creating the product' + error));
     }
+};
+exports.findByImg = async (req, res, next) => {
+    const { execFile } = require('child_process');
+    // asynchronous;
+    execFile(
+        `python`,
+        [path.join(__dirname, './DBC/Dog_Breed_Classification.py'), req.file.path],
+        (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error: ${error.message}`);
+                return;
+            }
+            if (stdout) {
+                fs.unlinkSync(req.file.path);
+                const productService = new ProductService(MongoDB.client);
+                // const document = productService.findByName('cho', null);
+                res.send(document);
+            }
+        },
+    );
 };
 
 exports.getAllProduct = async (req, res, next) => {

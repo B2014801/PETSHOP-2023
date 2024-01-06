@@ -34,9 +34,10 @@ export const useAuthStore = defineStore('auth', {
                 this.logout();
                 throw new Error('Whoops, no access token found!');
             }
-            if (response.user.role == 'admin') {
-                alert('Bạn không có quyền truy cập trang web này');
-            } else {
+            // if (response.user.role == 'admin') {
+            //     alert('Bạn không có quyền truy cập trang web này');
+            // } 
+            else {
                 this.user = response;
 
                 localStorage.setItem('user', JSON.stringify(response));

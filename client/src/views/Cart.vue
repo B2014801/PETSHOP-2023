@@ -41,7 +41,9 @@
                         <td>
                             <img class="m-2" width="130" height="100" :src="product.ProductData.img" alt="" />
                         </td>
-                        <td style="width: 400px">{{ product.ProductData.name }}</td>
+                        <td style="width: 400px">
+                            {{ product.ProductData.name }}(kho {{ product.ProductData.number }})
+                        </td>
                         <td>
                             <span>{{ product.ProductData.price }} ₫</span>
                         </td>
@@ -117,11 +119,13 @@
             </table>
             <div></div>
 
-            <router-link to="/checkout"
-                ><button :disabled="isShowLoadingUpdateCart" class="btn btn-danger w-100 mt-2">
-                    Thanh toán
-                </button></router-link
+            <button
+                @click="handleGotoCheckout"
+                :disabled="isShowLoadingUpdateCart || isDisableBtnGotoCheckout"
+                class="btn btn-danger w-100 mt-2"
             >
+                Thanh toán
+            </button>
         </div>
         <div v-if="isShowEmptyCart"><h6 class="text-center mt-3">Thêm hàng vào giỏ ngay!!</h6></div>
     </div>
@@ -158,6 +162,7 @@ export default {
             isShowUpdateCartFailure: false,
             isShowEmptyCart: false,
             isShowLoading: true,
+            isDisableBtnGotoCheckout: false,
             isShowLoadingUpdateCart: false,
             inputChanged: false,
         };
@@ -181,11 +186,25 @@ export default {
                 this.cart = await CartService.getCarts(user._id);
                 if (this.cart.length != 0) {
                     this.isShowCart = true;
-                    this.isShowLoading = false;
+                    let flag = true;
+                    this.cart.map((item, index) => {
+                        if (parseInt(item.ProductData.number) <= 0) {
+                            flag = false;
+                        }
+                       
+                        
+                    });
+                    if (flag == false) {
+                            this.isDisableBtnGotoCheckout = true;
+                        }else
+                    {
+                        this.isDisableBtnGotoCheckout = false;
+                    }
                 } else {
                     this.isShowEmptyCart = true;
                     this.isShowCart = false;
                 }
+                this.isShowLoading = false;
             } catch (error) {
                 // alert('vui lòng đăng nhập trước');
                 this.$router.push({ name: 'login' });
@@ -246,6 +265,17 @@ export default {
                 this.getCart();
                 let CartStore = cartStore();
                 CartStore.minusAmount();
+            }
+        },
+        async handleGotoCheckout() {
+            let flag = true;
+            this.cart.map((item, index) => {
+                if (parseInt(item.ProductData.number) <= 0) {
+                    flag = false;
+                }
+            });
+            if (flag) {
+                this.$router.push({ name: 'checkout' });
             }
         },
     },

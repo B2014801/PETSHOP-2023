@@ -5,14 +5,17 @@ const path = require('path');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         try {
-            let { desPathUpload, discount, email } = req.body;
+            let { desPathUpload, discount, email, pictureSearch } = req.body;
             if (discount) {
                 desPathUpload = '/product';
+            }
+            if (pictureSearch) {
+                desPathUpload = '/search';
             }
             if (email) {
                 desPathUpload = '/user';
             }
-            if (!discount && !email) {
+            if (!discount && !email && !pictureSearch) {
                 desPathUpload = '/brand';
             }
             if (desPathUpload) {
@@ -23,7 +26,8 @@ const storage = multer.diskStorage({
         }
     },
     filename: function (req, file, cb) {
-        cb(null, +Date.now() + file.originalname);
+        let end = file.originalname.split('.');
+        cb(null, +Date.now() + '.' + end[end.length - 1]);
     },
 });
 
