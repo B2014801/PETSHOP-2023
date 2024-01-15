@@ -24,19 +24,25 @@ exports.createProduct = async (req, res, next) => {
 exports.findByImg = async (req, res, next) => {
     const { execFile } = require('child_process');
     // asynchronous;
+
     execFile(
         `python`,
         [path.join(__dirname, './DBC/Dog_Breed_Classification.py'), req.file.path],
-        (error, stdout, stderr) => {
+        async (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error: ${error.message}`);
                 return;
             }
             if (stdout) {
                 fs.unlinkSync(req.file.path);
-                const productService = new ProductService(MongoDB.client);
-                // const document = productService.findByName('cho', null);
-                res.send(document);
+                const breed = labelMap[stdout.trim()];
+                let document = [];
+                if (breed) {
+                    const productService = new ProductService(MongoDB.client);
+                    document = await productService.findByName(breed, null);
+                }
+                const respond = { breed: breed != '' ? breed : stdout.trim(), products: document };
+                res.send(respond);
             }
         },
     );

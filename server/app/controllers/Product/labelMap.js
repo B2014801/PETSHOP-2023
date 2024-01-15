@@ -104,7 +104,7 @@ exports.labelMap = {
     keeshond: '',
     japanese_spaniel: '',
     miniature_poodle: 'chó poodle',
-    pomeranian: '',
+    pomeranian: 'chó phốc sóc',
     'curly-coated_retriever': 'abc',
     yorkshire_terrier: '',
     pembroke: 'chó corgi',
